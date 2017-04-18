@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Meet Greek Login</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="padding">
+  <div class="intro">
+    <ion-slides [options]="slideOptions">
+      <ion-slide> <img src="assets/images/MeetGreek-slide1.png" /></ion-slide>
+      <ion-slide> <img src="assets/images/MeetGreek-slide2.png" /></ion-slide>
+      <ion-slide> <img src="assets/images/MeetGreek-slide3.png" /></ion-slide>
+      <ion-slide><img src="assets/images/MeetGreek-slide4.png" /></ion-slide>
+    </ion-slides>
+  </div>
+  <div class="fixed-pos" padding>
+    <ion-grid>
+      <ion-row>
+        <ion-col offset-25 width-50>
+          <button ion-button primary block (click)="facebookLogin()">
+            Log In with Facebook
+        </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </div>
+</ion-content>

@@ -1,0 +1,28 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Create Profile</ion-title> 
+        <ion-buttons end> <button ion-button icon-only (click) = "next()" >Next<ion-icon name= "arrow-forward" ></ion-icon></button> </ion-buttons>
+    </ion-navbar>
+</ion-header>
+<ion-content>
+
+<ion-card>
+  <ion-item>
+    <img *ngIf="!profile_pic" src="assets/images/default.png"/>
+    <img *ngIf="profile_pic" src={{profile_pic}} />
+  </ion-item>
+</ion-card>
+<ion-card>
+  <ion-card-content large>
+    <ion-item>
+    <h3 class="center">Tell us about yourself!</h3>
+  </ion-item>
+  </ion-card-content>
+</ion-card>
+
+ <ion-item>
+   <ion-label floating>About me</ion-label>
+   <ion-textarea [(ngModel)]="aboutMeText"></ion-textarea>
+ </ion-item>
+
+</ion-content>

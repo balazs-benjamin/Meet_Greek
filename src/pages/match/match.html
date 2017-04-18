@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Match</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content class="card-background-page">
+  <ion-card>
+    <ion-card-content>
+      <ion-item>
+        <h1 class="center">OPA!</h1>
+        <h2 class="center">You matched with</h2>
+        <h3 class="center">{{ user.username }}</h3>
+      </ion-item>
+      <ion-item>
+        <img *ngIf="!user.userImage0" src="assets/images/default.png">
+        <img *ngIf="user.userImage0" src="{{user.userImage0}}">
+      </ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col width-10></ion-col>
+          <ion-col width-80><button ion-button (click)="goBack()" full color="primary">Keep swiping</button></ion-col>
+          <ion-col width-10></ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-10></ion-col>
+          <ion-col width-80><button ion-button (click)="openChat(interlocutor)" full color="primary" rounded>Send a chat!</button></ion-col>
+          <ion-col width-10></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

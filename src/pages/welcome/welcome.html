@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Welcome</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content (click)="tapToContinue()">
+    <ion-card *ngIf="user.userImage0">
+        <ion-card-content>
+            <ion-item>
+                <h1 class="center" *ngIf="user.userImage0">Welcome,</h1>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="user.userImage0">
+        <!--<img *ngIf="!user.profile_picture" src="assets/images/default.png"/>-->
+        <img *ngIf="user.userImage0" src={{user.userImage0}} />
+    </ion-card>
+    <ion-card *ngIf="user.userImage0">
+        <ion-card-content>
+            <ion-item>
+                <h1 class="center" *ngIf="user.userImage0">{{user.first_name}}!</h1>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

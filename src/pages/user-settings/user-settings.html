@@ -1,0 +1,56 @@
+<!--
+  Generated template for the UserSettings page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>user-settings</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <div padding>
+  <ion-segment [(ngModel)]="pet">
+    <ion-segment-button value="profile">
+      Profile
+    </ion-segment-button>
+    <ion-segment-button value="settings">
+      Settings
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+<div [ngSwitch]="pet">
+  <ion-list *ngSwitchCase="'profile'">
+    <ion-slides>
+      <ion-slide>
+        <h1>Slide 1</h1>
+      </ion-slide>
+      <ion-slide>
+        <h1>Slide 2</h1>
+      </ion-slide>
+      <ion-slide>
+        <h1>Slide 3</h1>
+      </ion-slide>
+    </ion-slides>
+  </ion-list>
+
+  <ion-list *ngSwitchCase="'settings'">
+    <ion-item>
+      <h2>Luna</h2>
+    </ion-item>
+    <ion-item>
+      <h2>Muna</h2>
+    </ion-item>
+  </ion-list>
+</div>
+
+</ion-content>
+
+
+

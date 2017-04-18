@@ -1,0 +1,26 @@
+page-match {
+  .card-background-page > * {
+    display: flex!important;
+    align-content: center!important;
+    align-items: center!important;
+  }
+
+  .card-background-page {
+    .center {
+      text-align: center;
+    }
+    h1 {
+      font-size: 60px !important;
+      font-weight: bold !important;
+    }
+
+    h2 {
+      font-size: 20px !important;
+      font-weight: bold !important;
+    }
+    h3 {
+      font-size: 20px !important;
+      font-weight: bold !important;
+    }
+  }
+}

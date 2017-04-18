@@ -1,0 +1,178 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      <ion-spinner color="light" *ngIf="!(users | async)"></ion-spinner>
+    </ion-title>
+    <ion-buttons left> <button disabled={{buttonDisabled}} ion-button (click)="goToSettings()">Settings</button> </ion-buttons>
+    <ion-buttons end> <button disabled={{buttonDisabled}} ion-button (click)="goToChat()">Chat</button> </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-bounce>
+
+  <!--<div>
+    <ion-slides #mainSlider *ngIf="greeksFound && isPublicEnabled && everythingLoaded" (ionSlideDidChange)="slideChanged()">
+      <template ngFor let-user [ngForOf]="users | async">
+        <template [ngIf]="user.$key !== uid && (likeKeys.indexOf(user.$key) == -1)">
+          <ion-slide>
+            <ion-card>
+              <div class="center">
+                <img class="img-card" *ngIf="!user.userImage0" src="assets/images/default.png">
+                <img class="img-card" *ngIf="user.userImage0" src="{{user.userImage0}}">
+              </div>
+              <ion-card-content>
+                <ion-card-title>
+                  {{user.first_name}}
+                </ion-card-title>
+                <p>
+                  <ion-grid>
+                    <ion-row class="center">
+
+                      <ion-col width-25>{{calculatedDistance | convertDistance:[loggedUser.latitude, loggedUser.longitude, user.latitude, user.longitude]}}</ion-col>
+                      <ion-col width-50></ion-col>
+                      <ion-col width-10></ion-col>
+                      <ion-col width-10 class="img-center"><span id="loc-title">20</span></ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </p>
+              </ion-card-content>
+              <ion-row *ngIf="premium">
+                <ion-col (click)="redo()">
+                  <button ion-button icon-left clear small>
+          <ion-icon name="arrow-back"></ion-icon>
+        </button>
+                </ion-col>
+                <ion-col (click)="reject(user.$key)">
+                  <button ion-button icon-left clear small>
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+                </ion-col>
+                <ion-col (click)="like(user.$key)">
+                  <button ion-button icon-left clear small>
+          <ion-icon name="add-circle"></ion-icon>
+        </button>
+                </ion-col>
+                <ion-col (click)="superLike()">
+                  <button ion-button icon-left clear small>
+          <ion-icon name="star"></ion-icon>
+        </button>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-slide>
+        </template>
+      </template>
+    </ion-slides>
+  </div>-->
+  <div swing-stack #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" id="card-stack">
+    <ion-card #mycards1 swing-card *ngFor="let c of sortedUsers">
+      <ion-item *ngIf="c.profile_picture">
+        <img id="card-image" *ngIf="c.profile_picture" [src]="c.profile_picture">
+        <h1 id="card-title">{{ c.first_name }}</h1>
+        <h2 id="card-subtitle">Athens</h2>
+      </ion-item>
+
+      <ion-row *ngIf="c.first_name">
+        <ion-col>
+          <button ion-button color="danger" round outline large (click)="voteUp(false, c.$key)">
+            <ion-icon name="thumbs-down"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col>
+          <button ion-button color="secondary" round outline large (click)="voteUp(true, c.$key)">
+            <ion-icon name="thumbs-up"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </div>
+
+  <!--<ion-card *ngIf="greeksNotFound && isPublicEnabled" class="greeks-not-found">
+    <ion-card-title class="center card-title">
+      Hmmm...
+    </ion-card-title>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col width-100 class="center card-subtitle">
+            There are no Greeks left in your area.
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-100 class="center card-subtitle closer">
+            Check back later!
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-100 class="center card-subtitle far">
+            Call yiayia back in the meantime :-)
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="!isPublicEnabled" class="greeks-not-found">
+    <ion-card-title class="center card-title">
+      Hmmm...
+    </ion-card-title>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col width-100 class="center card-subtitle">
+            You have be discoverable to see some results
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-100 class="center card-subtitle closer">
+            Go to setting to enable it.
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col width-100 class="center card-subtitle far">
+            Call yiayia back in the meantime :-)
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>-->
+
+
+
+  <!--<div class="fixed-pos">
+    <ion-grid *ngIf="greeksFound && isPublicEnabled" class="closer">
+      <ion-row class="center">
+        <ion-col width-25 class="img-center" (click)="redo()" *ngIf="premium">
+          <img src="assets/images/Premium-slide1-A.png" />
+        </ion-col>
+        <ion-col width-25 class="img-center" (click)="reject()">
+          <img src="assets/images/Premium-slide4-A.png" />
+        </ion-col>
+        <ion-col width-25 class="img-center" (click)="like()">
+          <img src="assets/images/Premium-slide5-A.png" />
+        </ion-col>
+        <ion-col width-25 class="img-center" (click)="superLike()" *ngIf="premium">
+          <img src="assets/images/Premium-slide2-A.png" />
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>-->
+
+  <!--<div class="fixed-pos" *ngIf="buttonsVisible">
+    <ion-grid *ngIf="greeksFound" class="closer">
+      <ion-row class="center">
+        <ion-col width-25 class="img-center" (click) = "redo()" *ngIf="premium">
+          <img [@fade]="fadeState" [@bounce]="bounceState" src="assets/images/Premium-slide1-A.png" />
+        </ion-col>
+        <ion-col width-25 class="img-center" (click) = "reject()">
+          <img [@fade]="fadeState" [@bounce]="bounceState" src="assets/images/Premium-slide4-A.png" />
+        </ion-col>
+        <ion-col width-25 class="img-center" (click) = "like()">
+          <img [@fade]="fadeState" [@bounce]="bounceState" src="assets/images/Premium-slide5-A.png" />
+        </ion-col>
+        <ion-col width-25 class="img-center" (click) = "superLike()" *ngIf="premium">
+          <img [@fade]="fadeState" [@bounce]="bounceState" src="assets/images/Premium-slide2-A.png" />
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>-->
+</ion-content>

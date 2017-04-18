@@ -1,0 +1,39 @@
+page-chat-view {
+.chat-view {
+  .messages {
+    width: 100%;
+    position: absolute;
+    .message {
+      width: 70%;
+      padding: 5px 10px;
+      background: #3F51B5;
+      color: #fff;
+      border-radius: 30px;
+      margin: 5px;
+      float: left;
+    }
+    .message.me {
+      float: right;
+      background:  #5BC236;
+      // border: 1px solid #3F51B5;
+      color: #fff;
+      text-align: right;
+    }
+  }
+//   .input-cover {
+//   position: static;
+// }
+//   .scroll-content {
+//   padding-bottom:0!important;
+// }
+}
+.title-text {
+    margin-left: 10px !important;
+  }
+
+  .title-img {
+    border-radius: 20px !important;
+    height: 40px !important;
+    width: 40px !important;
+  }
+}

@@ -1,0 +1,111 @@
+<ion-content class="card-background-page">
+  <ion-grid>
+  <ion-row>
+    <ion-col width-5></ion-col>
+    <ion-col width-90>
+
+  <ion-card>
+    <ion-card-header class="title-header">
+      meet greek <span class="title-header-span">premium</span>
+    </ion-card-header>
+    <ion-card-content>
+    <ion-slides pager>
+    <ion-slide> <img src="assets/images/Premium-slide1.png" />
+    <p class="card-title">
+      Undo Your Previous Swipe
+    </p>
+    <p class="card-subtitle">
+      Get 5 free Undo’s with any premium package.
+    </p>
+    <br/>
+    <br/>
+    
+    </ion-slide>
+    <ion-slide> <img src="assets/images/Premium-slide2.png" /> 
+      <p class="card-title">
+      Send More Super Likes
+    </p>
+    <p class="card-subtitle">
+      Let 5 more people know you’re interested!
+    </p>
+    <br/>
+    <br/>
+
+
+    </ion-slide>
+    <ion-slide> <img src="assets/images/Premium-slide3.png" /> 
+      <p class="card-title">
+      Change Your Location
+    </p>
+    <p class="card-subtitle">
+      Match with Greeks all around the world.
+
+    </p>
+    <br/>
+    <br/>
+
+
+
+    </ion-slide>
+    <ion-slide> <img src="assets/images/Premium-slide3.png" /> 
+
+    <p class="card-title">
+      More Match Potential
+    </p>
+    <p class="card-subtitle">
+      Bump yourself up to the top of the match queue.
+    </p>
+    <br/>
+    <br/>
+    </ion-slide>
+
+  </ion-slides>
+  
+
+  <ion-grid>
+  <ion-row>
+    <ion-col width-50>
+      <button ion-button large (click)="oneWeek()">
+        1 week <br/>$3.00/wk
+      </button>
+    </ion-col>
+    <ion-col width-50>
+      <button ion-button large (click)="oneMonth()">
+        1 month
+        <br/>$7.00/mo
+        <div class="card-subtitle-2">1 extra Super Like, 1 extra Undo</div>
+      </button>
+      <span class="text-small">
+        </span>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col width-50>
+      <button ion-button large (click)="sixMonths()">
+        6 months
+        <br/>$7.00/mo
+        <div class="card-subtitle-2">2 extra Super Likes, 2 extra Undo</div>
+      </button>
+    </ion-col>
+    <ion-col width-50>
+      <button ion-button large (click)="restore()">
+        Restore
+        <br/>Purchase
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+  <div class="row">
+        <div class="col text-center">
+            <button ion-button (click)="back()" color="dark" clear>Maybe Later</button>
+        </div>
+      </div>
+  </ion-card-content>
+  
+</ion-card>
+    </ion-col>
+    <ion-col width-5></ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>

@@ -1,0 +1,162 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Account</ion-title>
+        <ion-buttons left> <button ion-button (click)="edit()" *ngIf="isProfile">Edit</button> </ion-buttons>
+        <ion-buttons end> <button ion-button icon-only (click)="next()"><ion-icon name= "arrow-forward" ></ion-icon></button> </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div padding>
+        <ion-segment [(ngModel)]="profilePageChoice">
+            <ion-segment-button value="profile" (ionSelect)="profileClicked()">
+                Profile
+            </ion-segment-button>
+            <ion-segment-button value="settings" (ionSelect)="settingsClicked()">
+                Settings
+            </ion-segment-button>
+        </ion-segment>
+    </div>
+
+    <!--Profile Segment-->
+    <div [ngSwitch]="profilePageChoice">
+        <ion-list *ngSwitchCase="'profile'">
+            <!--<ion-item>
+                <ion-card>
+                    <img *ngIf="!user.profile_picture" src="assets/images/default.jpg" />
+                    <img *ngIf="user.profile_picture" src="{{user.profile_picture}}" height="300" width="300"/>
+                </ion-card>
+            </ion-item>-->
+            
+                
+                <!--<ion-row wrap>
+                    <ion-col width-33 *ngFor="let file_uri of user.images">
+                        <ion-card>
+                            <img [src]="file_uri">
+                        </ion-card>
+                    </ion-col>
+                </ion-row>-->
+             <!--<ion-item>
+                <button ion-button full (click)="updatePicture()">Change Picture</button>
+            </ion-item>-->
+
+
+            
+            <ion-item>
+            <img *ngIf="!user.images && hasLoaded" src="assets/images/default.png" />
+                <ion-slides *ngIf="user.images" pager>
+                    <ion-slide *ngFor="let file_uri of user.images">
+                        <img [src]="file_uri">
+                    </ion-slide>
+                </ion-slides>
+            </ion-item>
+           
+            <ion-item *ngIf="hasLoaded">
+                {{user.username}}
+            </ion-item>
+            <ion-item *ngIf="hasLoaded">
+                {{user.aboutMe}}
+            </ion-item>
+            <ion-item *ngIf="hasLoaded">
+                {{user.descent}}
+            </ion-item>
+            <ion-item *ngIf="hasLoaded">
+                {{user.areas}}
+            </ion-item>
+            <ion-item *ngIf="hasLoaded">
+                {{user.church}}
+            </ion-item>
+        </ion-list>
+        <!--Settings Segment-->
+        <ion-list *ngSwitchCase="'settings'">
+            <ion-grid>
+                <ion-row>
+                    <ion-col offset-10 width-80><button ion-button (click)="showPremium()" full color="light">meetGreek Premium</button></ion-col>
+                </ion-row>
+            </ion-grid>
+            <ion-item>
+                <ion-label>Public/Discoverable</ion-label>
+                <ion-toggle [(ngModel)]="publicDiscoverable" (ionChange)="publicDisc()"></ion-toggle>
+            </ion-item>
+            <ion-item>
+                <ion-label item-left>Distance</ion-label>
+                <ion-badge item-right color="secondary">{{distance}} mi</ion-badge>
+            </ion-item>
+            <ion-item class="distance">
+                <ion-range min="0" max="100" [(ngModel)]="distance" (ionChange)="distanceChoice()" color="secondary" pin="false" step="1"
+                    snaps="false">
+                </ion-range>
+            </ion-item>
+            <ion-item>
+                <ion-label item-left>Age</ion-label>
+                <ion-badge item-right>{{age.lower}} - {{age.upper}}</ion-badge>
+            </ion-item>
+            <ion-item class="distance">
+                <ion-range dualKnobs="true" [(ngModel)]="age" (ionChange)="ageChoice()" min="18" max="55" step="1" snaps="false" pin="false">
+                    <!--<ion-label range-left>18</ion-label>
+                    <ion-label range-right>55+</ion-label>-->
+                </ion-range>
+            </ion-item>
+            <ion-item>
+
+            </ion-item>
+            <ion-list radio-group [(ngModel)]="searchPreference" (ionChange)="searchPref()">
+
+                <ion-list-header>
+
+                    <ion-label item-left>Looking for</ion-label>
+                    <ion-badge item-right>{{searchPreference}}</ion-badge>
+                </ion-list-header>
+                <ion-item>
+                    <ion-label>Men</ion-label>
+                    <ion-radio value="Men"></ion-radio>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Women</ion-label>
+                    <ion-radio value="Women"></ion-radio>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Men & Women</ion-label>
+                    <ion-radio value="Men & Women"></ion-radio>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Friends</ion-label>
+                    <ion-radio value="Friends"></ion-radio>
+                </ion-item>
+            </ion-list>
+
+            <ion-list>
+                <ion-list-header>
+                    <ion-label item-left>Push Notifications</ion-label>
+                </ion-list-header>
+                <ion-item>
+                    <ion-label>New Matches</ion-label>
+                    <ion-toggle [(ngModel)]="newMatches" (ionChange)="newMatch()"></ion-toggle>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Messages</ion-label>
+                    <ion-toggle [(ngModel)]="messages" (ionChange)="msg()"></ion-toggle>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Super Likes</ion-label>
+                    <ion-toggle [(ngModel)]="superLikes" (ionChange)="like()"></ion-toggle>
+                </ion-item>
+            </ion-list>
+
+            <ion-grid>
+                <ion-row>
+                    <ion-col width-33><button ion-button (click)="showLegal()" full color="light">Legal</button></ion-col>
+                    <ion-col width-33></ion-col>
+                    <ion-col width-33><button ion-button (click)="showFeedback()" full color="light">Feedback</button></ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col width-33><button ion-button (click)="logout()" full color="light">Logout</button></ion-col>
+                    <ion-col width-33></ion-col>
+                    <ion-col width-33><button ion-button (click)="deleteAccount()" full color="light">Delete Account</button></ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-list>
+    </div>
+</ion-content>

@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()" primary>
+        <span showWhen="ios">Done</span>
+        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>Other id: {{ interlocutor }}</ion-title>
+    <ion-buttons end> <button ion-button (click)="flagUser()">Flag</button> </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-bounce>
+  <div class="fixed-top">
+  <ion-slides [options]="slideOptions">
+    <template ngFor let-file_uri [ngForOf]="user.images">
+      <template [ngIf]="user.images.length > 0">
+      <!--<ion-slide *ngFor="let user of users | async" (click)="ionSlideTap()">-->
+       <ion-slide (click)="ionSlideTap(user.$key)">
+      <ion-card>
+        <div class="center">
+          <img *ngIf="user.images.length == 0" class="img-card" src="assets/images/default.jpg" />
+          <img *ngIf="user.images.length > 0" class="img-card" [src]="file_uri">
+        </div>
+  </ion-card>
+   </ion-slide>
+   </template>
+    </template>
+  </ion-slides>
+  </div>
+  <div>
+    <ion-scroll scrollY="true">
+  
+  <ion-list>
+    <ion-item>
+      {{user.username}}, Age
+    </ion-item>
+    <ion-item>
+      Other id: {{ interlocutor }}
+    </ion-item>
+    <ion-item>
+      {{user.aboutMe}}
+    </ion-item>
+    <ion-item>
+      {{user.descent}}
+    </ion-item>
+    <ion-item>
+      {{user.areas}}
+    </ion-item>
+    <ion-item>
+      {{user.church}}
+    </ion-item>
+    <ion-item>
+      {{user.location}}
+    </ion-item>
+  </ion-list>
+  </ion-scroll>
+  </div>
+  <div class="fixed-pos">
+   <ion-grid>
+    <ion-row class="center">
+      <ion-col width-25 class="img-center" (click) = "reject()">
+        <img src="assets/images/Premium-slide4-A.png" />
+      </ion-col>
+      <ion-col width-10>
+        
+      </ion-col>
+      <ion-col width-25 class="img-center" (click) = "superlike()" *ngIf="premium">
+        <img src="assets/images/Premium-slide2-A.png" />
+      </ion-col>
+      <ion-col width-10>
+        
+      </ion-col>
+      <ion-col width-25 class="img-center" (click) = "like()">
+        <img src="assets/images/Premium-slide5-A.png" />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  </div>
+</ion-content>

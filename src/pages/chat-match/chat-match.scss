@@ -1,0 +1,95 @@
+page-chat-match {
+    ion-scroll {
+    white-space: nowrap;
+}
+
+ion-card{
+  width: 120px !important;
+  height:120px;
+  display: inline-block;
+  border: none !important;
+  text-align: center;
+}
+
+ion-label {
+  padding-left: 5px;
+  font-size: 17px;
+}
+.list-img-big {
+  height: 100px !important;
+  width: 100px !important;
+}
+.list-header-ios {
+  border-bottom: none !important;
+  border-top: 0.55px solid #c8c7cc;
+}
+
+.vert-scroll {
+  margin-top: -40px !important;
+    margin-left: -15px;
+    margin-bottom: -10px;
+    height: 150px;
+}
+
+.hor-scroll {
+  height:600px;
+}
+
+// .hor-scroll ion-item {
+//   height:100px;
+// }
+
+.item-ios ion-avatar {
+  min-width: 6.5rem !important;
+  min-height: 6.5rem !important;
+
+
+}
+.item-md ion-avatar {
+  min-width: 6.5rem !important;
+  min-height: 6.5rem !important;
+
+
+}
+
+.item-ios ion-avatar img {
+  max-width: 6.5rem !important;
+  max-height: 6.5rem !important;
+  border-radius: 50%;
+}
+.item-md ion-avatar img {
+  max-width: 6.5rem !important;
+  max-height: 6.5rem !important;
+}
+
+.list-header-md {
+  border-bottom: none !important;
+  border-top: 0.55px solid #c8c7cc;
+}
+
+.card-md{
+  box-shadow: none !important;
+  
+}
+
+.card-ios {
+  box-shadow: none !important;
+  
+}
+
+  img {
+    border-radius: 50%;
+  }
+
+  .card-subtitle {
+    font-size: 1.0em;
+    position: relative;
+    bottom: 5%;
+    width: 120px;
+    color: black;
+  }
+  
+  .vert-list{
+    height: 140px !important;
+  }
+}

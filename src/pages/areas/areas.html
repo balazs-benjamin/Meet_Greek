@@ -1,0 +1,122 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Questions</ion-title>
+        <ion-buttons end> <button ion-button icon-only (click)="next()">Next<ion-icon name= "arrow-forward" ></ion-icon></button> </ion-buttons>
+    </ion-navbar>
+</ion-header>
+<ion-content>
+    <ion-card>
+        <ion-card-content>
+            <ion-item>
+                <h1 class="center">Select the areas where<br> your family comes from,<br> if you wish.</h1>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+    <ion-card>
+        <img src="assets/images/map-of-greece.png" />
+    </ion-card>
+    <ion-grid>
+  <ion-row>
+    <ion-col offset-33 width-33><button ion-button (click)="showCheckbox()" round>Add Places</button></ion-col>
+  </ion-row>
+</ion-grid>
+    <!--<ion-grid>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Attica</ion-label>
+                    <ion-checkbox [(ngModel)]="atticaStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Peloponnese</ion-label>
+                    <ion-checkbox color="dark" [(ngModel)]="pelopenneseStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Evia</ion-label>
+                    <ion-checkbox color="secondary" [(ngModel)]="eviaStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Sterea Ellada</ion-label>
+                    <ion-checkbox color="danger" [(ngModel)]="stereaElladaStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Thessaly</ion-label>
+                    <ion-checkbox color="energized" [(ngModel)]="thessalyStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Epirus</ion-label>
+                    <ion-checkbox color="royal" [(ngModel)]="epirusStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Macedonia</ion-label>
+                    <ion-checkbox [(ngModel)]="macedoniaStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Thrace</ion-label>
+                    <ion-checkbox color="dark" [(ngModel)]="thraceStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Eptanisa</ion-label>
+                    <ion-checkbox color="secondary" [(ngModel)]="eptanisaStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Dodekanisa</ion-label>
+                    <ion-checkbox color="energized" [(ngModel)]="dodekanisaStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Kyklades</ion-label>
+                    <ion-checkbox color="danger" [(ngModel)]="kykladesStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Sporades</ion-label>
+                    <ion-checkbox color="energized" [(ngModel)]="sporadesStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <ion-item>
+                    <ion-label>Crete</ion-label>
+                    <ion-checkbox color="danger" [(ngModel)]="creteStatus"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+            <ion-col width-50>
+
+            </ion-col>
+        </ion-row>
+
+    </ion-grid>-->
+
+</ion-content>

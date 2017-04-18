@@ -1,0 +1,33 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <ion-title>Questions</ion-title>   
+    </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+    <ion-card>
+  <ion-card-content>
+    <ion-item>
+        <h1 class="center">Are you of Greek<br>descent?</h1>
+    </ion-item>
+  </ion-card-content>
+</ion-card>
+    
+  <ion-card>
+        <ion-item>
+            <button ion-button full (click)="yes()">Yes</button>
+        </ion-item>
+         <ion-item>
+            <button ion-button full (click)="yesMotherSide()">Yes, Mother’s Side</button>
+        </ion-item>
+         <ion-item>
+            <button ion-button full (click)="yesFatherSide()">Yes, Father’s Side</button>
+        </ion-item>
+         <ion-item>
+            <button ion-button full (click)="no()">No, just here for the lamb</button>
+        </ion-item>
+   
+</ion-card>
+</ion-content>
+
