@@ -1,13 +1,11 @@
-// import { Component, OnInit, trigger, state, style, transition, animate, keyframes } from '@angular/core';
 import { Component, ViewChild, ViewChildren, QueryList  } from '@angular/core';
-import { NavController, ModalController, Slides, Content } from 'ionic-angular';
+import { NavController, ModalController, Slides, Content, Platform } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { UserProvider } from '../../providers/user-provider/user-provider';
 import { LikeProvider } from '../../providers/like-provider/like-provider';
 import { ChatViewPage } from '../chat-view/chat-view';
 import { Storage } from '@ionic/storage';
 import { SettingsPage } from '../settings/settings';
-// import { UserSettingsPage } from '../user-settings/user-settings';
 import { ExtendedProfilePage } from '../extended-profile/extended-profile';
 import { ChatMatchPage }  from '../chat-match/chat-match';
 import { ConvertDistance } from '../../pipes/convert-distance'
@@ -22,34 +20,12 @@ import { ToastController } from 'ionic-angular';
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html'
-  // animations: [
-  //   trigger('fade', [
-  //     state('visible', style({
-  //       opacity: 1
-  //     })),
-  //     state('invisible', style({
-  //       opacity: 0
-  //     })),
-  //     transition('visible <=> invisible', animate('500ms linear'))
-  //   ]),
- 
-  //   trigger('bounce', [
-  //     state('bouncing', style({
-  //       transform: 'translate3d(0,0,0)'
-  //     })),
-  //     transition('* => bouncing', [
-  //       animate('300ms ease-in', keyframes([
-  //         style({transform: 'translate3d(0,0,0)', offset: 0}),
-  //         style({transform: 'translate3d(0,-30px,0)', offset: 0.5}),
-  //         style({transform: 'translate3d(0,0,0)', offset: 1}) 
-  //       ]))
-  //     ])
-  //   ])
-  // ]
 })
 export class MainPage {
   @ViewChild('myswing1') swingStack: SwingStackComponent;
   @ViewChildren('mycards1') swingCards: QueryList<SwingCardComponent>;
+  @ViewChild('mainSlider') mainSlider: Slides;
+  @ViewChild(Content) content: Content;
 
   cards: Array<any>;
   sortedUsers: Array<any>;
@@ -63,15 +39,11 @@ export class MainPage {
   everythingLoaded2 = false;
   cardUsersLoaded = false;
   likeKeys = [];
-  @ViewChild('mainSlider') mainSlider: Slides;
-  @ViewChild(Content) content: Content;
   currentInterlocutorKey: any;
   currentInterlocutorKey2: any;
   isPublicEnabled = false;
   calculatedDistance = 0;
   buttonDisabled: any;
-  // fadeState: String = 'visible';
-  // bounceState: String = 'noBounce';
   greeksNotFound = false;
   loggedUser = <any>{};
   uid:string;
@@ -86,28 +58,22 @@ export class MainPage {
   userkeys = [];
   users:Observable<any[]>;
   // buttonsVisible = false;
+
   constructor(
     private http: Http,
+    private platform: Platform,
     private toastCtrl: ToastController,
     public navCtrl: NavController,
-     public userProvider: UserProvider,
-     public modalCtrl: ModalController,
-     public storage: Storage,
-     public likeProvider: LikeProvider
-     ) {
-    // setTimeout(() => { // <=== 
-      
-    //   // this.toggleBounce();
-    //   // this.toggleFade();
-    // },2000);
+    public userProvider: UserProvider,
+    public modalCtrl: ModalController,
+    public storage: Storage,
+    public likeProvider: LikeProvider) {
 
-    // this.slideOptions = {
-    //   onlyExternal: false,
-    //   onInit: (slides: any) =>
-    //     this.slider = slides
-    // }
+    console.log("MainPage");
+
     this.storage.set('hasUserReachedMain', true);
     this.buttonDisabled = null;
+
     //Swipe
     this.stackConfig = {
       throwOutConfidence: (offset, element) => {
@@ -118,18 +84,25 @@ export class MainPage {
       }
     };
   }
+
+
   ionViewDidLoad() {
+    console.log( "MainPage::ionViewDidLoad()" );
     this.userProvider.getUid()
     .then(uid => {
-        this.uid = uid;
-        this.users = this.userProvider.getAllUsers();
-        this.userLikes = this.likeProvider.getUserLikes(uid);
-        this.sortedUsers = [];
-        this.addToLikedArray();
-        this.addNewCardsFromFirebase();
-        // this.buttonsVisible = true;
-        //this.getCurrentInterloculot(this.mainSlider.getActiveIndex());
+      console.log("MainPage::ionViewDidLoad", uid);
+
+      this.uid = uid;
+      this.users = this.userProvider.getAllUsers();
+      this.userLikes = this.likeProvider.getUserLikes(uid);
+      this.sortedUsers = [];
+      this.addToLikedArray();
+      this.addNewCardsFromFirebase();
+      
+    }, err => {
+      console.log("MainPage::error", err);
     });
+
     // this.storage.get('hasUserEnterDetails').then((result) => {
     //     if (!result) {
     //       this.buttonsVisible = false;
@@ -137,11 +110,13 @@ export class MainPage {
     //       this.buttonsVisible = true;
     //     }
     //   });
+
+    
     this.userProvider.getUser().then(userObservable => {
       userObservable.subscribe(data => {
         this.loggedUser = data;
       });
-      //console.log(this.loggedUser.likes);
+      console.log("MainPage", this.loggedUser.likes);
     });
 
     this.storage.get('discoverable').then(result => {
@@ -161,15 +136,15 @@ export class MainPage {
   }
 
   ionViewDidEnter() {
-
-   // this.slider.lockSwipeToPrev();
-    
+    // this.slider.lockSwipeToPrev();
   }
 
-    openChat(key) {
-        let param = {uid: this.uid, interlocutor: key};
-        this.navCtrl.push(ChatViewPage,param);
-    }
+  openChat(key) {
+    console.log( "MainPage::openChat()", key );
+
+    let param = {uid: this.uid, interlocutor: key};
+    this.navCtrl.push(ChatViewPage,param);
+  }
 
   //   swipeEvent(event): void {
   //     if (event.direction == 2) {
@@ -186,6 +161,8 @@ export class MainPage {
   // }
 
   ionSlideTap(key) {
+    console.log( "MainPage::ionSlideTap()", key );
+
     this.buttonDisabled = true;
     // alert("Go To Extended Profile");
     let param = null;
@@ -201,22 +178,21 @@ export class MainPage {
     extendedProfileModal.present();
     //this.navCtrl.push(ExtendedProfilePage, );
   }
+
   ionSlideNextEnd(): void {
+    console.log( "MainPage::ionSlideNextEnd()");
     alert("user liked this one");
   }
+
   goToChat(): void {
     this.navCtrl.push(ChatMatchPage);
   }
-
   goToSettings(): void {
     this.navCtrl.setRoot(SettingsPage);
   }
 
-  // goToUserSettings(): void {
-  //   this.navCtrl.setRoot(UserSettingsPage);
-  // }
-
   redo(): void {
+    console.log( "MainPage::redo()");
     if(this.premium){
       // if(!this.slider.isBeginning){
       //   this.slider.unlockSwipeToPrev();
@@ -243,7 +219,9 @@ export class MainPage {
   }
 
   superLike(): void {
-   let uid =this.uid;
+    console.log( "MainPage::superLike()");
+
+    let uid =this.uid;
     let interlocutor = this.currentInterlocutorKey;
     this.likeProvider.addSuperLike(uid, interlocutor);
     this.likeKeys.push(interlocutor);
@@ -252,10 +230,11 @@ export class MainPage {
       this.userkeys.splice(index, 1);
     }  
     //this.checkLikes();
-     
   }
 
   checkLikes(): void {
+    console.log( "MainPage::checkLikes()");
+    
     if(this.likeKeys.indexOf(this.currentInterlocutorKey) == -1){
           this.isLiked = false
         }else{
@@ -267,7 +246,9 @@ export class MainPage {
   }
 
   reject(interlocutor): void {
-    let uid =this.uid;
+    console.log( "MainPage::reject()");
+
+    let uid = this.uid;
     // let interlocutor = this.currentInterlocutorKey;
     this.likeProvider.reject(uid, interlocutor);
     this.likeKeys.push(interlocutor);
@@ -294,37 +275,43 @@ export class MainPage {
   }
 
   addToLikedArray(): void {
+    console.log( "MainPage::addToLikedArray()");
+
     this.userLikes.subscribe(likes => {
-        this.likeKeys = [];
-        // items is an array
-        likes.forEach(like => {
-          //console.log(item.$key);
-            this.likeKeys.push(like.$key);
-            // var index = this.userkeys.indexOf(like.$key, 0);
-            // console.log(index);
-            // if (index > -1) {
-            //   this.userkeys.splice(index, 1);
-            // }  
-        });
-        // this.mainSlider.update();
-        this.everythingLoaded = true;
-        this.update();
-        //this.ionViewDidLoad();
-        //this.checkLikes();
-        // console.log(this.currentInterlocutorKey);
-        //
+      console.log( "MainPage::addToLikedArray()", likes);
+      this.likeKeys = [];
+      
+      likes.forEach(like => {
+        //console.log(item.$key);
+          this.likeKeys.push(like.$key);
+          // var index = this.userkeys.indexOf(like.$key, 0);
+          // console.log(index);
+          // if (index > -1) {
+          //   this.userkeys.splice(index, 1);
+          // }  
+      });
+      // this.mainSlider.update();
+      this.everythingLoaded = true;
+      this.content.resize();
+      //this.ionViewDidLoad();
+      //this.checkLikes();
+      // console.log(this.currentInterlocutorKey);
+      
     });
   }
 
 
   addToExistingLikedArray(interlocutor): void {
-        this.likeKeys.push(interlocutor);
-        console.log(this.likeKeys);
-        this.everythingLoaded = true;
+    console.log( "MainPage::addToExistingLikedArray()");
+
+    this.likeKeys.push(interlocutor);
+    console.log(this.likeKeys);
+    this.everythingLoaded = true;
   }
 
   slideChanged() {
-    
+    console.log( "MainPage::slideChanged()");
+
     // this.users.forEach(user => {
     //   //console.log(user);
     // });
@@ -335,8 +322,6 @@ export class MainPage {
     //   }
     // console.log(userkeys);
     
-
-
     // let currentIndex = this.mainSlider.getActiveIndex();
     // this.getCurrentInterloculot(currentIndex);
     // this.mainSlider.update();
@@ -349,7 +334,8 @@ export class MainPage {
   }
 
   getCurrentInterloculot(index): void {
-    
+    console.log( "MainPage::getCurrentInterloculot()", index);
+
     this.users.subscribe(items => {
       
       if(this.everythingLoaded2 != true){
@@ -373,12 +359,12 @@ export class MainPage {
   }
 
   like(interlocutor): void {
+    console.log( "MainPage::like()", interlocutor);
     // this.goToNextUser();
     
-    let uid =this.uid;
     // let interlocutor = this.currentInterlocutorKey;
-    this.likeProvider.addLike(uid, interlocutor);
-    this.update();
+    this.likeProvider.addLike(this.uid, interlocutor);
+    this.content.resize();
     this.navCtrl.setRoot(this.navCtrl.getActive().component);
     // this.likeKeys.push(interlocutor);
     // var index = this.userkeys.indexOf(interlocutor);
@@ -395,7 +381,7 @@ export class MainPage {
     this.users = null;
     this.userProvider.getUid()
       .then(uid => {
-          this.uid = uid;
+          this.uid = this.uid;
           this.users = this.userProvider.getAllUsers();
           this.userLikes = this.likeProvider.getUserLikes(uid);
           this.addToLikedArray();
@@ -414,11 +400,10 @@ export class MainPage {
     //console.log(this.userkeys);
   }
 
-  update(){
-    this.content.resize();
-  }
+
 
   match(other_key): void {
+    console.log( "MainPage::match()", other_key );
     let param = null;
     param = {interlocutor: other_key};
     //let param = {uid: "this uid", interlocutor: "other user key"};
@@ -433,6 +418,7 @@ export class MainPage {
   }
 
   goToNextUser(): void {
+    console.log( "MainPage::goToNextUser()" );
     // this.slider.lockSwipeToPrev();
     // // if(this.indexOfArr+1 < this.users.length){
     // //   this.userActive = this.users[this.indexOfArr + 1];
@@ -460,9 +446,12 @@ export class MainPage {
 
   //SWIPE
   ngAfterViewInit() {
+    console.log( "MainPage::ngAfterViewInit()" );
+
     this.swingStack.throwin.subscribe((event: ThrowEvent) => {
+      console.log( "MainPage::ngAfterViewInit()", event );
       event.target.style.background = '#ffffff';
-      console.log(event);
+      
     });
     // this.cards = [];
     // this.addNewCards(1);
@@ -470,6 +459,8 @@ export class MainPage {
   }
 
   voteUp(like: boolean) {
+    console.log( "MainPage::voteUp()", like );
+
     let interlocutor = this.sortedUsers[0].$key;
     //this.sortedUsers = [];
     let removedCard = this.sortedUsers.pop();
@@ -502,8 +493,7 @@ export class MainPage {
   }
 
   addNewCards(count: number) {
-    //alert("IS CALLED");
-    
+    console.log( "MainPage::addNewCards()", count );
     // this.http.get('https://randomuser.me/api/?results=' + count)
     //   .map(data => data.json().results)
     //   .subscribe(result => {
@@ -518,21 +508,15 @@ export class MainPage {
   }
 
   addNewCardsFromFirebase(): void {
+    console.log( "MainPage::addNewCardsFromFirebase()" );
+
     this.users.subscribe(user => {
+      console.log( "MainPage::addNewCardsFromFirebase()", user );
         // items is an array
-        // user.forEach(u => {
-        //   //console.log(item.$key);
-        //     this.sortedUsers.push(u);
-        // });
-        //this.sortedUsers.push(user[0]);
+        // this.sortedUsers.push(user[0]);
         this.userArrayIndex = user.length;
         
-        for (var i = this.previousIndex; i < user.length; i++) {
-          // if (matchesSomeCriteria(products[i])) {
-          //   doSomething();
-          //   break;
-          // }
-          
+        for (var i = this.previousIndex; i < user.length; i++) {          
           if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
             
             this.sortedUsers.push(user[i]);
@@ -540,10 +524,6 @@ export class MainPage {
             
             break;
           }
-          
-          // if(i == user.length){
-          //   this.greeksFound = false;
-          // }
         }
         
         // this.sortedUsers.forEach(user => {
@@ -576,11 +556,76 @@ export class MainPage {
   }
 
   private checkIfGreeksFound(arr){
+    console.log( "MainPage::checkIfGreeksFound()" );
     // if(arr.length > 0){
     //   this.greeksFound = false;
     // }
   }
+
+  sendFCMPush() {
+
+    let Legacy_SERVER_KEY = "AIzaSyAHvUlvULDb5P3XME-ggl630Xo1dALbXvI";
+    let FCM_PUSH_URL = "";
+    let msg = "this is test message,.,,.,.";
+    let title = "my title";
+    let token = "FCM_RECEIVER_TOKEN";
+
+    let objData:any = {
+      body: msg,
+      title: title,
+      sound: "default",
+      icon: "icon_name", //   icon_name image must be there in drawable
+      tag: token,
+      priority: "high"
+    };
+
+    let dataobjData:any = {
+      text: msg,
+      title: title
+    };
+
+    let obj:any ={
+      to: token,
+      notification: objData,
+      data: dataobjData
+    };
+
+    /*
+    JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, Constants.FCM_PUSH_URL, obj,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.e("!_@@_SUCESS", response + "");
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("!_@@_Errors--", error + "");
+                }
+            }) {
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("Authorization", "key=" + Legacy_SERVER_KEY);
+            params.put("Content-Type", "application/json");
+            return params;
+        }
+    };
+    RequestQueue requestQueue = Volley.newRequestQueue(this);
+    int socketTimeout = 1000 * 60;// 60 seconds
+    RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, 
+      DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
+      DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+    jsObjRequest.setRetryPolicy(policy);
+    requestQueue.add(jsObjRequest);
+    */
+  }
+
+
   private calculateAge(b: any) {
+    console.log( "MainPage::calculateAge()", b );
+
     let birthday = new Date(b.replace(' ', 'T'));
     let ageDifMs = Date.now() - birthday.getTime();
     let ageDate = new Date(ageDifMs);

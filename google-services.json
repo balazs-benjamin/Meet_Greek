@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "798902207354",
+    "firebase_url": "https://meetgreek-7f8f8.firebaseio.com",
+    "project_id": "meetgreek-7f8f8",
+    "storage_bucket": "meetgreek-7f8f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798902207354:android:931d1eedc5d30947",
+        "android_client_info": {
+          "package_name": "com.meetgreekorg.meetgreek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798902207354-9um1jf84jg453artvh9srqardup2dg0m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACIukEtj29-qrKeDVxcdApv4FmyNqmYA0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

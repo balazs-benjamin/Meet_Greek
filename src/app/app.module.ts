@@ -32,10 +32,9 @@ import { SwingModule } from 'angular2-swing';
 import { HttpModule } from '@angular/http';
 //import { CapitalizePipe } from '../shared/pipes/capitalize.pipe';
 
-
 import { Filter } from '../pipes/filter';
 import { ConvertDistance } from '../pipes/convert-distance'
-
+import { Facebook } from '@ionic-native/facebook';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
 import { ChatsProvider } from '../providers/chats-provider/chats-provider';
 import { LikeProvider } from '../providers/like-provider/like-provider';
@@ -47,11 +46,11 @@ import { UtilProvider } from '../providers/utils';
 import { Data } from '../providers/data';
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyCPws3I2YmCW-kGvadQYlgm9JypziF6Z14",
-  authDomain: "meetgreek-1783b.firebaseapp.com",
-  databaseURL: "https://meetgreek-1783b.firebaseio.com",
-  storageBucket: "meetgreek-1783b.appspot.com",
-  messagingSenderId: "762176154683"
+  apiKey: "AIzaSyC5hC8PRTe2oVjR34bg9BQ9nvFItPzXA0I",
+  authDomain: "meetgreek-7f8f8.firebaseapp.com",
+  databaseURL: "https://meetgreek-7f8f8.firebaseio.com",
+  storageBucket: "meetgreek-7f8f8.appspot.com",
+  messagingSenderId: "798902207354"
 };
 
 // const myFirebaseAuthConfig = {
@@ -130,7 +129,7 @@ export const firebaseConfig = {
     ExtendedProfilePage,
     MatchPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Facebook,
   AuthProvider, ChatsProvider, LikeProvider, UserProvider, PurchaseProvider, UtilProvider, 
   CityService, SimpleAlert, Data]
 })

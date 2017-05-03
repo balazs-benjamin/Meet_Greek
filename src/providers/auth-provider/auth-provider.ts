@@ -1,25 +1,113 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { AngularFire, AuthProviders, AngularFireAuth, FirebaseAuthState, 
+  AuthMethods } from 'angularfire2';
 import { Storage } from '@ionic/storage';
+import firebase from 'firebase';
 
 @Injectable()
 export class AuthProvider {
+  private authState: FirebaseAuthState;
+  private notificationToken;
   uid: number;
   username: string;
   picture: string;
   email: string;
-  constructor(public af:AngularFire, public local:Storage) {}
+
+  constructor(public af:AngularFire, 
+    public auth$: AngularFireAuth,
+    public local:Storage) {
+
+    this.authState = null;
+    af.auth.subscribe((state: FirebaseAuthState) => {
+      console.log("AngularFireAuth success", state);
+      this.authState = state;
+
+      this.authState.auth.getToken().then( 
+        (token) => {  
+        console.log('MyApp::onToken() success', token);
+        this.notificationToken = token;
+      }, err => {
+        console.log('MyApp::onToken() error', err);
+      });
+      
+    }, err => {
+      console.log("AngularFireAuth error", err);
+    });
+
+  }
   
+  /*
   signin(credentails) {   
-    return this.af.auth.login(credentails);
+    return this.af.auth.login(credentails).then((data)=>{
+      console.log("login", data);
+    }, (error) => {
+      console.log("login", error);
+    });
   }
-  
+  */
   createAccount(credentails) {
-    return this.af.auth.createUser(credentails);
+    return this.af.auth.createUser(credentails).then( data =>{
+      console.log("createAccount", data);
+    },error=>{
+      console.log("createAccount", error);
+    });
   };
-  
-  logout() {
-     this.af.auth.logout();
+
+  deleteAccount(){
+    return new Promise<void>((resolve, reject) => {
+      this.af.auth.subscribe(authState => {
+        authState.auth.delete()
+        .then(_ => resolve())
+        .catch(e => reject(e));
+      });
+    });
   }
+
+  /*
+  logout() {
+     this.af.auth.logout().then( (data) => {
+       console.log("logout", data);
+     }, (error)=>{
+       console.log("logout", error);
+     });
+  }*/
+
+  get authenticated(): boolean {
+    return this.authState !== null;
+  }
+
+  get getAuthState():FirebaseAuthState{
+    return this.authState;
+  }
+
+  get token(){
+    return this.notificationToken;
+  }
+  
+
+  signInWithFacebook(facebookCredential): firebase.Promise<FirebaseAuthState> {
+
+    return this.auth$.login(facebookCredential, {
+      provider: AuthProviders.Facebook,
+      method: AuthMethods.OAuthToken
+    });
+    
+  }
+
+  signOut() {
+    console.log( "AuthProvider::signOut()" );
+    return this.auth$.logout();
+  }
+
+  displayName(): string {
+    if (this.authState != null) {
+      return this.authState.facebook.displayName;
+    } else {
+      return '';
+    }
+  }
+
+
+
 }
 

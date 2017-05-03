@@ -78,10 +78,6 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
-    <plugin name="cordova-plugin-facebook4" spec="~1.7.4">
-        <variable name="APP_ID" value="107221256433564" />
-        <variable name="APP_NAME" value="“MeetGreek”" />
-    </plugin>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
     <plugin name="cordova-sqlite-storage" spec="~2.0.3" />
     <plugin name="cordova-plugin-whitelist" spec="~1.3.2" />
@@ -90,4 +86,11 @@
     <plugin name="cordova-plugin-device" spec="~1.1.5" />
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.2" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <plugin name="cordova-plugin-facebook4" spec="~1.7.4">
+        <variable name="APP_ID" value="126447160753876" />
+        <variable name="APP_NAME" value="meet_greek" />
+    </plugin>
+    <plugin name="cordova-plugin-buildinfo" spec="~1.1.0" />
+    <plugin name="cordova-plugin-browsertab" spec="~0.2.0" />
+    <plugin name="cordova-plugin-inappbrowser" spec="~1.7.0" />
 </widget>

@@ -30,6 +30,7 @@ export class AccountPage {
   superLikes;
   publicDiscoverable;
   user = { username: "", profile_picture: "", aboutMe: "", descent: "", areas: [], church: "", education: "", location: "", images: [] };
+
   constructor(
     public nav: NavController,
     public af: AngularFire,
@@ -102,14 +103,20 @@ export class AccountPage {
   }
 
   logout(): void {
+    console.log("AccountPage::logout()"); 
+    
     this.local.remove('uid');
     this.local.remove('username');
     this.local.remove('profile_picture');
     this.local.remove('email');
-    this.nav.setRoot(LoginPage);
-    this.local.remove('userInfo');
-    Facebook.logout();
-    this.auth.logout();
+    
+    // this.local.remove('userInfo');
+
+    // Facebook.logout();
+    // this.auth.logout();
+    this.auth.signOut().then(()=>{
+      this.nav.setRoot(LoginPage);
+    });
   }
 
   showPremium(): void {
@@ -209,7 +216,7 @@ export class AccountPage {
     });
 
     this.userProvider.getUid().then(uid => {
-      let currentUserRef = this.af.database.object(`/users/${uid}`);
+      let currentUserRef = this.af.database.object('/users/' + uid);
       if (currentUserRef) {
           currentUserRef.update({
               discoverable: userPublic,

@@ -199,7 +199,7 @@ export class AreasPage {
     });
 
     this.userProvider.getUid().then(uid => {
-      let currentUserRef = this.af.database.object(`/users/${uid}`);
+      let currentUserRef = this.af.database.object(`/users/` + uid);
       if (currentUserRef) {
           currentUserRef.update({
               areas: areasChosen

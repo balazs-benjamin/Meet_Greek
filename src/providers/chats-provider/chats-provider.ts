@@ -8,42 +8,42 @@ export class ChatsProvider {
   // get list of Chats of a Logged In User
   getChats() {
      return this.up.getUid().then(uid => {
-        let chats = this.af.database.list(`/users/${uid}/chats`);
+        let chats = this.af.database.list('/users/' + uid + '/chats');
         return chats;
      });
   }
 
   getUserChats(uid) {
-      return this.af.database.list(`/users/${uid}/chats`);
+      return this.af.database.list('/users/' + uid + '/chats');
   }
   
   // Add Chat References to Both users
   addChats(uid,interlocutor) {
       // First User
-      let endpoint = this.af.database.object(`/users/${uid}/chats/${interlocutor}`);
+      let endpoint = this.af.database.object('/users/' + uid + '/chats/' + interlocutor);
       endpoint.set(true);
       
       // Second User
-      let endpoint2 = this.af.database.object(`/users/${interlocutor}/chats/${uid}`);
+      let endpoint2 = this.af.database.object('/users/' + interlocutor + '/chats/' + uid);
       endpoint2.set(true);
   }
 
   getChatRef(uid, interlocutor) {
-      let firstRef = this.af.database.object(`/chats/${uid},${interlocutor}`, {preserveSnapshot:true});
+      let firstRef = this.af.database.object('/chats/' + uid + ',' + interlocutor, {preserveSnapshot:true});
       let promise = new Promise((resolve, reject) => {
           firstRef.subscribe(snapshot => {
                 let a = snapshot.exists();
                 if(a) {
-                    resolve(`/chats/${uid},${interlocutor}`);
+                    resolve('/chats/' +uid+','+interlocutor);
                 } else {
-                    let secondRef = this.af.database.object(`/chats/${interlocutor},${uid}`, {preserveSnapshot:true});
+                    let secondRef = this.af.database.object('/chats/' + interlocutor + ',' + uid, {preserveSnapshot:true});
                     secondRef.subscribe(snapshot => {
                         let b = snapshot.exists();
                         if(!b) {
                             this.addChats(uid,interlocutor);
                         }
                     });
-                    resolve(`/chats/${interlocutor},${uid}`);
+                    resolve('/chats/'+interlocutor+','+uid);
                 }
             });
       });

@@ -5,6 +5,8 @@ import { Camera } from 'ionic-native';
 
 @Injectable()
 export class UserProvider {
+    private uid:string;
+
     constructor(public af: AngularFire, public local: Storage) { }
 
     // Get Current User's UID
@@ -14,7 +16,7 @@ export class UserProvider {
 
     // Create User in Firebase
     createUser(userCredentails, uid) {
-        let currentUserRef = this.af.database.object(`/users/${uid}`);
+        let currentUserRef = this.af.database.object('/users/' + uid);
         console.log(userCredentails);
         currentUserRef.set({ email: userCredentails.email });
     }
@@ -23,27 +25,31 @@ export class UserProvider {
     getUser() {
         // Getting UID of Logged In User
         return this.getUid().then(uid => {
-            return this.af.database.object(`/users/${uid}`);
+            return this.af.database.object('/users/'+uid);
         });
     }
 
     getUserInterlocutor(interlocutorUid) {
         // Getting UID of Logged In User
         return this.getUid().then(uid => {
-            return this.af.database.object(`/users/${interlocutorUid}`);
+            return this.af.database.object('/users/' + interlocutorUid );
         });
     }
 
 
     // Get All Users of App
     getAllUsers() {
-        return this.af.database.list('/users');
+        return this.af.database.list('/users', 
+            { query: { 
+                orderByChild: 'discoverable',
+                equalTo: true
+            }
+        });
     }
 
     getAllUsersKeys() {
         var i = this.af.database.object('/users', { preserveSnapshot: true })
-        i.subscribe(snapshot => {
-        });
+        i.subscribe(snapshot => { });
     }
 
     getAllUsersExcept() {
@@ -71,10 +77,22 @@ export class UserProvider {
         return promise;
     }
 
+    updateUserProfile(uid, property, value){
+        console.log("updateUserProfile ", uid, property, value);
+        if (uid != undefined) {
+            this.af.database.object(`/users/${uid}/${property}`).set(value).then( _ => {
+                console.log("updateUserProfile complete", _);
+            }, err => {
+                console.log("updateUserProfile", err);
+            });
+        }
+        
+    }
+
     // Update Provide Picture of User
     updatePicture() {
         this.getUid().then(uid => {
-            let pictureRef = this.af.database.object(`/users/${uid}/picture`);
+            let pictureRef = this.af.database.object('/users/'+uid+'/picture');
             this.getPicture()
                 .then((image) => {
                     pictureRef.set(image);
@@ -89,7 +107,8 @@ export class UserProvider {
                 let promise = new Promise((res, rej) => {
                     let fileName = uid + '.jpg';
                     let pictureRef =
-                        firebase.storage().ref(`/profile/${fileName}`);
+                        firebase.storage().ref('/profile/' + fileName);
+
                     let uploadTask = pictureRef.put(file);
                     uploadTask.on('state_changed', function (snapshot) {
                     }, function (error) {
