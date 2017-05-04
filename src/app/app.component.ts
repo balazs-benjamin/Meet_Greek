@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { AngularFire } from 'angularfire2';
-import firebase from 'firebase';
 import { LoginPage } from '../pages/login/login';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { AreasPage } from '../pages/areas/areas'; // question 1
@@ -59,9 +58,10 @@ export class MyApp {
         this.af.auth.subscribe(auth => {
           if(auth && reachedMain) {
             this.rootPage = MainPage;
+            // this.rootPage = WelcomePage;
           }else{
-            this.rootPage = LoginPage;
-            // this.rootPage = ChurchPage;
+            // this.rootPage = LoginPage;
+            this.rootPage = WelcomePage;
           }
         });
       });

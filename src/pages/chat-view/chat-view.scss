@@ -3,6 +3,9 @@ page-chat-view {
     .messages {
       width: 100%;
       position: absolute;
+      .timespan{
+        font-size: .5em;
+      }
       .message {
         .label{
           margin: 0;
@@ -15,6 +18,7 @@ page-chat-view {
           border-radius: 30px;
           margin: 5px;
           color: #fff;
+
         }
       }
       .me .message {

@@ -16,7 +16,7 @@
   <ion-list class="messages">
     <ion-item-sliding *ngFor="let chat of chats | async | reverse" [ngClass]="{'me': uid === chat.from}">
       <ion-item class="message" text-wrap no-lines>
-        <p *ngIf="chat.message">{{chat.message}}</p>
+        <p *ngIf="chat.message">{{chat.message}}<br><span class="timespan">{{chat.createdAt | date:'HH:mm dd-MM-yyyy'}}</span></p>
         <img *ngIf="chat.picture" src="{{chat.picture}}" class="picture">
       </ion-item>
 

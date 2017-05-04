@@ -15,13 +15,18 @@ import { MatchPage } from '../match/match';
 })
 export class ChatMatchPage {
   everythingLoaded = false;
-  chats:Observable<any[]>;
+  // chats:Observable<any[]>;
   users:Observable<any[]>;
+  chatUsersFiltered:any[] = [];
+  chatUsers:any[] = [];
   uid:string;
   searchQuery: string = '';
+  searchInput: string = '';
   userChats:Observable<any[]>;
   chatsKeys = [];
   chatsCat = {};
+
+
   constructor(
     public chatsProvider: ChatsProvider, 
     public userProvider: UserProvider, 
@@ -30,16 +35,18 @@ export class ChatMatchPage {
     public modalCtrl: ModalController) {
 
     console.log("ChatMatchPage");
-
+/*
     this.chatsProvider.getChats()
       .then(chats => {
-          this.chats = chats.map(users => {
-              return users.map(user => {
-                  user.info = this.af.database.object(`/users/${user.$key}`);
-                  return user;
-              });
-          });
+        
+        this.chats = chats.map(users => {
+            return users.map(user => {
+                user.info = this.af.database.object(`/users/${user.$key}`);
+                return user;
+            });
+        });
       });
+      */
     this.userProvider.getUid()
     .then(uid => {
         this.uid = uid;
@@ -58,7 +65,9 @@ export class ChatMatchPage {
         console.log("ChatMatchPage::addToChatsArray()", chats);
 
         chats.forEach(chat => {
+
           this.chatsKeys.push(chat.$key);
+
           this.chatsProvider.getChatRef(this.uid, chat.$key)
           .then((chatRef:any) => {
             this.af.database.list(chatRef, {query: {
@@ -73,7 +82,15 @@ export class ChatMatchPage {
               }
             });
           });
+
+          this.af.database.object(`/users/${chat.$key}`).subscribe(user => {
+            console.log("got user ", chat.$key, user);
+            this.chatUsers.push( user );
+            this.chatUsersFiltered.push( user );
+          })
         });
+
+        
         this.everythingLoaded = true;
     });
   }
@@ -88,19 +105,30 @@ export class ChatMatchPage {
       });   
   }
 
+  initializeItems(){
+    this.chatUsersFiltered = this.chatUsers;
+  }
+
   getItems(ev: any) {
-    // Reset items back to all of the items
-    // this.initializeItems();
-    // this.initializeItems2();
-    // set val to the value of the searchbar
-    let val = ev.target.value;
+    this.initializeItems();
+    
+    // let val = ev.target.value;
+    let val = this.searchInput.toLowerCase();
 
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
-      this.users = this.users.filter((user) => {
-        return (user.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      this.chatUsersFiltered = this.chatUsers.filter((user:any) => {
+        if (user.first_name) {
+          return (user.first_name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        }
+        return false;
       });
-      // this.items2 = this.items2.filter((item) => {
+      
+      // this.users = this.users.filter((user:any) => {
+      //   return (user.first_name.indexOf(val.toLowerCase()) > -1);
+      // });
+      // this.chats = this.chats.filter((item:any) => {
+      //   console.log("ChatMatchPage::getItems", val, item);
       //   return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
       // });
     }

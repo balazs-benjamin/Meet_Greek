@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 import { AngularFire } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { UserProvider } from '../../providers/user-provider/user-provider';
-import { AboutMePage } from '../about-me/about-me';
+import { SpeakPage } from '../speak/speak';
 
 
 @Component({
@@ -18,6 +18,8 @@ export class ChurchPage {
     public userProvider: UserProvider,
     public storage: Storage) {
 
+    
+
   }
 
   ionViewDidLoad() {
@@ -27,37 +29,37 @@ export class ChurchPage {
   every(): void {
     this.storage.set('church', 'Every Sunday');
     this.writeUserData();
-    this.nav.setRoot(AboutMePage);
+    this.nav.setRoot(SpeakPage);
   }
 
   once(): void {
     this.storage.set('church', 'Once in a while');
     this.writeUserData();
-    this.nav.push(AboutMePage);
+    this.nav.push(SpeakPage);
   }
 
   only(): void {
     this.storage.set('church', 'Only for Easter and Chistmas');
     this.writeUserData();
-    this.nav.push(AboutMePage);
+    this.nav.push(SpeakPage);
   }
 
   never(): void {
     this.storage.set('church', 'Never');
     this.writeUserData();
-    this.nav.push(AboutMePage);
+    this.nav.push(SpeakPage);
   }
 
   skip(): void {
     this.storage.set('church', '');
     this.writeUserData();
-    this.nav.push(AboutMePage);
+    this.nav.push(SpeakPage);
   }
 
   church(value:string): void {
     this.storage.set('church', value);
     this.writeUserData();
-    this.nav.push(AboutMePage);
+    this.nav.push(SpeakPage);
   }
 
   writeUserData(): void {

@@ -15,6 +15,7 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { DescentPage } from '../pages/descent/descent';
 import { AreasPage } from '../pages/areas/areas';
 import { ChurchPage } from '../pages/church/church';
+import { SpeakPage } from '../pages/speak/speak';
 import { AboutMePage } from '../pages/about-me/about-me';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { PremiumPage } from '../pages/premium/premium';
@@ -73,6 +74,7 @@ export const firebaseConfig = {
     DescentPage,
     AreasPage,
     ChurchPage,
+    SpeakPage,
     AboutMePage,
     EditProfilePage,
     PremiumPage,
@@ -121,6 +123,7 @@ export const firebaseConfig = {
     DescentPage,
     AreasPage,
     ChurchPage,
+    SpeakPage,
     AboutMePage,
     EditProfilePage,
     PremiumPage,
