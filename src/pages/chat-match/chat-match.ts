@@ -21,14 +21,16 @@ export class ChatMatchPage {
   searchQuery: string = '';
   userChats:Observable<any[]>;
   chatsKeys = [];
+  chatsCat = {};
   constructor(
     public chatsProvider: ChatsProvider, 
     public userProvider: UserProvider, 
     public af:AngularFire, 
     public nav: NavController,
     public modalCtrl: ModalController) {
-    // this.initializeItems();
-    // this.initializeItems2();
+
+    console.log("ChatMatchPage");
+
     this.chatsProvider.getChats()
       .then(chats => {
           this.chats = chats.map(users => {
@@ -45,34 +47,44 @@ export class ChatMatchPage {
         this.userChats = this.chatsProvider.getUserChats(uid);
         this.addToChatsArray();
     });
-    // this.userProvider.getUid()
-    //   .then(uid => {
-    //       this.uid = uid;
-    //       this.users = this.userProvider.getAllUsers();
-    //   });
   }
 
-  ionViewDidLoad() {
-    
-  }
+  ionViewDidLoad() {}
 
   addToChatsArray(): void {
+    console.log("ChatMatchPage::addToChatsArray()");
     this.userChats.subscribe(chats => {
         this.chatsKeys = [];
-        // items is an array
+        console.log("ChatMatchPage::addToChatsArray()", chats);
+
         chats.forEach(chat => {
-          //console.log(item.$key);
-            this.chatsKeys.push(chat.$key);
+          this.chatsKeys.push(chat.$key);
+          this.chatsProvider.getChatRef(this.uid, chat.$key)
+          .then((chatRef:any) => {
+            this.af.database.list(chatRef, {query: {
+              orderByChild:'createdAt',
+              limitToFirst:1
+            }}).subscribe( data =>{
+              console.log("got chats ", chat.$key, data);
+              if (data[0]) {
+                this.chatsCat[chat.$key] = data[0].message;
+              }else{
+                this.chatsCat[chat.$key] = "No message yet"
+              }
+            });
+          });
         });
         this.everythingLoaded = true;
     });
   }
 
   openChat(key) {
+    console.log("ChatMatchPage::openChat()", key);
+
       this.userProvider.getUid()
       .then(uid => {
           let param = {uid: uid, interlocutor: key};
-          this.nav.push(ChatViewPage,param);
+          this.nav.push(ChatViewPage, param);
       });   
   }
 
@@ -85,12 +97,12 @@ export class ChatMatchPage {
 
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
-      // this.users = this.users.filter((user) => {
-      //   return (user.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      // })
+      this.users = this.users.filter((user) => {
+        return (user.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      });
       // this.items2 = this.items2.filter((item) => {
       //   return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      // })
+      // });
     }
   }
 

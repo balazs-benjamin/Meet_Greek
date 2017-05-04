@@ -16,8 +16,7 @@ export class ChurchPage {
     public nav: NavController,
     public af: AngularFire,
     public userProvider: UserProvider,
-    public storage: Storage
-    ) {
+    public storage: Storage) {
 
   }
 
@@ -51,6 +50,12 @@ export class ChurchPage {
 
   skip(): void {
     this.storage.set('church', '');
+    this.writeUserData();
+    this.nav.push(AboutMePage);
+  }
+
+  church(value:string): void {
+    this.storage.set('church', value);
     this.writeUserData();
     this.nav.push(AboutMePage);
   }

@@ -103,15 +103,6 @@ export class MainPage {
       console.log("MainPage::error", err);
     });
 
-    // this.storage.get('hasUserEnterDetails').then((result) => {
-    //     if (!result) {
-    //       this.buttonsVisible = false;
-    //     } else {
-    //       this.buttonsVisible = true;
-    //     }
-    //   });
-
-    
     this.userProvider.getUser().then(userObservable => {
       userObservable.subscribe(data => {
         this.loggedUser = data;
@@ -145,20 +136,6 @@ export class MainPage {
     let param = {uid: this.uid, interlocutor: key};
     this.navCtrl.push(ChatViewPage,param);
   }
-
-  //   swipeEvent(event): void {
-  //     if (event.direction == 2) {
-  //       // this.slider.lockSwipeToPrev();
-  //       // if(this.slider.isEnd){
-  //       //   this.sliderEnded = true;
-  //       //   //this.greeksFound = false;
-  //       // }
-  //   }
-  //   if (event.direction == 4) {
-  //       // this.slider.lockSwipeToPrev();
-  //       // this.reject();
-  //   }
-  // }
 
   ionSlideTap(key) {
     console.log( "MainPage::ionSlideTap()", key );

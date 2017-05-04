@@ -41,12 +41,13 @@
             </ion-item>-->
             
             <ion-item>
-            <img *ngIf="!user.images && hasLoaded" src="assets/images/default.png" />
-                <ion-slides *ngIf="user.images" pager>
-                    <ion-slide *ngFor="let file_uri of user.images">
-                        <img [src]="file_uri">
-                    </ion-slide>
-                </ion-slides>
+            <img *ngIf="!user.profile_picture && hasLoaded" src="assets/images/default.png" />
+            <img *ngIf="user.profile_picture && hasLoaded" src="{{user.profile_picture}}" />
+            <ion-slides *ngIf="user.images" pager>
+                <ion-slide *ngFor="let file_uri of user.images">
+                    <img [src]="file_uri">
+                </ion-slide>
+            </ion-slides>
             </ion-item>
            
             <ion-item *ngIf="hasLoaded">

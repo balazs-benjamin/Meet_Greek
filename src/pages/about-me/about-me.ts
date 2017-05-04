@@ -14,14 +14,18 @@ export class AboutMePage {
 
   profile_pic: string;
   aboutMeText: string;
+
   constructor(
     public nav: NavController,
     public af: AngularFire,
     public userProvider: UserProvider,
-    public storage: Storage
-    ) {
+    public storage: Storage) {
+
       this.storage.get('userImage[0]').then(picture => {
-        this.profile_pic = picture.data.url;
+        if (picture) {
+          this.profile_pic = picture.data.url;
+        }
+        
       });
 
   }

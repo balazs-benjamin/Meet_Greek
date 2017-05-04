@@ -19,20 +19,6 @@ import { AlertController } from 'ionic-angular';
   templateUrl: 'areas.html'
 })
 export class AreasPage {
-  // atticaStatus: boolean;
-  // pelopenneseStatus: boolean;
-  // eviaStatus: boolean;
-  // stereaElladaStatus: boolean;
-  // thessalyStatus: boolean;
-  // epirusStatus: boolean;
-  // macedoniaStatus: boolean;
-  // thraceStatus: boolean;
-  // eptanisaStatus: boolean;
-  // dodekanisaStatus: boolean;
-  // kykladesStatus: boolean;
-  // sporadesStatus: boolean;
-  // creteStatus: boolean;
-
   places = [];
 
   constructor(

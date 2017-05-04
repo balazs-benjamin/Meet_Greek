@@ -18,7 +18,7 @@ export class ChatsProvider {
   }
   
   // Add Chat References to Both users
-  addChats(uid,interlocutor) {
+  addChats(uid, interlocutor) {
       // First User
       let endpoint = this.af.database.object('/users/' + uid + '/chats/' + interlocutor);
       endpoint.set(true);

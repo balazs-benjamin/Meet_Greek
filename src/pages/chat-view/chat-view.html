@@ -12,13 +12,33 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content class="chat-view" id="chat-view">  
+<ion-content class="chat-view" id="chat-view">
+  <ion-list class="messages">
+    <ion-item-sliding *ngFor="let chat of chats | async | reverse" [ngClass]="{'me': uid === chat.from}">
+      <ion-item class="message" text-wrap no-lines>
+        <p *ngIf="chat.message">{{chat.message}}</p>
+        <img *ngIf="chat.picture" src="{{chat.picture}}" class="picture">
+      </ion-item>
+
+      <ion-item-options side="right">
+        <button ion-button class="btn-delete" color="danger" (click)="deleteMessage(chat)">Delete</button>
+        <button ion-button class="btn-delete" color="primary" (click)="flagMessage(chat)">Flag</button>
+      </ion-item-options>
+      
+    </ion-item-sliding>
+  </ion-list>
+  <!-- 
   <div class="messages">
-      <div class="message" *ngFor="let chat of chats | async" [ngClass]="{'me': uid === chat.from}">
-            <span *ngIf="chat.message">{{chat.message}}</span>
-            <img *ngIf="chat.picture" src="{{chat.picture}}" class="picture">
-      </div>
-  </div>
+    <div class="message" *ngFor="let chat of chats | async" [ngClass]="{'me': uid === chat.from}">
+      <span *ngIf="chat.message">{{chat.message}}</span>
+      <img *ngIf="chat.picture" src="{{chat.picture}}" class="picture">
+    </div>
+    <div class="message">
+      <span>chat.message</span>
+      <img class="picture" src="assets/images/Premium-slide4.png" >
+    </div>
+  </div> 
+  -->
 </ion-content>
 <ion-footer keyboard-attach>
   <ion-toolbar>

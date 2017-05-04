@@ -22,7 +22,7 @@ import { MainPage } from '../main/main';
   templateUrl: 'login.html'
 })
 export class LoginPage {
-  hasUserEnterDetails;
+  hasUserEnterDetails:boolean = false;
   loginForm: any;
   loading: any;
   public user:any;
@@ -167,7 +167,9 @@ export class LoginPage {
       (response) => {
 
         console.log("getProfile() success", response);
-
+        if (response.picture) {
+          this.storage.set('userImages[0]', response.picture.data.url);
+        }
         this.storage.set('uid', response.id);
         this.storage.set('username', response.name);
         this.storage.set('profile_picture', response.picture);
@@ -225,9 +227,6 @@ export class LoginPage {
           this.storage.set('superlikes_notif', false);
           this.nav.setRoot(WelcomePage);
         }
-
-        // this.nav.setRoot(WelcomePage);
-
       },
 
       (err) => {
@@ -343,6 +342,7 @@ export class LoginPage {
       console.log("LoginPage::writeUserData currentUserRef", currentUserRef);
 
       if (currentUserRef) {
+        // this.hasUserEnterDetails = true;
         currentUserRef.update({
           email: userEmail,
           username: userName,
@@ -356,6 +356,7 @@ export class LoginPage {
         });
         
       } else {
+        // this.hasUserEnterDetails = false;
         currentUserRef.set({
           email: userEmail,
           username: userName,

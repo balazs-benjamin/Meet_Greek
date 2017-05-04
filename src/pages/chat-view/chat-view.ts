@@ -16,22 +16,26 @@ export class ChatViewPage {
   interlocutor:string;
   chats:FirebaseListObservable<any>;  
   @ViewChild(Content) content: Content;
-  constructor(public nav:NavController, 
-  params:NavParams, 
-  public chatsProvider:ChatsProvider, 
-  public af:AngularFire, 
-  public userProvider:UserProvider,
-  public platform: Platform,
-  public modalCtrl: ModalController) {
+
+  constructor(
+    public nav:NavController, 
+    public params:NavParams, 
+    public chatsProvider:ChatsProvider, 
+    public af:AngularFire, 
+    public userProvider:UserProvider,
+    public platform: Platform,
+    public modalCtrl: ModalController) {
+
     this.uid = params.data.uid;
     this.interlocutor = params.data.interlocutor;
     
     // Get Chat Reference
     chatsProvider.getChatRef(this.uid, this.interlocutor)
-    .then((chatRef:any) => {  
+    .then((chatRef:any) => {
         this.chats = this.af.database.list(chatRef);
     });
-    this.userProvider.getUserInterlocutor(this.interlocutor).then(userObservable => {
+    this.userProvider.getUserInterlocutor(this.interlocutor)
+    .then(userObservable => {
       userObservable.subscribe(user => {
         this.interlocutorProfile = user;
       });
@@ -39,45 +43,36 @@ export class ChatViewPage {
   }
 
   ionViewDidEnter() {
-    // this.platform.ready().then(() => {
-    //   Keyboard.disableScroll(true);
-    // });
     this.content.scrollToBottom();
-}
+  }
 
-ionViewWillLeave() {
-    // this.platform.ready().then(() => {
-    //   Keyboard.disableScroll(false);
-    // });
-}
+  ionViewWillLeave() {  }
 
-    showProfile(): void {
-        let param = null;
-        param = {uid: this.uid, interlocutor: this.interlocutor};   
-        //let param = {uid: "this uid", interlocutor: "other user key"};
-        let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
-        extendedProfileModal.onDidDismiss(data => {
-            if(data.foo == 'bar1'){
-            
-            }
-            
-        });
+  showProfile(): void {
+    let param = null;
+    param = {uid: this.uid, interlocutor: this.interlocutor};   
+    //let param = {uid: "this uid", interlocutor: "other user key"};
+    let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
+    extendedProfileModal.onDidDismiss(data => {
+        if(data.foo == 'bar1'){
+        
+        }
+    });
     extendedProfileModal.present();
-    
-    }
+  }
 
   sendMessage() {
-      if(this.message) {
-          let sent = this.formatLocalDate();
-          let chat = {
-              from: this.uid,
-              message: this.message,
-              createdAt: sent,
-              type: 'message'
-          };
-          this.chats.push(chat);
-          this.message = "";
-      }
+    if(this.message) {
+      let sent = this.formatLocalDate();
+      let chat = {
+          from: this.uid,
+          message: this.message,
+          createdAt: sent,
+          type: 'message'
+      };
+      this.chats.push(chat);
+      this.message = "";
+    }
   };
   
   sendPicture() {
@@ -88,6 +83,15 @@ ionViewWillLeave() {
           chat.picture =  image;
           this.chats.push(chat);
       });
+  }
+
+  deleteMessage(chat:any){
+    console.log("deleteMessage", chat);
+    this.chats.remove(chat);
+  }
+
+  flagMessage(chat:any){
+    console.log("flagMessage", chat);
   }
 
   formatLocalDate() {

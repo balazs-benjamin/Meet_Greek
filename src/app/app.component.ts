@@ -4,7 +4,12 @@ import { StatusBar, Splashscreen } from 'ionic-native';
 import { AngularFire } from 'angularfire2';
 import firebase from 'firebase';
 import { LoginPage } from '../pages/login/login';
+import { WelcomePage } from '../pages/welcome/welcome';
+import { AreasPage } from '../pages/areas/areas'; // question 1
+import { ChurchPage } from '../pages/church/church'; // question 2
+import { AboutMePage } from '../pages/about-me/about-me'; // question 2
 import { MainPage } from '../pages/main/main';
+import { ChatViewPage } from '../pages/chat-view/chat-view';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
 import { Storage } from '@ionic/storage';
 import { Keyboard } from 'ionic-native';
@@ -49,31 +54,20 @@ export class MyApp {
   }
 
   intialize() {
-    // this.storage.get('hasUserEnterDetails').then((result) => {
-    //     if (result == true) {
-    //       this.hasUserEnterDetails = true;
-    //     }else {
-    //       this.hasUserEnterDetails = false;
-    //     }
-      //   this.af.auth.subscribe(auth => {
-      //   if(auth && this.hasUserEnterDetails == false) {
-      //       this.rootPage = WelcomePage;
-      //     } else if(auth && this.hasUserEnterDetails == true) {
-      //       this.rootPage = TabsPage;
-      //     }else{
-      //       this.rootPage = LoginPage;
-      //     }
-      // });
-
+    if ( this.platform.is('cordova') ) {
       this.storage.get('hasUserReachedMain').then(reachedMain => {
         this.af.auth.subscribe(auth => {
           if(auth && reachedMain) {
             this.rootPage = MainPage;
           }else{
             this.rootPage = LoginPage;
+            // this.rootPage = ChurchPage;
           }
         });
       });
+    }else{
+      // this.rootPage = AboutMePage;
+    }
   }
 
   initPushNotification() {

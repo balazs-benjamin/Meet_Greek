@@ -21,19 +21,19 @@ export class AuthProvider {
     af.auth.subscribe((state: FirebaseAuthState) => {
       console.log("AngularFireAuth success", state);
       this.authState = state;
+      if (this.authState) {
 
-      this.authState.auth.getToken().then( 
-        (token) => {  
-        console.log('MyApp::onToken() success', token);
-        this.notificationToken = token;
-      }, err => {
-        console.log('MyApp::onToken() error', err);
-      });
-      
+        this.authState.auth.getToken().then( 
+          (token) => {  
+            console.log('MyApp::onToken() success', token);
+            this.notificationToken = token;
+          }, err => {
+            console.log('MyApp::onToken() error', err);
+          });
+      }
     }, err => {
       console.log("AngularFireAuth error", err);
     });
-
   }
   
   /*
@@ -62,15 +62,6 @@ export class AuthProvider {
       });
     });
   }
-
-  /*
-  logout() {
-     this.af.auth.logout().then( (data) => {
-       console.log("logout", data);
-     }, (error)=>{
-       console.log("logout", error);
-     });
-  }*/
 
   get authenticated(): boolean {
     return this.authState !== null;

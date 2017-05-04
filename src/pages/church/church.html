@@ -1,34 +1,45 @@
 <ion-header>
-    <ion-navbar color="primary">
-        <ion-title>Questions</ion-title>
-        <ion-buttons end> <button ion-button icon-only (click) = "skip()" >Skip<ion-icon name= "arrow-forward" ></ion-icon></button> </ion-buttons>
-    </ion-navbar>
+  <ion-navbar color="primary">
+    <ion-title>Questions</ion-title>
+    <ion-buttons end> <button ion-button icon-only (click) = "skip()" >Skip<ion-icon name= "arrow-forward" ></ion-icon></button> </ion-buttons>
+  </ion-navbar>
 </ion-header>
 
 
 <ion-content>
-    <ion-card>
-  <ion-card-content>
-    <ion-item>
-        <h1 class="center">How often do you go<br> to church?</h1>
-    </ion-item>
-  </ion-card-content>
-</ion-card>
-    
   <ion-card>
-        
-        <ion-item>
-            <button ion-button full (click)="every()">Every Sunday</button>
-        </ion-item>
-         <ion-item>
-            <button ion-button full (click)="once()">Once in a while</button>
-        </ion-item>
-         <ion-item>
-            <button ion-button full (click)="only()">Only for Easter and Chistmas</button>
-        </ion-item>
-         <ion-item>
-            <button ion-button full (click)="never()">Never</button>
-        </ion-item>
-    </ion-card>
+    <ion-card-content>
+      <ion-item>
+        <!-- <h1 class="center">How often do you go<br> to church?</h1> -->
+        <h1 class="center">Do you identify as<br>Orthodox Christian?</h1>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-item>
+      <button ion-button full (click)="church('Yes')">Yes</button>
+    </ion-item>
+    <ion-item>
+      <button ion-button full (click)="church('No')">No</button>
+    </ion-item>
+    <ion-item>
+      <button ion-button full (click)="church('I\\'d prefer not to say')">I'd prefer not to say</button>
+    </ion-item>
+
+<!-- 
+    <ion-item>
+      <button ion-button full (click)="every()">Every Sunday</button>
+    </ion-item>
+    <ion-item>
+        <button ion-button full (click)="once()">Once in a while</button>
+    </ion-item>
+     <ion-item>
+        <button ion-button full (click)="only()">Only for Easter and Chistmas</button>
+    </ion-item>
+     <ion-item>
+        <button ion-button full (click)="never()">Never</button>
+    </ion-item> -->
+  </ion-card>
 
 </ion-content>

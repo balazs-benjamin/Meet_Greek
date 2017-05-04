@@ -31,6 +31,8 @@ export class WelcomePage {
     public platform: Platform,
     public loadingCtrl: LoadingController,
     public ct: CityService) {
+
+    if (platform.is('cordova')) {
       this.loading = this.loadingCtrl.create({ 
           content: 'Getting user information...' 
       });
@@ -43,6 +45,7 @@ export class WelcomePage {
           });
       });
     }
+  }
 
   ngOnInit() {
     this.platform.ready().then(() => {
@@ -52,7 +55,7 @@ export class WelcomePage {
                 if(!this.isTapped){
                   this.nav.setRoot(DescentPage);
                 }
-              }, 8000);
+              }, 1000);
           }
       });
     });
@@ -71,8 +74,6 @@ export class WelcomePage {
           this.longitude = position.coords.longitude;
           this.storage.set('latitude', this.latitude);
           this.storage.set('longitude', this.longitude);
-          // console.info(position.coords.latitude);
-          // console.info(position.coords.longitude);
           this.loadCity(position.coords.latitude, position.coords.longitude);
         }, error => {
           
@@ -111,7 +112,7 @@ export class WelcomePage {
     });
 
     this.userProvider.getUid().then(uid => {
-      let currentUserRef = this.af.database.object(`/users/` + uid);
+      let currentUserRef = this.af.database.object(`/users/${uid}`);
       if (currentUserRef) {
         currentUserRef.update({
           location: loc,

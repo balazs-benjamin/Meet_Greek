@@ -33,6 +33,7 @@ import { HttpModule } from '@angular/http';
 //import { CapitalizePipe } from '../shared/pipes/capitalize.pipe';
 
 import { Filter } from '../pipes/filter';
+import { ReversePipe } from '../pipes/reverse';
 import { ConvertDistance } from '../pipes/convert-distance'
 import { Facebook } from '@ionic-native/facebook';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
@@ -83,7 +84,10 @@ export const firebaseConfig = {
     ChatMatchPage,
     MatchPage,
     UserSettingsPage,
+
     Filter,
+    ReversePipe,
+    
     ConvertDistance
   ],
   imports: [

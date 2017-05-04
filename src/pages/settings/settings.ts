@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
-import { Facebook } from 'ionic-native';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 import { Storage } from '@ionic/storage';
 
 import { AuthProvider } from '../../providers/auth-provider/auth-provider';
@@ -42,6 +42,7 @@ export class SettingsPage {
   // descent: "", areas: [], church: "", location: "", images: [] };
 
   constructor(
+    private fb: Facebook,
     public nav: NavController,
     public af: AngularFire,
     public auth: AuthProvider,
@@ -164,8 +165,10 @@ export class SettingsPage {
     this.local.remove('email');
 
     this.auth.signOut().then(()=>{
-      this.nav.setRoot(LoginPage, param);
-      this.loading.dismiss();
+      this.fb.logout().then(()=> {
+        this.nav.setRoot(LoginPage, param);
+        this.loading.dismiss();
+      })
     });
 
     // this.local.remove('userInfo');
