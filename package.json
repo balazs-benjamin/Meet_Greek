@@ -18,6 +18,7 @@
     "@angular/platform-browser-dynamic": "2.4.8",
     "@angular/platform-server": "2.4.8",
     "@ionic-native/core": "^3.6.0",
+    "@ionic-native/email-composer": "^3.6.1",
     "@ionic-native/facebook": "^3.5.0",
     "@ionic-native/firebase": "^3.5.0",
     "@ionic-native/push": "^3.6.1",

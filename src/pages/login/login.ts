@@ -63,8 +63,8 @@ export class LoginPage {
         this.nav.setRoot(MainPage);
         return;
       }
+      
       this.storage.get('hasUserEnterDetails').then((result) => {
-        
         console.log('LoginPage::hasUserEnterDetails', result);
         this.hasUserEnterDetails = (result != null);
         
@@ -113,7 +113,7 @@ export class LoginPage {
   fbLogin(){
     console.log( "LoginPage::fbLogin" );
 
-    this.fb.login(['email']).then( 
+    this.fb.login(['public_profile', 'email']).then( 
       (response:FacebookLoginResponse) => {
         console.log( "facebookLogin success", response );
         this.firebaseAuth( response );
@@ -151,7 +151,7 @@ export class LoginPage {
     this.auth.deleteAccount().then( 
       () => {  
         console.log('SettingsPage::deleteAccount success');
-        this.nav.setRoot(LoginPage);
+        this.loading.dismiss();
     }, err => {
       console.log('SettingsPage::deleteAccount() error', err);
     });
@@ -225,6 +225,7 @@ export class LoginPage {
           this.storage.set('new_match_notif', false);
           this.storage.set('messages_notif', false);
           this.storage.set('superlikes_notif', false);
+          this.storage.set('hasUserEnterDetails', true);
           this.nav.setRoot(WelcomePage);
         }
       },
@@ -342,7 +343,7 @@ export class LoginPage {
       console.log("LoginPage::writeUserData currentUserRef", currentUserRef);
 
       if (currentUserRef) {
-        // this.hasUserEnterDetails = true;
+        this.hasUserEnterDetails = true;
         currentUserRef.update({
           email: userEmail,
           username: userName,
@@ -356,7 +357,7 @@ export class LoginPage {
         });
         
       } else {
-        // this.hasUserEnterDetails = false;
+        this.hasUserEnterDetails = false;
         currentUserRef.set({
           email: userEmail,
           username: userName,

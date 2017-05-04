@@ -88,6 +88,10 @@ export class SettingsPage {
     });
     
     this.userProvider.getUser().then(userObservable => {
+      if (!userObservable) {
+        return;
+      }
+      
       this.loading = this.loadingCtrl.create({ 
           content: 'Getting user information...' 
       });
@@ -163,7 +167,7 @@ export class SettingsPage {
     this.local.remove('username');
     this.local.remove('profile_picture');
     this.local.remove('email');
-
+    
     this.auth.signOut().then(()=>{
       this.fb.logout().then(()=> {
         this.nav.setRoot(LoginPage, param);
@@ -246,7 +250,16 @@ export class SettingsPage {
       {
         text: 'Delete',
         handler: data => {
-          this.logout( {delete:true} );
+          this.userProvider.getUid().then(uid => {
+            let currentUserRef = this.af.database.object('/users/' + uid);
+            if (currentUserRef) {
+                currentUserRef.remove();
+                this.local.remove('hasUserEnterDetails');
+                
+                this.logout( {delete:true} );
+            }
+          });
+          
         }
       }
       ]

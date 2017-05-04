@@ -11,6 +11,8 @@ import { ChatMatchPage }  from '../chat-match/chat-match';
 import { ConvertDistance } from '../../pipes/convert-distance'
 import { MatchPage } from '../match/match';
 
+import { AuthProvider } from '../../providers/auth-provider/auth-provider';
+
 //Swipe Screen
 import { SwingStackComponent, StackConfig, SwingCardComponent, ThrowEvent } from 'angular2-swing';
 import { Http } from '@angular/http';
@@ -61,6 +63,7 @@ export class MainPage {
 
   constructor(
     private http: Http,
+    public auth: AuthProvider,
     private platform: Platform,
     private toastCtrl: ToastController,
     public navCtrl: NavController,
@@ -88,6 +91,9 @@ export class MainPage {
 
   ionViewDidLoad() {
     console.log( "MainPage::ionViewDidLoad()" );
+    if (!this.auth.authenticated) {
+      return;
+    }
     this.userProvider.getUid()
     .then(uid => {
       console.log("MainPage::ionViewDidLoad", uid);

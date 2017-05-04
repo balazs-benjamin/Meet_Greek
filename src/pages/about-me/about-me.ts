@@ -21,7 +21,12 @@ export class AboutMePage {
     public userProvider: UserProvider,
     public storage: Storage) {
 
-      this.storage.get('userImage[0]').then(picture => {
+      this.storage.get('userImaxge[0]').then(picture => {
+        console.log('AboutMePage::userImage[0]', picture);
+      });
+      this.storage.get('profile_picture').then(picture => {
+        console.log('AboutMePage::profile_picture', picture);
+
         if (picture) {
           this.profile_pic = picture.data.url;
         }

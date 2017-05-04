@@ -32,7 +32,7 @@ export class WelcomePage {
     public loadingCtrl: LoadingController,
     public ct: CityService) {
 
-    if (platform.is('cordova')) {
+    if (platform.is('cordova') && auth.authenticated) {
       this.loading = this.loadingCtrl.create({ 
           content: 'Getting user information...' 
       });

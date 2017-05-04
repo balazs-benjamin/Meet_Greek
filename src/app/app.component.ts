@@ -58,10 +58,10 @@ export class MyApp {
         this.af.auth.subscribe(auth => {
           if(auth && reachedMain) {
             this.rootPage = MainPage;
-            // this.rootPage = WelcomePage;
+            // this.rootPage = AboutMePage;
           }else{
-            // this.rootPage = LoginPage;
-            this.rootPage = WelcomePage;
+            this.rootPage = LoginPage;
+            // this.rootPage = WelcomePage;
           }
         });
       });

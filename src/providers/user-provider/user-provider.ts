@@ -25,7 +25,10 @@ export class UserProvider {
     getUser() {
         // Getting UID of Logged In User
         return this.getUid().then(uid => {
-            return this.af.database.object('/users/'+uid);
+            if (uid) {
+                return this.af.database.object('/users/'+uid);
+            }
+            return null;
         });
     }
 
