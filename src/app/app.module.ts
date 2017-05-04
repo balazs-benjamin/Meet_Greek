@@ -28,6 +28,8 @@ import { ChatMatchPage } from '../pages/chat-match/chat-match';
 import { MatchPage } from '../pages/match/match';
 import { UserSettingsPage } from '../pages/user-settings/user-settings';
 
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+
 //Swipe screen
 import { SwingModule } from 'angular2-swing';
 import { HttpModule } from '@angular/http';
@@ -138,6 +140,6 @@ export const firebaseConfig = {
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, Facebook,
   AuthProvider, ChatsProvider, LikeProvider, UserProvider, PurchaseProvider, UtilProvider, 
-  CityService, SimpleAlert, Data]
+  CityService, SimpleAlert, Data, InAppBrowser]
 })
 export class AppModule {}

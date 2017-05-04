@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 import { Storage } from '@ionic/storage';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 import { AuthProvider } from '../../providers/auth-provider/auth-provider';
 import { UserProvider } from '../../providers/user-provider/user-provider';
@@ -52,7 +53,9 @@ export class SettingsPage {
     public storage: Storage,
     private alertCtrl: AlertController,
     public modalCtrl: ModalController,
+    private iab: InAppBrowser,
     public loadingCtrl: LoadingController) {
+    console.log("SettingsPage");
 
     this.profilePageChoice = 'profile';
     // this.profilePage = 'profile';
@@ -275,9 +278,31 @@ export class SettingsPage {
   }
 
   showFeedback(): void {
-    let feedbackModal = this.modalCtrl.create(FeedbackPage);
+    console.log("SettingsPage::showFeedback");
+    /*let feedbackModal = this.modalCtrl.create(FeedbackPage);
     this.writeUserData();
-    feedbackModal.present();
+    feedbackModal.present();*/
+/*
+    let email = {
+      to: 'max@mustermann.de',
+      cc: '',
+      bcc: [],
+      attachments: [],
+      subject: 'Feedback',
+      body: 'My feedback',
+      isHtml: true
+    };
+    
+    this.emailComposer.isAvailable().then((available: boolean) =>{
+      console.log("SettingsPage::showFeedback", available);
+      if(available) {
+        //Now we know we can send
+        this.emailComposer.open(email);
+      }
+    });*/
+
+    let browser = this.iab.create('mailto:info@meetgreekapp.com', '_blank');
+    browser.show();
   }
 
   writeUserData(): void {

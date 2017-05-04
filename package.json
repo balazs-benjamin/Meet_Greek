@@ -21,6 +21,7 @@
     "@ionic-native/email-composer": "^3.6.1",
     "@ionic-native/facebook": "^3.5.0",
     "@ionic-native/firebase": "^3.5.0",
+    "@ionic-native/in-app-browser": "^3.6.1",
     "@ionic-native/push": "^3.6.1",
     "@ionic/storage": "^2.0.0",
     "@types/cordova": "0.0.34",
