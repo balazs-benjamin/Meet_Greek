@@ -13,10 +13,9 @@ import { LegalPage } from '../legal/legal';
 import { FeedbackPage } from '../feedback/feedback';
 import { AngularFire } from 'angularfire2';
 import { MainPage } from '../main/main';
-
 import { LoginPage } from '../login/login';
 
-import firebase from 'firebase';
+// import firebase from 'firebase';
 
 @Component({
   selector: 'page-settings',
@@ -100,7 +99,7 @@ export class SettingsPage {
       });
       this.loading.present();
 
-      userObservable.subscribe(data => {
+      userObservable.take(1).subscribe(data => {
         console.log("SettingsPage::constructor user", data);
 
         this.user = data;
@@ -119,7 +118,6 @@ export class SettingsPage {
         this.superLikes = this.user.superLikes;
         
       });
-      
     });
   }
 
@@ -159,7 +157,7 @@ export class SettingsPage {
     this.isProfile = false;
   }
 
-  logout(param): void {
+  logout(): void {
     console.log("SettingsPage::logout()");
     this.loading = this.loadingCtrl.create({ 
       content: 'Please wait...' 
@@ -173,7 +171,7 @@ export class SettingsPage {
     
     this.auth.signOut().then(()=>{
       this.fb.logout().then(()=> {
-        this.nav.setRoot(LoginPage, param);
+        this.nav.setRoot(LoginPage);
         this.loading.dismiss();
       })
     });
@@ -245,7 +243,7 @@ export class SettingsPage {
     console.log('SettingsPage::deleteAccount');
     let prompt = this.alertCtrl.create({
       title:"Are you sure?",
-      message: "You have to login again to delete your account. Please select delete to confirm.",
+      message: "Please select delete to confirm.",
       buttons:[
       {
         text: 'Cancel'
@@ -259,7 +257,7 @@ export class SettingsPage {
                 currentUserRef.remove();
                 this.local.remove('hasUserEnterDetails');
                 
-                this.logout( {delete:true} );
+                this.logout();
             }
           });
           

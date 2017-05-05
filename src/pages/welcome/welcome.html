@@ -4,22 +4,22 @@
     </ion-navbar>
 </ion-header>
 <ion-content (click)="tapToContinue()">
-    <ion-card *ngIf="user.userImage0">
+    <ion-card *ngIf="user.profile_picture">
         <ion-card-content>
             <ion-item>
-                <h1 class="center" *ngIf="user.userImage0">Welcome,</h1>
+                <h1 class="center" *ngIf="user.profile_picture">Welcome,</h1>
             </ion-item>
         </ion-card-content>
     </ion-card>
 
-    <ion-card *ngIf="user.userImage0">
+    <ion-card *ngIf="user.profile_picture">
         <!--<img *ngIf="!user.profile_picture" src="assets/images/default.png"/>-->
-        <img *ngIf="user.userImage0" src={{user.userImage0}} />
+        <img *ngIf="user.profile_picture" src={{user.profile_picture}} />
     </ion-card>
-    <ion-card *ngIf="user.userImage0">
+    <ion-card *ngIf="user.profile_picture">
         <ion-card-content>
             <ion-item>
-                <h1 class="center" *ngIf="user.userImage0">{{user.first_name}}!</h1>
+                <h1 class="center" *ngIf="user.profile_picture">{{user.first_name}}!</h1>
             </ion-item>
         </ion-card-content>
     </ion-card>

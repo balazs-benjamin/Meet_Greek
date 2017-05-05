@@ -48,27 +48,32 @@ export class LoginPage {
     });
     console.log("navParams.data", navParams.data);
     
-
   }
 
   ionViewDidLoad() {
     console.log("LoginPage::ionViewDidLoad()");
     this.platform.ready().then(() => {
 
-      this.user = firebase.auth().currentUser;
-      
-      console.log('LoginPage::ionViewDidLoad', this.user, this.auth.authenticated );
-      
       if (this.auth.authenticated) {
-        this.nav.setRoot(MainPage);
-        return;
-      }
-      
-      this.storage.get('hasUserEnterDetails').then((result) => {
-        console.log('LoginPage::hasUserEnterDetails', result);
-        this.hasUserEnterDetails = (result != null);
+        this.user = firebase.auth().currentUser;
+
+        console.log('LoginPage::ionViewDidLoad', this.user, this.auth.authenticated );
+        if (this.auth.authenticated) {
+          console.log('LoginPage::ionViewDidLoad going to main page');
+          this.nav.setRoot(MainPage);
+          return;
+        }
         
-      });
+        this.storage.get('hasUserEnterDetails').then((result) => {
+          console.log('LoginPage::hasUserEnterDetails', result);
+          this.hasUserEnterDetails = (result != null);
+          
+        });
+      }else{
+        console.log("LoginPage::ionViewDidLoad() not logged in");
+      }
+
+      
     });
   }
 
@@ -113,7 +118,7 @@ export class LoginPage {
   fbLogin(){
     console.log( "LoginPage::fbLogin" );
 
-    this.fb.login(['public_profile', 'email']).then( 
+    this.fb.login(['public_profile', 'email', 'user_birthday']).then( 
       (response:FacebookLoginResponse) => {
         console.log( "facebookLogin success", response );
         this.firebaseAuth( response );
@@ -141,7 +146,6 @@ export class LoginPage {
         this.getProfile();
       }
       
-
     }, (error) => {
       console.log("signInWithFacebook", error);
     });
@@ -152,6 +156,8 @@ export class LoginPage {
       () => {  
         console.log('SettingsPage::deleteAccount success');
         this.loading.dismiss();
+
+        // this.alert
     }, err => {
       console.log('SettingsPage::deleteAccount() error', err);
     });
@@ -162,12 +168,12 @@ export class LoginPage {
     console.log("LoginPage::getProfile()");
     console.log("LoginPage::Facebook display name ", this.auth.displayName(), this.auth);
 
-    this.fb.api('/me?fields=id,name,gender,picture.width(500).height(500),email,first_name', 
-      ['public_profile']).then(
+    this.fb.api('/me?fields=id,name,gender,picture.width(500).height(500),email,first_name,age_range', 
+      ['public_profile', 'user_birthday']).then(
       (response) => {
 
         console.log("getProfile() success", response);
-        if (response.picture) {
+        if (response.picture != null) {
           this.storage.set('userImages[0]', response.picture.data.url);
         }
         this.storage.set('uid', response.id);
@@ -207,14 +213,23 @@ export class LoginPage {
 
         console.log("LoginPage::getProfile user", this.hasUserEnterDetails); 
         if (this.hasUserEnterDetails == true) {
+          console.log('LoginPage::ionViewDidLoad going to main page2');
           this.nav.setRoot(MainPage);
         } else if (this.hasUserEnterDetails == false) {
           let startAge = {
             lower: 18,
             upper: 78
           };
-          this.storage.set('userImages[0]', response.picture.data.url);
-          this.storage.set('discoverable', false);
+          if ( response.age_range ) {
+            if (response.age_range.min ) {
+              startAge.lower = response.age_range.min;
+            }
+            
+            if (response.age_range.max ) {
+              startAge.upper = response.age_range.max;
+            }
+          }
+          this.storage.set('discoverable', true);
           this.storage.set('distance', 0);
           this.storage.set('age', startAge);
           if (response.gender && response.gender == 'female') {
@@ -222,9 +237,9 @@ export class LoginPage {
           }else{
             this.storage.set('preference', "Women");
           }
-          this.storage.set('new_match_notif', false);
-          this.storage.set('messages_notif', false);
-          this.storage.set('superlikes_notif', false);
+          this.storage.set('new_match_notif', true);
+          this.storage.set('messages_notif', true);
+          this.storage.set('superlikes_notif', true);
           this.storage.set('hasUserEnterDetails', true);
           this.nav.setRoot(WelcomePage);
         }

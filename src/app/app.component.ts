@@ -55,15 +55,19 @@ export class MyApp {
   intialize() {
     if ( this.platform.is('cordova') ) {
       this.storage.get('hasUserReachedMain').then(reachedMain => {
-        this.af.auth.subscribe(auth => {
+
+        this.af.auth.take(1).subscribe(auth => {
           if(auth && reachedMain) {
+            console.log("MyApp::intialize going to main page");
             this.rootPage = MainPage;
             // this.rootPage = AboutMePage;
           }else{
+            console.log("MyApp::intialize going to login page");
             this.rootPage = LoginPage;
             // this.rootPage = WelcomePage;
           }
         });
+
       });
     }else{
       // this.rootPage = AboutMePage;

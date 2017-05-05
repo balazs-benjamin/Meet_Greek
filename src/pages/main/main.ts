@@ -10,6 +10,7 @@ import { ExtendedProfilePage } from '../extended-profile/extended-profile';
 import { ChatMatchPage }  from '../chat-match/chat-match';
 import { ConvertDistance } from '../../pipes/convert-distance'
 import { MatchPage } from '../match/match';
+import { LoginPage } from '../login/login';
 
 import { AuthProvider } from '../../providers/auth-provider/auth-provider';
 
@@ -90,46 +91,48 @@ export class MainPage {
 
 
   ionViewDidLoad() {
-    console.log( "MainPage::ionViewDidLoad()" );
-    if (!this.auth.authenticated) {
-      return;
-    }
-    this.userProvider.getUid()
-    .then(uid => {
-      console.log("MainPage::ionViewDidLoad", uid);
+    console.log( "MainPage::ionViewDidLoad() isLogin", this.auth.authenticated );
+    if (this.auth.authenticated) {
 
-      this.uid = uid;
-      this.users = this.userProvider.getAllUsers();
-      this.userLikes = this.likeProvider.getUserLikes(uid);
-      this.sortedUsers = [];
-      this.addToLikedArray();
-      this.addNewCardsFromFirebase();
-      
-    }, err => {
-      console.log("MainPage::error", err);
-    });
+      this.userProvider.getUid()
+      .then(uid => {
+        console.log("MainPage::ionViewDidLoad", uid);
 
-    this.userProvider.getUser().then(userObservable => {
-      userObservable.subscribe(data => {
-        this.loggedUser = data;
+        this.uid = uid;
+        this.users = this.userProvider.getAllUsers();
+        this.userLikes = this.likeProvider.getUserLikes(uid);
+        this.sortedUsers = [];
+        this.addToLikedArray();
+        this.addNewCardsFromFirebase();
+        
+      }, err => {
+        console.log("MainPage::error", err);
       });
-      console.log("MainPage", this.loggedUser.likes);
-    });
 
-    this.storage.get('discoverable').then(result => {
-      if (!result) {
-          this.isPublicEnabled = false;
-        } else {
-          this.isPublicEnabled = true;
-        }
-    });
-    //this.slider.lockSwipeToPrev();
-    // if(this.users){
-    //   this.greeksFound = false;
-    // }else{
-    //   this.greeksFound = true;
-    //   //this.userActive = this.users[this.indexOfArr];
-    // }
+      this.userProvider.getUser().then(userObservable => {
+        userObservable.subscribe(data => {
+          this.loggedUser = data;
+        });
+        console.log("MainPage", this.loggedUser.likes);
+      });
+
+      this.storage.get('discoverable').then(result => {
+        if (!result) {
+            this.isPublicEnabled = false;
+          } else {
+            this.isPublicEnabled = true;
+          }
+      });
+      //this.slider.lockSwipeToPrev();
+      // if(this.users){
+      //   this.greeksFound = false;
+      // }else{
+      //   this.greeksFound = true;
+      //   //this.userActive = this.users[this.indexOfArr];
+      // }
+    }else{
+      this.navCtrl.push(LoginPage);
+    }
   }
 
   ionViewDidEnter() {
@@ -319,7 +322,7 @@ export class MainPage {
   getCurrentInterloculot(index): void {
     console.log( "MainPage::getCurrentInterloculot()", index);
 
-    this.users.subscribe(items => {
+    this.users.take(1).subscribe(items => {
       
       if(this.everythingLoaded2 != true){
         this.userkeys = [];
@@ -431,7 +434,7 @@ export class MainPage {
   ngAfterViewInit() {
     console.log( "MainPage::ngAfterViewInit()" );
 
-    this.swingStack.throwin.subscribe((event: ThrowEvent) => {
+    this.swingStack.throwin.take(1).subscribe((event: ThrowEvent) => {
       console.log( "MainPage::ngAfterViewInit()", event );
       event.target.style.background = '#ffffff';
       

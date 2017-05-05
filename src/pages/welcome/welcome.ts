@@ -32,22 +32,32 @@ export class WelcomePage {
     public loadingCtrl: LoadingController,
     public ct: CityService) {
 
+    console.log("WelcomePage");
+
     if (platform.is('cordova') && auth.authenticated) {
       this.loading = this.loadingCtrl.create({ 
           content: 'Getting user information...' 
       });
       this.loading.present();
       this.userProvider.getUser().then(userObservable => {
-          userObservable.subscribe(user => {
-              this.user = user;
-              this.loading.dismiss();
-              this.writeUserData();
-          });
+        console.log("WelcomePage userObservable", userObservable);
+
+        userObservable.subscribe(user => {
+          console.log("WelcomePage user", user);
+
+          this.user = user;
+          this.loading.dismiss();
+          this.writeUserData();
+
+        });
       });
     }
+
   }
 
   ngOnInit() {
+    console.log("WelcomePage::ngOnInit");
+
     this.platform.ready().then(() => {
       this.storage.get('hasUserEnterDetails').then((result) => {
           if (!result) {
@@ -55,13 +65,15 @@ export class WelcomePage {
                 if(!this.isTapped){
                   this.nav.setRoot(DescentPage);
                 }
-              }, 1000);
+              }, 4000);
           }
       });
     });
   };
   
   ionViewDidLoad() {
+    console.log("WelcomePage::ionViewDidLoad");
+
     this.platform.ready().then(() => {
         if (navigator.geolocation) {
           var options = {
@@ -83,11 +95,15 @@ export class WelcomePage {
   }
 
   tapToContinue(): void {
+    console.log("WelcomePage::tapToContinue");
+
     this.isTapped = true;
     this.nav.setRoot(DescentPage);
   }
 
   loadCity(lat, lon){
+    console.log("WelcomePage::loadCity", lat, lon);
+
     this.ct.load(lat, lon)
     .then(data => {
       this.cityResults = data;
@@ -95,6 +111,7 @@ export class WelcomePage {
   }
 
   writeUserData(): void {
+    console.log( "WelcomePage::writeUserData" );
     let loc;
     let lat;
     let lng;

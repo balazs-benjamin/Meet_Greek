@@ -82,7 +82,7 @@ export class UserProvider {
 
     updateUserProfile(uid, property, value){
         console.log("updateUserProfile ", uid, property, value);
-        if (uid != undefined) {
+        if (uid != undefined && value != undefined) {
             this.af.database.object(`/users/${uid}/${property}`).set(value).then( _ => {
                 console.log("updateUserProfile complete", _);
             }, err => {
