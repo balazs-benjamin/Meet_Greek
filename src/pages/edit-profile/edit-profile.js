@@ -20,6 +20,7 @@ import { Storage } from '@ionic/storage';
 import { SettingsPage } from '../settings/settings';
 import { Facebook } from 'ionic-native';
 import { UtilProvider } from '../../providers/utils';
+
 var EditProfilePage = (function () {
     function EditProfilePage(userProvider, af, navCtrl, dataService, platform, simpleAlert, modalCtrl, alertCtrl, storage, actionSheetCtrl, toastCtrl, util, loadingCtrl) {
         var _this = this;

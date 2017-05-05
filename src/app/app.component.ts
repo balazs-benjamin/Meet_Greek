@@ -44,7 +44,7 @@ export class MyApp {
       this.intialize();
 
       if ( this.platform.is('cordova') ) {
-        setTimeout(this.initPushNotification, 1000);
+        // setTimeout(this.initPushNotification, 1000);
       }else{
         console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
       }

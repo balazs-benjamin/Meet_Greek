@@ -64,6 +64,7 @@
       </template>
     </ion-slides>
   </div>-->
+  
   <div swing-stack #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" id="card-stack">
     <ion-card #mycards1 swing-card *ngFor="let c of sortedUsers">
       <ion-item *ngIf="c.profile_picture">

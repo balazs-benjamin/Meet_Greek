@@ -494,7 +494,7 @@ export class MainPage {
   }
 
   addNewCardsFromFirebase(): void {
-    console.log( "MainPage::addNewCardsFromFirebase()" );
+    console.log( "MainPage::addNewCardsFromFirebase()", this.userArrayIndex );
 
     this.users.subscribe(user => {
       console.log( "MainPage::addNewCardsFromFirebase()", user );
@@ -502,42 +502,49 @@ export class MainPage {
         // this.sortedUsers.push(user[0]);
         this.userArrayIndex = user.length;
         
-        for (var i = this.previousIndex; i < user.length; i++) {          
+        for (var i = this.previousIndex; i < user.length; i++) {
+
           if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
             
             this.sortedUsers.push(user[i]);
             this.previousIndex = i + 1;
             
-            break;
+            // break;
           }
         }
         
-        // this.sortedUsers.forEach(user => {
-        //   this.cardUserArray.push(user);
-        console.log(this.sortedUsers.length);
-        // if(this.sortedUsers.length == 0){
-        //   this.greeksNotFound = true;
-        //   //this.navCtrl.setRoot(this.navCtrl.getActive().component);
-        // }else{
-        //   this.greeksNotFound = false;
-        // }
+        console.log("sortedUsers.length", this.sortedUsers.length);
+
+        this.sortedUsers.forEach(sortedUser => {
+          console.log("sortedUser", sortedUser);
+          this.cardUserArray.push(sortedUser);
+        });
+
+        if(this.sortedUsers.length == 0){
+          this.greeksNotFound = true;
+          this.navCtrl.setRoot(this.navCtrl.getActive().component);
+        }else{
+          this.greeksNotFound = false;
+        }
         
-        // console.log(this.previousIndex);
-        //console.log("*****************************************1");
-        //console.log(this.sortedUsers);
-        // if(this.sortedUsers.length > 0){
-        // }else {
-        //   this.greeksFound = false;
-        //   this.update();
-        // }
-        //console.log("*****************************************2");
-        // this.mainSlider.update();
-        //this.cardUserArray.push(this.sortedUsers[0]);
-        //this.cardUsersLoaded = true;
-        //this.ionViewDidLoad();
-        //this.checkLikes();
-        // console.log(this.currentInterlocutorKey);
-        //
+        console.log(this.previousIndex);
+        console.log("*****************************************1");
+        console.log(this.sortedUsers);
+        if( this.sortedUsers.length > 0 ){
+
+        }else {
+          this.greeksFound = false;
+          // this.update();
+        }
+
+        console.log("*****************************************2");
+        this.mainSlider.update();
+        this.cardUserArray.push(this.sortedUsers[0]);
+        this.cardUsersLoaded = true;
+        this.ionViewDidLoad();
+        this.checkLikes();
+        console.log(this.currentInterlocutorKey);
+        
     });
   }
 
