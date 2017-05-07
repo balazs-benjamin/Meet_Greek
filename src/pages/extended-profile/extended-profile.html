@@ -57,7 +57,7 @@
   </ion-list>
   </ion-scroll>
   </div>
-  <div class="fixed-pos">
+  <div class="fixed-pos" *ngIf="fromMainPage">
    <ion-grid>
     <ion-row class="center">
       <ion-col width-25 class="img-center" (click) = "reject()">

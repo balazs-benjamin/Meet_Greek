@@ -80,22 +80,32 @@ page-main {
     align-items: center;
   }
 
+  #card-stack {
+    width: 90%;
+    height: 500px;
+    margin: 10px auto 0;
+    position: relative;
+  }
+ 
   #card-stack ion-card {
-    border-radius: 5px;
-    text-align: center;
-    height: 90%;
+      border-radius: 5px;
+      position: absolute;
+      text-align: center;
+      top: 3%;
+      height: 90%;
   }
 
-  #card-image {
+
+  #card_image {
     pointer-events: none;
   }
 
-  #card-title {
+  #card_title {
     padding-top: 10px;
     font-weight: 400;
   }
 
-  #card-subtitle {
+  #card_subtitle {
     color: grey;
   }
 

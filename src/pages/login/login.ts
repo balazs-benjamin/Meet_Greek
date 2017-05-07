@@ -117,7 +117,6 @@ export class LoginPage {
 
   fbLogin(){
     console.log( "LoginPage::fbLogin" );
-
     this.fb.login(['public_profile', 'email', 'user_birthday']).then( 
       (response:FacebookLoginResponse) => {
         console.log( "facebookLogin success", response );

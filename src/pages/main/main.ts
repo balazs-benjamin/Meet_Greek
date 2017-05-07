@@ -1,5 +1,5 @@
 import { Component, ViewChild, ViewChildren, QueryList  } from '@angular/core';
-import { NavController, ModalController, Slides, Content, Platform } from 'ionic-angular';
+import { NavController, ModalController, Slides, Content, Platform, ToastController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { UserProvider } from '../../providers/user-provider/user-provider';
 import { LikeProvider } from '../../providers/like-provider/like-provider';
@@ -18,7 +18,7 @@ import { AuthProvider } from '../../providers/auth-provider/auth-provider';
 import { SwingStackComponent, StackConfig, SwingCardComponent, ThrowEvent } from 'angular2-swing';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { ToastController } from 'ionic-angular';
+
 
 @Component({
   selector: 'page-main',
@@ -27,13 +27,14 @@ import { ToastController } from 'ionic-angular';
 export class MainPage {
   @ViewChild('myswing1') swingStack: SwingStackComponent;
   @ViewChildren('mycards1') swingCards: QueryList<SwingCardComponent>;
-  @ViewChild('mainSlider') mainSlider: Slides;
-  @ViewChild(Content) content: Content;
+  // @ViewChild('mainSlider') mainSlider: Slides;
+  // @ViewChild(Content) content: Content;
 
   cards: Array<any>;
   sortedUsers: Array<any>;
   cardUserArray: Array<any>;
   stackConfig: StackConfig;
+
   previousIndex = 0;
   userArrayIndex = 0;
   isLastElement = false;
@@ -80,40 +81,57 @@ export class MainPage {
 
     //Swipe
     this.stackConfig = {
-      throwOutConfidence: (offset, element) => {
+      throwOutConfidence: (offset, element:any) => {
         return Math.min(Math.abs(offset) / (element.offsetWidth/2), 1);
+      },
+      transform: (element, x, y, r) => {
+        this.onItemMove(element, x, y, r);
       },
       throwOutDistance: (d) => {
         return 800;
       }
     };
+
+    this.initialize();
   }
 
 
   ionViewDidLoad() {
-    console.log( "MainPage::ionViewDidLoad() isLogin", this.auth.authenticated );
+    console.log( "MainPage::ionViewDidLoad()");
+  }
+
+  ionViewDidEnter() {
+    // this.slider.lockSwipeToPrev();
+
+  }
+
+  initialize(){
+    console.log( "MainPage::initialize() isLogin", this.auth.authenticated );
     if (this.auth.authenticated) {
 
+      
       this.userProvider.getUid()
       .then(uid => {
-        console.log("MainPage::ionViewDidLoad", uid);
-
+        console.log("MainPage::initialize", uid);
+        
         this.uid = uid;
         this.users = this.userProvider.getAllUsers();
         this.userLikes = this.likeProvider.getUserLikes(uid);
         this.sortedUsers = [];
+
         this.addToLikedArray();
         this.addNewCardsFromFirebase();
         
       }, err => {
         console.log("MainPage::error", err);
       });
+      
 
       this.userProvider.getUser().then(userObservable => {
         userObservable.subscribe(data => {
           this.loggedUser = data;
+          console.log("MainPage likes", this.loggedUser);
         });
-        console.log("MainPage", this.loggedUser.likes);
       });
 
       this.storage.get('discoverable').then(result => {
@@ -123,20 +141,9 @@ export class MainPage {
             this.isPublicEnabled = true;
           }
       });
-      //this.slider.lockSwipeToPrev();
-      // if(this.users){
-      //   this.greeksFound = false;
-      // }else{
-      //   this.greeksFound = true;
-      //   //this.userActive = this.users[this.indexOfArr];
-      // }
     }else{
       this.navCtrl.push(LoginPage);
     }
-  }
-
-  ionViewDidEnter() {
-    // this.slider.lockSwipeToPrev();
   }
 
   openChat(key) {
@@ -152,12 +159,12 @@ export class MainPage {
     this.buttonDisabled = true;
     // alert("Go To Extended Profile");
     let param = null;
-    param = {uid: this.uid, interlocutor: key};   
+    param = {uid: this.uid, interlocutor: key.$key, main:true};
     //let param = {uid: "this uid", interlocutor: "other user key"};
     let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
       extendedProfileModal.onDidDismiss(data => {
         if(data.foo == 'bar1'){
-          //this.goToNextUser();
+          this.goToNextUser();
         }
         this.buttonDisabled = null;
       });
@@ -222,13 +229,13 @@ export class MainPage {
     console.log( "MainPage::checkLikes()");
     
     if(this.likeKeys.indexOf(this.currentInterlocutorKey) == -1){
-          this.isLiked = false
-        }else{
-          this.isLiked = true;
-        }
+      this.isLiked = false
+    }else{
+      this.isLiked = true;
+    }
     console.log(this.currentInterlocutorKey);
     console.log(this.isLiked);
-    this.mainSlider.update();
+    // this.mainSlider.update();
   }
 
   reject(interlocutor): void {
@@ -243,8 +250,8 @@ export class MainPage {
     //   this.userkeys.splice(index, 1);
     // }
     //this.checkLikes();
-    this.mainSlider.update();
-    this.mainSlider.slideNext();
+    // this.mainSlider.update();
+    // this.mainSlider.slideNext();
 
     //reload users
     this.everythingLoaded = false;
@@ -278,8 +285,7 @@ export class MainPage {
       });
       // this.mainSlider.update();
       this.everythingLoaded = true;
-      this.content.resize();
-      //this.ionViewDidLoad();
+      // this.content.resize();
       //this.checkLikes();
       // console.log(this.currentInterlocutorKey);
       
@@ -350,8 +356,8 @@ export class MainPage {
     
     // let interlocutor = this.currentInterlocutorKey;
     this.likeProvider.addLike(this.uid, interlocutor);
-    this.content.resize();
-    this.navCtrl.setRoot(this.navCtrl.getActive().component);
+    // this.content.resize();
+    this.navCtrl.setRoot( this.navCtrl.getActive().component );
     // this.likeKeys.push(interlocutor);
     // var index = this.userkeys.indexOf(interlocutor);
     // if (index > -1) {
@@ -444,6 +450,23 @@ export class MainPage {
 
   }
 
+  // Called whenever we drag an element
+  onItemMove(element, x, y, r) {
+    var color = '';
+    var abs = Math.abs(x);
+    let min = Math.trunc(Math.min(16*16 - abs, 16*16));
+    let hexCode = this.decimalToHex(min, 2);
+    
+    if (x < 0) {
+      color = '#FF' + hexCode + hexCode;
+    } else {
+      color = '#' + hexCode + 'FF' + hexCode;
+    }
+    
+    element.style.background = color;
+    element.style['transform'] = `translate3d(0, 0, 0) translate(${x}px, ${y}px) rotate(${r}deg)`;
+  }
+
   voteUp(like: boolean) {
     console.log( "MainPage::voteUp()", like );
 
@@ -476,6 +499,19 @@ export class MainPage {
       position: 'bottom'
     });
     toast.present(toast);
+  
+
+  }
+  decimalToHex(d, padding) {
+    var hex = Number(d).toString(16);
+    padding = typeof (padding) === "undefined" 
+    || padding === null ? padding = 2 : padding;
+    
+    while (hex.length < padding) {
+      hex = "0" + hex;
+    }
+    
+    return hex;
   }
 
   addNewCards(count: number) {
@@ -496,24 +532,27 @@ export class MainPage {
   addNewCardsFromFirebase(): void {
     console.log( "MainPage::addNewCardsFromFirebase()", this.userArrayIndex );
 
-    this.users.subscribe(user => {
+    this.users.take(1).subscribe(user => {
       console.log( "MainPage::addNewCardsFromFirebase()", user );
+
         // items is an array
         // this.sortedUsers.push(user[0]);
         this.userArrayIndex = user.length;
-        
-        for (var i = this.previousIndex; i < user.length; i++) {
+        console.log( "MainPage::addNewCardsFromFirebase() length", this.userArrayIndex );
+        for (let i = this.previousIndex; i < this.userArrayIndex; i++) {
 
-          if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
+          console.log( "MainPage::addNewCardsFromFirebase() user", user[i] );
+
+          // if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
             
-            this.sortedUsers.push(user[i]);
+            this.sortedUsers.push( user[i] );
             this.previousIndex = i + 1;
             
             // break;
-          }
+          // }
         }
         
-        console.log("sortedUsers.length", this.sortedUsers.length);
+        console.log("sortedUsers", this.sortedUsers);
 
         this.sortedUsers.forEach(sortedUser => {
           console.log("sortedUser", sortedUser);
@@ -522,7 +561,7 @@ export class MainPage {
 
         if(this.sortedUsers.length == 0){
           this.greeksNotFound = true;
-          this.navCtrl.setRoot(this.navCtrl.getActive().component);
+          // this.navCtrl.setRoot(this.navCtrl.getActive().component);
         }else{
           this.greeksNotFound = false;
         }
@@ -538,13 +577,14 @@ export class MainPage {
         }
 
         console.log("*****************************************2");
-        this.mainSlider.update();
+        // this.mainSlider.update();
         this.cardUserArray.push(this.sortedUsers[0]);
         this.cardUsersLoaded = true;
         this.ionViewDidLoad();
         this.checkLikes();
         console.log(this.currentInterlocutorKey);
-        
+
+
     });
   }
 

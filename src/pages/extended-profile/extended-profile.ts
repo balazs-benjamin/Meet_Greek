@@ -3,12 +3,6 @@ import { NavParams } from 'ionic-angular';
 import { UserProvider } from '../../providers/user-provider/user-provider';
 import { ViewController } from 'ionic-angular';
 
-/*
-  Generated class for the ExtendedProfile page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-extended-profile',
   templateUrl: 'extended-profile.html'
@@ -16,16 +10,21 @@ import { ViewController } from 'ionic-angular';
 export class ExtendedProfilePage {
   data = { 'foo': 'bar' };
   premium = true;
+  fromMainPage = true;
   uid:string;
   interlocutor:string;
   slideOptions: any;
-  user = { username: "", userImage0: "", aboutMe: "", descent: "", areas: [], church: "", education: "", location: "", images: [] };
+  user = { username: "", userImage0: "", aboutMe: "", descent: "", 
+  areas: [], church: "", education: "", location: "", images: [] };
+
   constructor(
     public viewCtrl: ViewController, 
     params:NavParams,
     public userProvider: UserProvider) {
+
     this.uid = params.data.uid;
     this.interlocutor = params.data.interlocutor;
+    this.fromMainPage = (params.data.main)?true:false;
     this.userProvider.getUserInterlocutor(this.interlocutor).then(userObservable => {
       userObservable.subscribe(user => {
         this.user = user;
@@ -64,7 +63,5 @@ export class ExtendedProfilePage {
 
   dismiss() {
    this.viewCtrl.dismiss(this.data);
- }
-
- 
+ } 
 }
