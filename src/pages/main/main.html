@@ -72,8 +72,9 @@
         <h1 id="card_title">{{ c.first_name }}</h1>
         <h2 id="card_subtitle">Athens</h2>
       </ion-item>
-
-      <ion-row *ngIf="c.first_name">
+      
+<!-- *ngIf="c.first_name" -->
+      <ion-row >
         <ion-col>
           <button ion-button color="danger" round outline large (click)="voteUp(false, c.$key)">
             <ion-icon name="thumbs-down"></ion-icon>

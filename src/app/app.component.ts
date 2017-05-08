@@ -8,6 +8,7 @@ import { AreasPage } from '../pages/areas/areas'; // question 1
 import { ChurchPage } from '../pages/church/church'; // question 2
 import { AboutMePage } from '../pages/about-me/about-me'; // question 2
 import { MainPage } from '../pages/main/main';
+import { SettingsPage } from '../pages/settings/settings';
 import { ChatViewPage } from '../pages/chat-view/chat-view';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
 import { Storage } from '@ionic/storage';
@@ -67,10 +68,10 @@ export class MyApp {
             // this.rootPage = WelcomePage;
           }
         });
-
       });
+      
     }else{
-      // this.rootPage = AboutMePage;
+      this.rootPage = SettingsPage;
     }
   }
 

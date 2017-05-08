@@ -81,14 +81,16 @@ export class MainPage {
 
     //Swipe
     this.stackConfig = {
-      throwOutConfidence: (offset, element:any) => {
-        return Math.min(Math.abs(offset) / (element.offsetWidth/2), 1);
+      throwOutConfidence: (offset, element) => {
+        console.log("throwOutConfidence", offset, element, Math.abs(offset) / (element/2));
+
+        return Math.min(Math.abs(offset) / (element/2), 1);
       },
-      transform: (element, x, y, r) => {
-        this.onItemMove(element, x, y, r);
-      },
+      // transform: (element, x, y, r) => {
+      //   this.onItemMove(element, x, y, r);
+      // },
       throwOutDistance: (d) => {
-        return 800;
+        return 300;
       }
     };
 
@@ -118,6 +120,7 @@ export class MainPage {
         this.users = this.userProvider.getAllUsers();
         this.userLikes = this.likeProvider.getUserLikes(uid);
         this.sortedUsers = [];
+        this.cardUserArray = [];
 
         this.addToLikedArray();
         this.addNewCardsFromFirebase();
@@ -214,7 +217,7 @@ export class MainPage {
   superLike(): void {
     console.log( "MainPage::superLike()");
 
-    let uid =this.uid;
+    let uid = this.uid;
     let interlocutor = this.currentInterlocutorKey;
     this.likeProvider.addSuperLike(uid, interlocutor);
     this.likeKeys.push(interlocutor);
@@ -222,7 +225,7 @@ export class MainPage {
     if (index > -1) {
       this.userkeys.splice(index, 1);
     }  
-    //this.checkLikes();
+    this.checkLikes();
   }
 
   checkLikes(): void {
@@ -300,7 +303,7 @@ export class MainPage {
     console.log(this.likeKeys);
     this.everythingLoaded = true;
   }
-
+/*
   slideChanged() {
     console.log( "MainPage::slideChanged()");
 
@@ -324,7 +327,7 @@ export class MainPage {
     // var keys = Object.keys(this.users);
     // console.log(keys);
   }
-
+*/
   getCurrentInterloculot(index): void {
     console.log( "MainPage::getCurrentInterloculot()", index);
 
@@ -427,7 +430,7 @@ export class MainPage {
     // }
     // alert('Load next user');
   }
-
+/*
   toggleFade() {
     // this.fadeState = 'visible';    
   }
@@ -435,20 +438,18 @@ export class MainPage {
   toggleBounce(){
     // this.bounceState =  'bouncing';   
   }
-
+*/
   //SWIPE
+  /*
   ngAfterViewInit() {
     console.log( "MainPage::ngAfterViewInit()" );
-
     this.swingStack.throwin.take(1).subscribe((event: ThrowEvent) => {
       console.log( "MainPage::ngAfterViewInit()", event );
       event.target.style.background = '#ffffff';
-      
     });
     // this.cards = [];
     // this.addNewCards(1);
-
-  }
+  }*/
 
   // Called whenever we drag an element
   onItemMove(element, x, y, r) {
@@ -543,13 +544,13 @@ export class MainPage {
 
           console.log( "MainPage::addNewCardsFromFirebase() user", user[i] );
 
-          // if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
+          if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
             
             this.sortedUsers.push( user[i] );
             this.previousIndex = i + 1;
             
             // break;
-          // }
+          }
         }
         
         console.log("sortedUsers", this.sortedUsers);

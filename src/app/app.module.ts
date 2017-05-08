@@ -106,7 +106,7 @@ export const firebaseConfig = {
           // http://ionicframework.com/docs/v2/api/config/Config/)
         }
       }),
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(firebaseConfig), 
     SwingModule,
     HttpModule,
     IonicStorageModule.forRoot()
