@@ -26,6 +26,7 @@ export class LoginPage {
   loginForm: any;
   loading: any;
   public user:any;
+  private fbSession:any;
   private deleteAccount:boolean = false;
 
   // coordinates = {lat: 0, lng: 0};
@@ -106,7 +107,7 @@ export class LoginPage {
         if (data.status == "unknown") {
           this.fbLogin();
         }else{
-          this.firebaseAuth( data );
+          this.firebaseAuth( data.authResponse );
         }
         
       }, (error)=> {
@@ -117,10 +118,11 @@ export class LoginPage {
 
   fbLogin(){
     console.log( "LoginPage::fbLogin" );
-    this.fb.login(['public_profile', 'email', 'user_birthday']).then( 
+    this.fb.login(['email']).then( 
       (response:FacebookLoginResponse) => {
         console.log( "facebookLogin success", response );
-        this.firebaseAuth( response );
+        this.fbSession = response;
+        this.firebaseAuth( response.authResponse );
       }, (error) => {
         this.loading.dismiss();
         console.log("facebookLogin error", error);
@@ -130,22 +132,35 @@ export class LoginPage {
     });
   }
 
-  firebaseAuth(data:any){
-    console.log("LoginPage::firebaseAuth", data);
+  firebaseAuth(response:any){
+    console.log("LoginPage::firebaseAuth", response);
 
     let facebookCredential = firebase.auth.FacebookAuthProvider
-    .credential( data.authResponse.accessToken );
+    .credential( response.accessToken );
     
     this.auth.signInWithFacebook( facebookCredential ).then( (data) =>{
 
       console.log("signInWithFacebook success", data, this.navParams.data.delete);
+      
+/*
+      this.auth.fbProfileData(response.userID, '?access_token=${response.accessToken}&fields=id,name,gender,picture.width(500).height(500),email,first_name,age_range').subscribe( profileData => {
+        console.log('got profile data', profileData);
+      }, err => {
+        console.log('got profile error', err);
+      });
+*/
+
+
+      this.getProfile();
+      /*
       if (this.navParams.data.delete) {
         this.deleteCurrentAccount();
       }else{
         this.getProfile();
-      }
+      }*/
       
     }, (error) => {
+      this.loading.dismiss();
       console.log("signInWithFacebook", error);
     });
   }
@@ -166,9 +181,9 @@ export class LoginPage {
 
     console.log("LoginPage::getProfile()");
     console.log("LoginPage::Facebook display name ", this.auth.displayName(), this.auth);
-
+    
     this.fb.api('/me?fields=id,name,gender,picture.width(500).height(500),email,first_name,age_range', 
-      ['public_profile', 'user_birthday']).then(
+      []).then(
       (response) => {
 
         console.log("getProfile() success", response);

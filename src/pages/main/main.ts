@@ -131,10 +131,12 @@ export class MainPage {
       
 
       this.userProvider.getUser().then(userObservable => {
-        userObservable.subscribe(data => {
-          this.loggedUser = data;
-          console.log("MainPage likes", this.loggedUser);
-        });
+        if (userObservable) {
+          userObservable.subscribe(data => {
+            this.loggedUser = data;
+            console.log("MainPage likes", this.loggedUser);
+          });
+        }
       });
 
       this.storage.get('discoverable').then(result => {

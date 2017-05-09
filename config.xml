@@ -93,4 +93,5 @@
     <plugin name="cordova-plugin-buildinfo" spec="~1.1.0" />
     <plugin name="cordova-plugin-browsertab" spec="~0.2.0" />
     <plugin name="cordova-plugin-inappbrowser" spec="~1.7.0" />
+    <plugin name="cordova-universal-links-plugin" spec="~1.2.1" />
 </widget>

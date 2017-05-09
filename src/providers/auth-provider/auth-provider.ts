@@ -3,6 +3,9 @@ import { AngularFire, AuthProviders, AngularFireAuth, FirebaseAuthState,
   AuthMethods } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import firebase from 'firebase';
+import {Http, RequestOptions, Headers} from '@angular/http';
+import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class AuthProvider {
@@ -13,7 +16,12 @@ export class AuthProvider {
   picture: string;
   email: string;
 
-  constructor(public af:AngularFire, 
+  private graphUrl = 'https://graph.facebook.com/';
+  // private graphQuery = `?access_token=${this.accessToken}&date_format=U&fields=posts{from,created_time,message,attachments}`;
+
+  constructor(
+    private http: Http,
+    public af:AngularFire, 
     public auth$: AngularFireAuth,
     public local:Storage) {
 
@@ -63,6 +71,16 @@ export class AuthProvider {
     });
   }
 
+  
+
+  fbProfileData(pageName: string, query:string): Observable<any> {
+    let url = this.graphUrl + pageName + query;
+
+    return this.http
+        .get(url)
+        .map(response => response.json());
+   }
+
   get authenticated(): boolean {
     return this.authState !== null;
   }
@@ -77,7 +95,6 @@ export class AuthProvider {
   
 
   signInWithFacebook(facebookCredential): firebase.Promise<FirebaseAuthState> {
-
     return this.auth$.login(facebookCredential, {
       provider: AuthProviders.Facebook,
       method: AuthMethods.OAuthToken
