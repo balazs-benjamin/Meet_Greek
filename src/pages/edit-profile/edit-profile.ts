@@ -72,7 +72,6 @@ export class EditProfilePage {
 
     console.log('EditProfilePage');
 
-
     dragulaService.setOptions('first-bag', {
       revertOnSpill: true
     });
@@ -80,12 +79,13 @@ export class EditProfilePage {
       let [e, el, container] = value;
       // console.log(`out: ${value[0]}`, e, el, container, this.images1, this.images2);
       // console.log(`out: ${value[0]}`, el, container.children);
-
-      if (this.images1.length > 3) {
+      for (var i = this.images1.length; i > 3; i--) {
         this.images2.push( this.images1.pop() );
-      }else if (this.images2.length > 3) {
+      }
+      for (var i = this.images2.length; i > 3; i--) {
         this.images1.push( this.images2.pop() );
       }
+
       // console.log(`out: done`, this.images1, this.images2);
       // this.onOut(value.slice(1));
     });

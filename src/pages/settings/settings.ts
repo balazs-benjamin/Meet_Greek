@@ -31,6 +31,7 @@ export class SettingsPage {
   slideOptions: any;
   distance: any;
   age:any;
+  ageValue:any;
   searchPreference;
   newMatches;
   messages;
@@ -69,6 +70,8 @@ export class SettingsPage {
     this.storage.get('age').then(ag => {
       console.log("SettingsPage::constructor age", ag);
       this.age = ag;
+      this.ageValue.lower = this.age.lower;
+      this.ageValue.upper = this.age.upper;
     }, err => {
       console.log("SettingsPage::constructor age", err);
     });
@@ -110,6 +113,8 @@ export class SettingsPage {
         this.publicDiscoverable = this.user.discoverable;
         this.distance = this.user.distance;
         this.age = this.user.age;
+        this.ageValue.lower = this.user.age.lower;
+        this.ageValue.upper = this.user.age.upper;
         if (this.user.preference != '...') {
           this.searchPreference = this.user.preference;
         }
@@ -211,9 +216,19 @@ export class SettingsPage {
   }
 
   ageChoice(): void {
-    this.userProvider.updateUserProfile(this.userId, 'age', this.age);
-    console.log("SettingsPage::ageChoice()", this.age);
-    this.storage.set('age', this.age);
+    console.log(this.ageValue, this.age);
+
+    if ((this.ageValue.upper-this.ageValue.lower) > 4) {
+      this.age.upper = this.ageValue.upper;
+      this.age.lower = this.ageValue.lower;
+
+        
+      this.storage.set('age', this.ageValue);
+      this.userProvider.updateUserProfile(this.userId, 'age', this.age);
+    }else{
+
+    }
+    
   }
 
   searchPref(): void {

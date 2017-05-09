@@ -81,7 +81,7 @@
                 <ion-badge item-right>{{age.lower}} - {{age.upper}}</ion-badge>
             </ion-item>
             <ion-item class="distance">
-                <ion-range dualKnobs="true" [(ngModel)]="age" (ionChange)="ageChoice()" min="18" max="55" step="4" snaps="false" pin="false">
+                <ion-range dualKnobs="true" [(ngModel)]="ageValue" (ionChange)="ageChoice()" min="18" max="55" step="1" snaps="false" pin="false">
                     <!--<ion-label range-left>18</ion-label>
                     <ion-label range-right>55+</ion-label>-->
                 </ion-range>
