@@ -17,9 +17,7 @@ export class ChurchPage {
     public af: AngularFire,
     public userProvider: UserProvider,
     public storage: Storage) {
-
     
-
   }
 
   ionViewDidLoad() {

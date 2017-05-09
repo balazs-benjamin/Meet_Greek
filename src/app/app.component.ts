@@ -9,6 +9,7 @@ import { ChurchPage } from '../pages/church/church'; // question 2
 import { AboutMePage } from '../pages/about-me/about-me'; // question 2
 import { MainPage } from '../pages/main/main';
 import { SettingsPage } from '../pages/settings/settings';
+import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { ChatViewPage } from '../pages/chat-view/chat-view';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
 import { Storage } from '@ionic/storage';
@@ -60,8 +61,10 @@ export class MyApp {
         this.af.auth.take(1).subscribe(auth => {
           if(auth && reachedMain) {
             console.log("MyApp::intialize going to main page");
-            this.rootPage = MainPage;
+            // this.rootPage = MainPage;
             // this.rootPage = AboutMePage;
+            this.rootPage = SettingsPage;
+            // this.rootPage = EditProfilePage;
           }else{
             console.log("MyApp::intialize going to login page");
             this.rootPage = LoginPage;
@@ -71,7 +74,7 @@ export class MyApp {
       });
       
     }else{
-      this.rootPage = SettingsPage;
+      this.rootPage = EditProfilePage;
     }
   }
 

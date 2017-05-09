@@ -97,7 +97,7 @@ export class AuthProvider {
   signInWithFacebook(facebookCredential): firebase.Promise<FirebaseAuthState> {
     return this.auth$.login(facebookCredential, {
       provider: AuthProviders.Facebook,
-      method: AuthMethods.OAuthToken
+      method: AuthMethods.OAuthToken // don't change this on any cirsumstances
     });
     
   }

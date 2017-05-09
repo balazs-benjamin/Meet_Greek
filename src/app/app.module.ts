@@ -33,6 +33,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 //Swipe screen
 import { SwingModule } from 'angular2-swing';
 import { HttpModule } from '@angular/http';
+import { DragulaModule } from 'ng2-dragula/ng2-dragula';
 //import { CapitalizePipe } from '../shared/pipes/capitalize.pipe';
 
 import { Filter } from '../pipes/filter';
@@ -108,7 +109,7 @@ export const firebaseConfig = {
       }),
     AngularFireModule.initializeApp(firebaseConfig), 
     SwingModule,
-    HttpModule,
+    HttpModule, DragulaModule, 
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],

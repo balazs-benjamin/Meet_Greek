@@ -8,12 +8,6 @@ import { UtilProvider } from '../../providers/utils';
 import { ChurchPage } from '../church/church';
 import { AlertController } from 'ionic-angular';
 
-/*
-  Generated class for the Areas page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-areas',
   templateUrl: 'areas.html'
@@ -30,7 +24,7 @@ export class AreasPage {
     public storage: Storage,
     public alertCtrl: AlertController) {
 
-    }
+  }
 
   ionViewDidLoad() {
     

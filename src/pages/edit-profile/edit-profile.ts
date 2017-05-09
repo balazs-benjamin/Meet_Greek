@@ -11,13 +11,14 @@ import { Storage } from '@ionic/storage';
 import { SettingsPage } from '../settings/settings';
 import { Facebook } from 'ionic-native';
 import { UtilProvider } from '../../providers/utils';
+import { DescentPage } from '../descent/descent';
+import { AreasPage } from '../areas/areas';
+import { ChurchPage } from '../church/church'
+import { SpeakPage } from '../speak/speak'
 
-/*
-  Generated class for the EditProfile page.
 
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
+import { DragulaService } from 'ng2-dragula/ng2-dragula';
+
 
 declare var cordova;
 
@@ -32,15 +33,26 @@ export class EditProfilePage {
   storageRef = firebase.storage().ref();
   userPhotos = [];
   test = [];
-  maxPhotos = false;
-  msg: string;
-  gender: any;
-  isYes = false;
-  isFather = false;
-  isMother = false;
-  isNo = false;
-  loading : any ;
-  user = <any>{};
+  public maxPhotos = false;
+  public msg: string;
+  public gender: any;
+  public isYes = false;
+  public isFather = false;
+  public isMother = false;
+  public isNo = false;
+  public loading : any ;
+  public user:any = {
+    images:[]
+  };
+  public images1:any[] = [
+    'https://placeholdit.imgix.net/~text?txtsize=20&txt=1&w=150&h=150',
+    'https://placeholdit.imgix.net/~text?txtsize=20&txt=2&w=150&h=150',
+    'https://placeholdit.imgix.net/~text?txtsize=20&txt=3&w=150&h=150'];
+
+  public images2:any[] = [
+    'https://placeholdit.imgix.net/~text?txtsize=20&txt=4&w=150&h=150',
+    'https://placeholdit.imgix.net/~text?txtsize=20&txt=5&w=150&h=150',
+    'https://placeholdit.imgix.net/~text?txtsize=20&txt=6&w=150&h=150'];
   
   constructor(
     public userProvider: UserProvider,
@@ -52,20 +64,59 @@ export class EditProfilePage {
     public modalCtrl: ModalController, 
     public alertCtrl: AlertController,
     public storage: Storage,
+    private dragulaService: DragulaService,
     public actionSheetCtrl: ActionSheetController,
     public toastCtrl: ToastController,
     public util: UtilProvider,
     public loadingCtrl: LoadingController) {
-      this.checkPhotos();
-      this.userProvider.getUser().then(userObservable => {
-            userObservable.subscribe(user => {
-                this.user = user;
-                this.loadedEdit = true;
-                this.msg = user.aboutMe;
-                this.gender = this.user.gender;
-            });
+
+    console.log('EditProfilePage');
+
+
+    dragulaService.setOptions('first-bag', {
+      revertOnSpill: true
+    });
+    dragulaService.out.subscribe((value) => {
+      let [e, el, container] = value;
+      // console.log(`out: ${value[0]}`, e, el, container, this.images1, this.images2);
+      // console.log(`out: ${value[0]}`, el, container.children);
+
+      if (this.images1.length > 3) {
+        this.images2.push( this.images1.pop() );
+      }else if (this.images2.length > 3) {
+        this.images1.push( this.images2.pop() );
+      }
+      // console.log(`out: done`, this.images1, this.images2);
+      // this.onOut(value.slice(1));
+    });
+
+    
+
+    this.checkPhotos();
+    this.userProvider.getUser().then(userObservable => {
+      if (userObservable) {
+        userObservable.subscribe(user => {
+          console.log('EditProfilePage user', user);
+          this.user = user;
+          this.loadedEdit = true;
+          this.msg = user.aboutMe;
+          this.gender = this.user.gender;
+
+          if (!this.user.images) {
+            this.user.images = [
+            'https://placeholdit.imgix.net/~text?txtsize=20&txt=1&w=150&h=150',
+            'https://placeholdit.imgix.net/~text?txtsize=20&txt=2&w=150&h=150',
+            'https://placeholdit.imgix.net/~text?txtsize=20&txt=3&w=150&h=150',
+            'https://placeholdit.imgix.net/~text?txtsize=20&txt=4&w=150&h=150',
+            'https://placeholdit.imgix.net/~text?txtsize=20&txt=5&w=150&h=150',
+            'https://placeholdit.imgix.net/~text?txtsize=20&txt=6&w=150&h=150'
+            ];
+          }
         });
-     }
+      }
+      
+    });
+  }
 
   ionViewDidLoad() {
     // Uncomment to use test data 
@@ -80,26 +131,56 @@ export class EditProfilePage {
     });
   }
 
-  presentActionSheet(file_uri) {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Edit gallery',
-      buttons: [
-        {
-          text: 'Delete',
-          role: 'destructive',
-          handler: () => {
-            this.deleteImage(file_uri);
+  showPage(page:string){
+    switch (page) {
+      case 'church':
+        this.navCtrl.push(ChurchPage);
+        break;
+
+      case 'speak':
+        this.navCtrl.push(SpeakPage);
+        break;
+
+      case 'descent':
+        this.navCtrl.push(DescentPage);
+        break;
+
+      case 'area':
+        this.navCtrl.push(AreasPage);
+        break;
+      
+      default:
+        // code...
+        break;
+    }
+  }
+
+  presentActionSheet(posion:number) {
+    let file_uri = this.user.images[posion];
+    if (file_uri) {
+      let actionSheet = this.actionSheetCtrl.create({
+        title: 'Edit gallery',
+        buttons: [
+          {
+            text: 'Delete',
+            role: 'destructive',
+            handler: () => {
+              this.deleteImage(file_uri);
+            }
+          },{
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {
+              
+            }
           }
-        },{
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            
-          }
-        }
-      ]
-    });
-    actionSheet.present();
+        ]
+      });
+      actionSheet.present();
+    }else{
+      //add image
+    }
+    
   }
 
   cameraActionSheet(){
@@ -589,46 +670,47 @@ writeUserData(): void {
 
   updateFacebook(): void {
     this.loading = this.loadingCtrl.create({
-                content: 'Updating Profile from Facebook...' 
-            });
-            this.loading.present();
-        Facebook.api('/me?fields=id,name,picture.width(500).height(500),email', ['public_profile']).then(
-            (response) => {
-                this.storage.set('username', response.name);
-                this.storage.set('profile_picture', response.picture);
-                this.storage.set('email', response.email);
-                  
-                this.updateUserData(response);
+      content: 'Updating Profile from Facebook...'
+    });
 
-                //THIS CHECK
-                var user = firebase.auth().currentUser;
-                user.updateProfile({
-                    displayName: response.name,
-                    photoURL: response.picture.data.url
-                }).then(function () {
-                    let alert = this.util.doAlert("Error user", user.displayName, "Ok");
-                    alert.present();
-                }, function (error) {
-                    // An error happened.
-                });
+    this.loading.present();
+    Facebook.api('/me?fields=id,name,picture.width(500).height(500),email', ['public_profile']).then(
+      (response) => {
+        this.storage.set('username', response.name);
+        this.storage.set('profile_picture', response.picture);
+        this.storage.set('email', response.email);
+          
+        this.updateUserData(response);
 
-                // this.menu.enable(true);
-                this.loading.dismiss();
-            },
+        //THIS CHECK
+        var user = firebase.auth().currentUser;
+        user.updateProfile({
+            displayName: response.name,
+            photoURL: response.picture.data.url
+        }).then(function () {
+            let alert = this.util.doAlert("Error user", user.displayName, "Ok");
+            alert.present();
+        }, function (error) {
+            // An error happened.
+        });
 
-            (err) => {
-                console.log(err);
-                // let alert = this.doAlert.create({
-                //   title: 'Oops!',
-                //   subTitle: 'Something went wrong, please try again later.',
-                //   buttons: ['Ok']
-                // });
-                let alert = this.util.doAlert("Error", err.message, "Ok");
-                this.loading.dismiss();
-                alert.present();
-            }
-        );
-    }
+        // this.menu.enable(true);
+        this.loading.dismiss();
+      },
+
+      (err) => {
+        console.log(err);
+        // let alert = this.doAlert.create({
+        //   title: 'Oops!',
+        //   subTitle: 'Something went wrong, please try again later.',
+        //   buttons: ['Ok']
+        // });
+        let alert = this.util.doAlert("Error", err.message, "Ok");
+        this.loading.dismiss();
+        alert.present();
+      }
+      );
+  }
 
     updateUserData(response): void {
         let userName;

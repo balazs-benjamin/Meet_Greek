@@ -1,7 +1,17 @@
 page-edit-profile {
-     .mini-fab{
-        top:-30px;
+  .gender .item{
+    padding: 0;
+  }
+
+  .image{
+    display: table-cell;
+    position: relative;
+    .image-fab{
+      bottom: 0;
+      right: 0;
     }
+  }
+
 }
 
 .toast-success {
