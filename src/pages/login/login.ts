@@ -232,7 +232,7 @@ export class LoginPage {
         } else if (this.hasUserEnterDetails == false) {
           let startAge = {
             lower: 18,
-            upper: 78
+            upper: 36
           };
           if ( response.age_range ) {
             if (response.age_range.min ) {
@@ -244,7 +244,7 @@ export class LoginPage {
             }
           }
           this.storage.set('discoverable', true);
-          this.storage.set('distance', 0);
+          this.storage.set('distance', 50);
           this.storage.set('age', startAge);
           if (response.gender && response.gender == 'female') {
             this.storage.set('preference', "Men");

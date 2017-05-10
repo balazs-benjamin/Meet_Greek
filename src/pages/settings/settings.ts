@@ -64,9 +64,11 @@ export class SettingsPage {
       console.log("SettingsPage::constructor discoverable", discoverable);
       this.publicDiscoverable = discoverable;
     });
+
     this.storage.get('distance').then(dist => {
         this.distance = dist;
     });
+
     this.storage.get('age').then(ag => {
       console.log("SettingsPage::constructor age", ag);
       this.age = ag;
@@ -111,7 +113,7 @@ export class SettingsPage {
         
         // set data 
         this.publicDiscoverable = this.user.discoverable;
-        this.distance = this.user.distance;
+        this.distance = (this.user.distance)?this.user.distance:50;
         this.age = this.user.age;
         this.ageValue.lower = this.user.age.lower;
         this.ageValue.upper = this.user.age.upper;
@@ -197,7 +199,7 @@ export class SettingsPage {
       upper: 78
     }
     this.storage.set('discoverable', false);
-    this.storage.set('distance', 0);
+    this.storage.set('distance', 50);
     this.storage.set('age', startAge);
     this.storage.set('preference', "...");
     this.storage.set('new_match_notif', false);
