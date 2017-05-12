@@ -25,196 +25,191 @@ import 'rxjs/add/operator/map';
   templateUrl: 'main.html'
 })
 export class MainPage {
-  @ViewChild('myswing1') swingStack: SwingStackComponent;
-  @ViewChildren('mycards1') swingCards: QueryList<SwingCardComponent>;
-  // @ViewChild('mainSlider') mainSlider: Slides;
-  // @ViewChild(Content) content: Content;
+    @ViewChild('myswing1') swingStack: SwingStackComponent;
+    @ViewChildren('mycards1') swingCards: QueryList<SwingCardComponent>;
 
-  cards: Array<any>;
-  sortedUsers: Array<any>;
-  cardUserArray: Array<any>;
-  stackConfig: StackConfig;
+    cards: Array<any>;
+    sortedUsers: Array<any>;
+    cardUserArray: Array<any>;
+    stackConfig: StackConfig;
 
-  previousIndex = 0;
-  userArrayIndex = 0;
-  isLastElement = false;
-  isLiked = false;
-  everythingLoaded = false;
-  everythingLoaded2 = false;
-  cardUsersLoaded = false;
-  likeKeys = [];
-  currentInterlocutorKey: any;
-  currentInterlocutorKey2: any;
-  isPublicEnabled = false;
-  calculatedDistance = 0;
-  buttonDisabled: any;
-  greeksNotFound = false;
-  loggedUser = <any>{};
-  uid:string;
-  slideOptions: any; 
-  public slider: any;
-  userActive;
-  sliderEnded = false;
-  premium = true;
-  greeksFound = true;
-  interlocutorLikes:Observable<any[]>;
-  userLikes:Observable<any[]>;
-  userkeys = [];
-  users:Observable<any[]>;
-  // buttonsVisible = false;
+    previousIndex = 0;
+    userArrayIndex = 0;
+    isLastElement = false;
+    isLiked = false;
+    everythingLoaded = false;
+    everythingLoaded2 = false;
+    cardUsersLoaded = false;
+    likeKeys = [];
+    currentInterlocutorKey: any;
+    currentInterlocutorKey2: any;
+    isPublicEnabled = false;
+    calculatedDistance = 0;
+    buttonDisabled: any;
+    greeksNotFound = false;
+    loggedUser = <any>{};
+    uid:string;
+    slideOptions: any; 
+    public slider: any;
+    userActive;
+    sliderEnded = false;
+    premium = true;
+    greeksFound = true;
+    interlocutorLikes:Observable<any[]>;
+    userLikes:Observable<any[]>;
+    userkeys = [];
+    users:Observable<any[]>;
+    // buttonsVisible = false;
 
-  constructor(
-    private http: Http,
-    public auth: AuthProvider,
-    private platform: Platform,
-    private toastCtrl: ToastController,
-    public navCtrl: NavController,
-    public userProvider: UserProvider,
-    public modalCtrl: ModalController,
-    public storage: Storage,
-    public likeProvider: LikeProvider) {
+    constructor(
+        private http: Http,
+        public auth: AuthProvider,
+        private platform: Platform,
+        private toastCtrl: ToastController,
+        public navCtrl: NavController,
+        public userProvider: UserProvider,
+        public modalCtrl: ModalController,
+        public storage: Storage,
+        public likeProvider: LikeProvider) {
 
-    console.log("MainPage");
+        console.log("MainPage");
 
-    this.storage.set('hasUserReachedMain', true);
-    this.buttonDisabled = null;
-
-    //Swipe
-    this.stackConfig = {
-      throwOutConfidence: (offset, element) => {
-        console.log("throwOutConfidence", offset, element, Math.abs(offset) / (element/2));
-
-        return Math.min(Math.abs(offset) / (element/2), 1);
-      },
-      // transform: (element, x, y, r) => {
-      //   this.onItemMove(element, x, y, r);
-      // },
-      throwOutDistance: (d) => {
-        return 300;
-      }
-    };
-
-    this.initialize();
-  }
-
-
-  ionViewDidLoad() {
-    console.log( "MainPage::ionViewDidLoad()");
-  }
-
-  ionViewDidEnter() {
-    // this.slider.lockSwipeToPrev();
-
-  }
-
-  initialize(){
-    console.log( "MainPage::initialize() isLogin", this.auth.authenticated );
-    if (this.auth.authenticated) {
-
-      
-      this.userProvider.getUid()
-      .then(uid => {
-        console.log("MainPage::initialize", uid);
-        
-        this.uid = uid;
-        this.users = this.userProvider.getAllUsers();
-        this.userLikes = this.likeProvider.getUserLikes(uid);
-        this.sortedUsers = [];
-        this.cardUserArray = [];
-
-        this.addToLikedArray();
-        this.addNewCardsFromFirebase();
-        
-      }, err => {
-        console.log("MainPage::error", err);
-      });
-      
-
-      this.userProvider.getUser().then(userObservable => {
-        if (userObservable) {
-          userObservable.subscribe(data => {
-            this.loggedUser = data;
-            console.log("MainPage likes", this.loggedUser);
-          });
-        }
-      });
-
-      this.storage.get('discoverable').then(result => {
-        if (!result) {
-            this.isPublicEnabled = false;
-          } else {
-            this.isPublicEnabled = true;
-          }
-      });
-    }else{
-      this.navCtrl.push(LoginPage);
-    }
-  }
-
-  openChat(key) {
-    console.log( "MainPage::openChat()", key );
-
-    let param = {uid: this.uid, interlocutor: key};
-    this.navCtrl.push(ChatViewPage,param);
-  }
-
-  ionSlideTap(key) {
-    console.log( "MainPage::ionSlideTap()", key );
-
-    this.buttonDisabled = true;
-    // alert("Go To Extended Profile");
-    let param = null;
-    param = {uid: this.uid, interlocutor: key.$key, main:true};
-    //let param = {uid: "this uid", interlocutor: "other user key"};
-    let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
-      extendedProfileModal.onDidDismiss(data => {
-        if(data.foo == 'bar1'){
-          this.goToNextUser();
-        }
+        this.storage.set('hasUserReachedMain', true);
         this.buttonDisabled = null;
-      });
-    extendedProfileModal.present();
-    //this.navCtrl.push(ExtendedProfilePage, );
-  }
 
-  ionSlideNextEnd(): void {
-    console.log( "MainPage::ionSlideNextEnd()");
-    alert("user liked this one");
-  }
+        //Swipe
+        this.stackConfig = {
+          throwOutConfidence: (offset, element) => {
+            console.log("throwOutConfidence", offset, element, Math.abs(offset) / (element/2));
 
-  goToChat(): void {
-    this.navCtrl.push(ChatMatchPage);
-  }
-  goToSettings(): void {
-    this.navCtrl.setRoot(SettingsPage);
-  }
+            return Math.min(Math.abs(offset) / (element/2), 1);
+          },
+          // transform: (element, x, y, r) => {
+          //   this.onItemMove(element, x, y, r);
+          // },
+          throwOutDistance: (d) => {
+            return 300;
+          }
+        };
 
-  redo(): void {
-    console.log( "MainPage::redo()");
-    if(this.premium){
-      // if(!this.slider.isBeginning){
-      //   this.slider.unlockSwipeToPrev();
-      //   this.slider.slidePrev();
-      //   this.slider.lockSwipeToPrev();
-      // }else{
-      //   this.slider.lockSwipeToPrev();
-      // }
-      
-    }else{
-      alert('Load Premium Page');
+        this.initialize();
     }
-    // if(this.premium){
-    //   alert('user has bought premium - REDO');
-    //   if(this.indexOfArr-1 >= 0){
-    //     this.userActive = this.users[this.indexOfArr - 1];
-    //     this.indexOfArr -= 1;
-    //   }else {
-    //     alert("You have reached the first found user");
-    //   }
-    // }else{
-    //   alert('user cant use that function');
-    // }
-  }
+
+
+    ionViewDidLoad() {
+        console.log( "MainPage::ionViewDidLoad()");
+    }
+
+    ionViewDidEnter() {
+        // this.slider.lockSwipeToPrev();
+    }
+
+    initialize(){
+        console.log( "MainPage::initialize() isLogin", this.auth.authenticated );
+        if (this.auth.authenticated) {
+            this.userProvider.getUid()
+            .then(uid => {
+                console.log("MainPage::initialize", uid);
+            
+                this.uid = uid;
+                this.users = this.userProvider.getAllUsers();
+                this.userLikes = this.likeProvider.getUserLikes(uid);
+                this.sortedUsers = [];
+                this.cardUserArray = [];
+
+                this.addToLikedArray();
+                this.addNewCardsFromFirebase();
+            
+          }, err => {
+            console.log("MainPage::error", err);
+          });
+          
+
+          this.userProvider.getUser().then(userObservable => {
+            if (userObservable) {
+              userObservable.subscribe(data => {
+                this.loggedUser = data;
+                console.log("MainPage likes", this.loggedUser);
+              });
+            }
+          });
+
+          this.storage.get('discoverable').then(result => {
+            if (!result) {
+                this.isPublicEnabled = false;
+              } else {
+                this.isPublicEnabled = true;
+              }
+          });
+        }else{
+          this.navCtrl.push(LoginPage);
+        }
+    }
+
+    openChat(key) {
+        console.log( "MainPage::openChat()", key );
+        let param = {uid: this.uid, interlocutor: key};
+        this.navCtrl.push(ChatViewPage,param);
+    }
+
+    ionSlideTap(key) {
+        console.log( "MainPage::ionSlideTap()", key );
+
+        this.buttonDisabled = true;
+        // alert("Go To Extended Profile");
+        let param = null;
+        param = {uid: this.uid, interlocutor: key.$key, main:true};
+        //let param = {uid: "this uid", interlocutor: "other user key"};
+        let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
+          extendedProfileModal.onDidDismiss(data => {
+            if(data.foo == 'bar1'){
+              this.goToNextUser();
+            }
+            this.buttonDisabled = null;
+          });
+        extendedProfileModal.present();
+        //this.navCtrl.push(ExtendedProfilePage, );
+    }
+
+    ionSlideNextEnd(): void {
+        console.log( "MainPage::ionSlideNextEnd()");
+        alert("user liked this one");
+    }
+
+    goToChat(): void {
+        this.navCtrl.push(ChatMatchPage);
+    }
+
+    goToSettings(): void {
+        this.navCtrl.setRoot(SettingsPage);
+    }
+
+    redo(): void {
+        console.log( "MainPage::redo()");
+        if(this.premium){
+          // if(!this.slider.isBeginning){
+          //   this.slider.unlockSwipeToPrev();
+          //   this.slider.slidePrev();
+          //   this.slider.lockSwipeToPrev();
+          // }else{
+          //   this.slider.lockSwipeToPrev();
+          // }
+          
+        }else{
+          alert('Load Premium Page');
+        }
+        // if(this.premium){
+        //   alert('user has bought premium - REDO');
+        //   if(this.indexOfArr-1 >= 0){
+        //     this.userActive = this.users[this.indexOfArr - 1];
+        //     this.indexOfArr -= 1;
+        //   }else {
+        //     alert("You have reached the first found user");
+        //   }
+        // }else{
+        //   alert('user cant use that function');
+        // }
+    }
 
   superLike(): void {
     console.log( "MainPage::superLike()");
@@ -280,20 +275,9 @@ export class MainPage {
       this.likeKeys = [];
       
       likes.forEach(like => {
-        //console.log(item.$key);
           this.likeKeys.push(like.$key);
-          // var index = this.userkeys.indexOf(like.$key, 0);
-          // console.log(index);
-          // if (index > -1) {
-          //   this.userkeys.splice(index, 1);
-          // }  
       });
-      // this.mainSlider.update();
-      this.everythingLoaded = true;
-      // this.content.resize();
-      //this.checkLikes();
-      // console.log(this.currentInterlocutorKey);
-      
+      this.everythingLoaded = true;      
     });
   }
 
@@ -305,31 +289,7 @@ export class MainPage {
     console.log(this.likeKeys);
     this.everythingLoaded = true;
   }
-/*
-  slideChanged() {
-    console.log( "MainPage::slideChanged()");
 
-    // this.users.forEach(user => {
-    //   //console.log(user);
-    // });
-   
-    // for (let key in this.users) {
-    //     console.log(key);
-    //     userkeys.push(key);
-    //   }
-    // console.log(userkeys);
-    
-    // let currentIndex = this.mainSlider.getActiveIndex();
-    // this.getCurrentInterloculot(currentIndex);
-    // this.mainSlider.update();
-    //console.log("Current index is", currentIndex);
-    // var obj = this.users;
-    // this.currentInterlocutorKey = obj[Object.keys(obj)[currentIndex]];
-    // //alert(this.currentInterlocutorKey);
-    // var keys = Object.keys(this.users);
-    // console.log(keys);
-  }
-*/
   getCurrentInterloculot(index): void {
     console.log( "MainPage::getCurrentInterloculot()", index);
 
@@ -363,13 +323,6 @@ export class MainPage {
     this.likeProvider.addLike(this.uid, interlocutor);
     // this.content.resize();
     this.navCtrl.setRoot( this.navCtrl.getActive().component );
-    // this.likeKeys.push(interlocutor);
-    // var index = this.userkeys.indexOf(interlocutor);
-    // if (index > -1) {
-    //   this.userkeys.splice(index, 1);
-    // }
-    //this.checkLikes();
-    // this.mainSlider.update();
 
     //reload users
     this.everythingLoaded = false;
@@ -432,26 +385,7 @@ export class MainPage {
     // }
     // alert('Load next user');
   }
-/*
-  toggleFade() {
-    // this.fadeState = 'visible';    
-  }
- 
-  toggleBounce(){
-    // this.bounceState =  'bouncing';   
-  }
-*/
-  //SWIPE
-  /*
-  ngAfterViewInit() {
-    console.log( "MainPage::ngAfterViewInit()" );
-    this.swingStack.throwin.take(1).subscribe((event: ThrowEvent) => {
-      console.log( "MainPage::ngAfterViewInit()", event );
-      event.target.style.background = '#ffffff';
-    });
-    // this.cards = [];
-    // this.addNewCards(1);
-  }*/
+
 
   // Called whenever we drag an element
   onItemMove(element, x, y, r) {
@@ -502,13 +436,12 @@ export class MainPage {
       position: 'bottom'
     });
     toast.present(toast);
-  
-
   }
+
+
   decimalToHex(d, padding) {
     var hex = Number(d).toString(16);
-    padding = typeof (padding) === "undefined" 
-    || padding === null ? padding = 2 : padding;
+    padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
     
     while (hex.length < padding) {
       hex = "0" + hex;
@@ -545,13 +478,11 @@ export class MainPage {
         for (let i = this.previousIndex; i < this.userArrayIndex; i++) {
 
           console.log( "MainPage::addNewCardsFromFirebase() user", user[i] );
-
           if(user[i].$key !== this.uid && this.likeKeys.indexOf(user[i].$key) == -1){
             
             this.sortedUsers.push( user[i] );
             this.previousIndex = i + 1;
             
-            // break;
           }
         }
         
@@ -599,7 +530,6 @@ export class MainPage {
   }
 
   sendFCMPush() {
-
     let Legacy_SERVER_KEY = "AIzaSyAHvUlvULDb5P3XME-ggl630Xo1dALbXvI";
     let FCM_PUSH_URL = "";
     let msg = "this is test message,.,,.,.";

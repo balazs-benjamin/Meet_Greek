@@ -15,6 +15,7 @@ export class ChatViewPage {
   uid:string;
   interlocutor:string;
   chats:FirebaseListObservable<any>;  
+  chatMessages:any[];
   @ViewChild(Content) content: Content;
 
   constructor(
@@ -29,10 +30,28 @@ export class ChatViewPage {
     this.uid = params.data.uid;
     this.interlocutor = params.data.interlocutor;
     
+    console.log("ChatViewPage", this.uid, this.interlocutor);
     // Get Chat Reference
     chatsProvider.getChatRef(this.uid, this.interlocutor)
     .then((chatRef:any) => {
+      console.log("ChatViewPage", chatRef );
+
         this.chats = this.af.database.list(chatRef);
+        this.chats.subscribe(messages=>{
+          console.log("new message", messages);
+          this.chatMessages = messages;
+          console.log("new message", this.uid, this.interlocutor, this.chatMessages[ this.chatMessages.length-1 ]);
+          if (this.chatMessages.length > 0) {
+            let last = this.chatMessages[ this.chatMessages.length-1 ];
+
+            this.chatsProvider.lastChats( this.uid, this.interlocutor, {
+              createdAt: last.createdAt,
+              from: last.from,
+              message:last.message});
+          }
+          
+
+        });
     });
     this.userProvider.getUserInterlocutor(this.interlocutor)
     .then(userObservable => {
@@ -40,6 +59,8 @@ export class ChatViewPage {
         this.interlocutorProfile = user;
       });
     });
+
+    
   }
 
   ionViewDidEnter() {

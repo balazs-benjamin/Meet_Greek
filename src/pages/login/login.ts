@@ -197,12 +197,13 @@ export class LoginPage {
         this.storage.set('first_name', response.first_name);
         if (response.gender && response.gender == 'female') {
           this.storage.set('preference', "Men");
+          this.storage.set('gender', "Women");
         }else{
           this.storage.set('preference', "Women");
+          this.storage.set('gender', "Men");
         }
         
         // this.storage.set('birthday', response.birthday);
-     
         this.writeUserData(response);
 
         //THIS CHECK
@@ -212,7 +213,6 @@ export class LoginPage {
             displayName: response.name,
             photoURL: response.picture.data.url
           }).then(data => {
-
             console.log("LoginPage::updateProfile", data); 
             let alert = this.util.doAlert("Error user", this.user.displayName, "Ok");
             alert.present();
@@ -248,8 +248,10 @@ export class LoginPage {
           this.storage.set('age', startAge);
           if (response.gender && response.gender == 'female') {
             this.storage.set('preference', "Men");
+            this.storage.set('gender', "Women");
           }else{
             this.storage.set('preference', "Women");
+            this.storage.set('gender', "Men");
           }
           this.storage.set('new_match_notif', true);
           this.storage.set('messages_notif', true);
@@ -297,6 +299,7 @@ export class LoginPage {
     let userProfilePicture;
     let user_first_name;
     let preference;
+    let gender;
     let userImages = [];
     let notificationTokens = [];
     let upAt = this.formatLocalDate();
@@ -353,6 +356,13 @@ export class LoginPage {
     }, error => {
       console.log("LoginPage::writeUserData preference", error);
     });
+    
+    this.storage.get('gender').then(pref => {
+      gender = pref;
+      console.log("LoginPage::writeUserData gender", pref);
+    }, error => {
+      console.log("LoginPage::writeUserData gender", error);
+    });
 
     notificationTokens.push(this.auth.token );
 /*
@@ -378,6 +388,7 @@ export class LoginPage {
           username: userName,
           profile_picture: userProfilePicture,
           first_name: user_first_name,
+          gender: gender,
           preference: preference,
           updatedAt: upAt,
           userImage0: userProfilePicture,
@@ -392,6 +403,7 @@ export class LoginPage {
           username: userName,
           profile_picture: userProfilePicture,
           first_name: user_first_name,
+          gender: gender,
           preference: preference,
           createdAt: upAt,
           userImage0: userImages[0],

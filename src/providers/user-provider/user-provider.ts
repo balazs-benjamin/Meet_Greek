@@ -39,9 +39,16 @@ export class UserProvider {
         });
     }
 
-
     // Get All Users of App
     getAllUsers() {
+        return this.af.database.list('/users', 
+            { query: { 
+                orderByChild: 'discoverable',
+                equalTo: true
+            }
+        });
+    }
+    getPreferedUsers() {
         return this.af.database.list('/users', 
             { query: { 
                 orderByChild: 'discoverable',

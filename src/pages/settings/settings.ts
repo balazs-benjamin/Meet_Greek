@@ -6,6 +6,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 import { AuthProvider } from '../../providers/auth-provider/auth-provider';
 import { UserProvider } from '../../providers/user-provider/user-provider';
+import { ChatsProvider } from '../../providers/chats-provider/chats-provider';
 import { UtilProvider } from '../../providers/utils';
 import { EditProfilePage } from '../edit-profile/edit-profile';
 import { PremiumPage } from '../premium/premium';
@@ -31,7 +32,10 @@ export class SettingsPage {
   slideOptions: any;
   distance: any;
   age:any;
-  ageValue:any;
+  ageValue:any = {
+    lower:0,
+    upper:0
+  };
   searchPreference;
   newMatches;
   messages;
@@ -48,6 +52,7 @@ export class SettingsPage {
     public af: AngularFire,
     public auth: AuthProvider,
     public userProvider: UserProvider,
+    public chatsProvider: ChatsProvider, 
     public local: Storage,
     public util: UtilProvider,
     public storage: Storage,
@@ -71,6 +76,7 @@ export class SettingsPage {
 
     this.storage.get('age').then(ag => {
       console.log("SettingsPage::constructor age", ag);
+
       this.age = ag;
       this.ageValue.lower = this.age.lower;
       this.ageValue.upper = this.age.upper;
@@ -196,7 +202,7 @@ export class SettingsPage {
   test(): void {
     let startAge = {
       lower: 18,
-      upper: 78
+      upper: 36
     }
     this.storage.set('discoverable', false);
     this.storage.set('distance', 50);
@@ -256,34 +262,50 @@ export class SettingsPage {
     this.storage.set('superlikes_notif', this.superLikes);
   }
 
-  deleteAccount(){
-    console.log('SettingsPage::deleteAccount');
-    let prompt = this.alertCtrl.create({
-      title:"Are you sure?",
-      message: "Please select delete to confirm.",
-      buttons:[
-      {
-        text: 'Cancel'
-      },
-      {
-        text: 'Delete',
-        handler: data => {
-          this.userProvider.getUid().then(uid => {
-            let currentUserRef = this.af.database.object('/users/' + uid);
-            if (currentUserRef) {
-                currentUserRef.remove();
-                this.local.remove('hasUserEnterDetails');
-                
-                this.logout();
+    deleteAccount(){
+        console.log('SettingsPage::deleteAccount');
+        let prompt = this.alertCtrl.create({
+          title:"Are you sure?",
+          message: "Please select delete to confirm.",
+          buttons:[
+          {
+            text: 'Cancel'
+          },
+          {
+            text: 'Delete',
+            handler: data => {
+              this.userProvider.getUid().then(uid => {
+                // remove all chats
+                let userChats = this.chatsProvider.getUserChats(uid);
+                userChats.subscribe(chats => {
+                  chats.forEach(chat => {
+                    this.chatsProvider.getChatRef(uid, chat.$key)
+                    .then((chatRef:any) => {
+                      this.af.database.list(chatRef).remove();
+                    });
+                  });
+
+
+                  let currentUserRef = this.af.database.object('/users/' + uid);
+                  if (currentUserRef) {
+                    // delete current user
+                    currentUserRef.remove().then(()=>{
+                      this.local.remove('hasUserEnterDetails');
+                      
+                      // everything deleted
+                      this.logout();
+                    });
+                  }
+
+                });
+              });
+              
             }
-          });
-          
-        }
-      }
-      ]
-    });
-    prompt.present();
-  }
+          }
+          ]
+        });
+        prompt.present();
+    }
 
   showLegal(): void {
     console.log("SettingsPage::showLegal()" );

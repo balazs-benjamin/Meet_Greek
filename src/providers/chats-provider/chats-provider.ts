@@ -5,30 +5,42 @@ import { UserProvider } from '../user-provider/user-provider';
 @Injectable()
 export class ChatsProvider {
   constructor(public af: AngularFire, public up: UserProvider) {}
+
   // get list of Chats of a Logged In User
   getChats() {
      return this.up.getUid().then(uid => {
+       console.log("::getChats", uid);
         let chats = this.af.database.list('/users/' + uid + '/chats');
         return chats;
      });
   }
 
   getUserChats(uid) {
-      return this.af.database.list('/users/' + uid + '/chats');
+    console.log("::getUserChats", uid);
+      return this.af.database.list('/users/' + uid + '/chats', 
+        {query: {
+          orderByChild:'createdAt'  
+        }}).map( (array) => array.reverse());
   }
   
   // Add Chat References to Both users
+  /*
   addChats(uid, interlocutor) {
-      // First User
       let endpoint = this.af.database.object('/users/' + uid + '/chats/' + interlocutor);
-      endpoint.set(true);
-      
-      // Second User
+      endpoint.set(true);      
+  }*/
+
+  lastChats(uid, interlocutor, chat) {
+      let endpoint1 = this.af.database.object('/users/' + uid + '/chats/' + interlocutor);
+      endpoint1.set(chat);
+
       let endpoint2 = this.af.database.object('/users/' + interlocutor + '/chats/' + uid);
-      endpoint2.set(true);
+      endpoint2.set(chat);
   }
 
   getChatRef(uid, interlocutor) {
+    console.log("::getChatRef", uid, interlocutor);
+
       let firstRef = this.af.database.object('/chats/' + uid + ',' + interlocutor, {preserveSnapshot:true});
       let promise = new Promise((resolve, reject) => {
           firstRef.subscribe(snapshot => {
@@ -40,7 +52,7 @@ export class ChatsProvider {
                     secondRef.subscribe(snapshot => {
                         let b = snapshot.exists();
                         if(!b) {
-                            this.addChats(uid,interlocutor);
+                            this.lastChats(uid, interlocutor, {});
                         }
                     });
                     resolve('/chats/'+interlocutor+','+uid);

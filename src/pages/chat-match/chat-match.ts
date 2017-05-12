@@ -16,9 +16,10 @@ import { MatchPage } from '../match/match';
 export class ChatMatchPage {
   everythingLoaded = false;
   // chats:Observable<any[]>;
-  users:Observable<any[]>;
+  users:any[];
   chatUsersFiltered:any[] = [];
   chatUsers:any[] = [];
+  chatMessages:any[] = [];
   uid:string;
   searchQuery: string = '';
   searchInput: string = '';
@@ -47,10 +48,14 @@ export class ChatMatchPage {
         });
       });
       */
+
     this.userProvider.getUid()
     .then(uid => {
         this.uid = uid;
-        this.users = this.userProvider.getAllUsers();
+        this.userProvider.getAllUsers().subscribe(users => {
+          console.log("ChatMatchPage users: ", users);
+          this.users = users;
+        });
         this.userChats = this.chatsProvider.getUserChats(uid);
         this.addToChatsArray();
     });
@@ -60,36 +65,25 @@ export class ChatMatchPage {
 
   addToChatsArray(): void {
     console.log("ChatMatchPage::addToChatsArray()");
+
     this.userChats.subscribe(chats => {
         this.chatsKeys = [];
         console.log("ChatMatchPage::addToChatsArray()", chats);
 
         chats.forEach(chat => {
 
-          this.chatsKeys.push(chat.$key);
-
-          this.chatsProvider.getChatRef(this.uid, chat.$key)
-          .then((chatRef:any) => {
-            this.af.database.list(chatRef, {query: {
-              orderByChild:'createdAt',
-              limitToFirst:1
-            }}).subscribe( data =>{
-              console.log("got chats ", chat.$key, data);
-              if (data[0]) {
-                this.chatsCat[chat.$key] = data[0].message;
-              }else{
-                this.chatsCat[chat.$key] = "No message yet"
-              }
-            });
-          });
-
-          this.af.database.object(`/users/${chat.$key}`).subscribe(user => {
-            console.log("got user ", chat.$key, user);
+          this.chatsKeys.push( chat.$key );
+          // get users
+          this.af.database.object(`/users/${chat.$key}`).take(1)
+          .subscribe(user => {
+            
+            user['lastChat'] = chat;
+            
+            console.log("got chat user ", user);
             this.chatUsers.push( user );
             this.chatUsersFiltered.push( user );
           })
         });
-
         
         this.everythingLoaded = true;
     });

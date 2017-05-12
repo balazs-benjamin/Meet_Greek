@@ -19,38 +19,36 @@ declare var FCMPlugin;
 
 
 @Component({
-  templateUrl: 'app.html'
+    templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any;
+    rootPage:any;
 
-  constructor(
-    private platform: Platform, 
-    public af: AngularFire,
-    private alertCtrl: AlertController,
-    public authProvider:AuthProvider, 
-    public storage: Storage) {
+    constructor(
+        private platform: Platform, 
+        public af: AngularFire,
+        private alertCtrl: AlertController,
+        public authProvider:AuthProvider, 
+        public storage: Storage) {
 
-    platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      StatusBar.styleDefault();
-      StatusBar.backgroundColorByHexString('#ffffff'); // set status bar to white
-      Splashscreen.hide();
-      if (platform.is('ios')) {
-        Keyboard.hideKeyboardAccessoryBar(false)
-        //Keyboard.disableScroll(true);
-        //Keyboard.shrinkView(true);
-      }
+        platform.ready().then(() => {
+        
+        StatusBar.styleDefault();
+        StatusBar.backgroundColorByHexString('#ffffff'); // set status bar to white
+        Splashscreen.hide();
+        if (platform.is('ios')) {
+             Keyboard.hideKeyboardAccessoryBar(false)
+            //Keyboard.disableScroll(true);
+            //Keyboard.shrinkView(true);
+        }
 
-      this.intialize();
+        this.intialize();
 
       if ( this.platform.is('cordova') ) {
         // setTimeout(this.initPushNotification, 1000);
       }else{
         console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
       }
-      
     });
   }
 
@@ -61,9 +59,9 @@ export class MyApp {
         this.af.auth.take(1).subscribe(auth => {
           if(auth && reachedMain) {
             console.log("MyApp::intialize going to main page");
-            // this.rootPage = MainPage;
+            this.rootPage = MainPage;
             // this.rootPage = AboutMePage;
-            this.rootPage = SettingsPage;
+            // this.rootPage = SettingsPage;
             // this.rootPage = EditProfilePage;
           }else{
             console.log("MyApp::intialize going to login page");
