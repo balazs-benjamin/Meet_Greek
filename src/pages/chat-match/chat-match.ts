@@ -14,40 +14,28 @@ import { MatchPage } from '../match/match';
   templateUrl: 'chat-match.html'
 })
 export class ChatMatchPage {
-  everythingLoaded = false;
-  // chats:Observable<any[]>;
-  users:any[];
-  chatUsersFiltered:any[] = [];
-  chatUsers:any[] = [];
-  chatMessages:any[] = [];
-  uid:string;
-  searchQuery: string = '';
-  searchInput: string = '';
-  userChats:Observable<any[]>;
-  chatsKeys = [];
-  chatsCat = {};
+    everythingLoaded = false;
+    // chats:Observable<any[]>;
+    users:any[];
+    chatUsersFiltered:any[] = [];
+    chatUsers:any[] = [];
+    chatMessages:any[] = [];
+    uid:string;
+    searchQuery: string = '';
+    searchInput: string = '';
+    userChats:Observable<any[]>;
+    chatsKeys = [];
+    chatsCat = {};
 
 
-  constructor(
-    public chatsProvider: ChatsProvider, 
-    public userProvider: UserProvider, 
-    public af:AngularFire, 
-    public nav: NavController,
-    public modalCtrl: ModalController) {
+    constructor(
+        public chatsProvider: ChatsProvider, 
+        public userProvider: UserProvider, 
+        public af:AngularFire, 
+        public nav: NavController,
+        public modalCtrl: ModalController) {
 
-    console.log("ChatMatchPage");
-/*
-    this.chatsProvider.getChats()
-      .then(chats => {
-        
-        this.chats = chats.map(users => {
-            return users.map(user => {
-                user.info = this.af.database.object(`/users/${user.$key}`);
-                return user;
-            });
-        });
-      });
-      */
+        console.log("ChatMatchPage");
 
     this.userProvider.getUid()
     .then(uid => {

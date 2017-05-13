@@ -1,10 +1,13 @@
 import { Component, ViewChild, ViewChildren, QueryList  } from '@angular/core';
 import { NavController, ModalController, Slides, Content, Platform, ToastController } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
+import { Storage } from '@ionic/storage';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
+
 import { UserProvider } from '../../providers/user-provider/user-provider';
 import { LikeProvider } from '../../providers/like-provider/like-provider';
+
 import { ChatViewPage } from '../chat-view/chat-view';
-import { Storage } from '@ionic/storage';
 import { SettingsPage } from '../settings/settings';
 import { ExtendedProfilePage } from '../extended-profile/extended-profile';
 import { ChatMatchPage }  from '../chat-match/chat-match';
@@ -21,8 +24,8 @@ import 'rxjs/add/operator/map';
 
 
 @Component({
-  selector: 'page-main',
-  templateUrl: 'main.html'
+    selector: 'page-main',
+    templateUrl: 'main.html'
 })
 export class MainPage {
     @ViewChild('myswing1') swingStack: SwingStackComponent;
@@ -58,7 +61,8 @@ export class MainPage {
     interlocutorLikes:Observable<any[]>;
     userLikes:Observable<any[]>;
     userkeys = [];
-    users:Observable<any[]>;
+    // users:Observable<any[]>;
+    users:FirebaseListObservable<any[]>;
     // buttonsVisible = false;
 
     constructor(
@@ -79,17 +83,16 @@ export class MainPage {
 
         //Swipe
         this.stackConfig = {
-          throwOutConfidence: (offset, element) => {
-            console.log("throwOutConfidence", offset, element, Math.abs(offset) / (element/2));
-
-            return Math.min(Math.abs(offset) / (element/2), 1);
-          },
-          // transform: (element, x, y, r) => {
-          //   this.onItemMove(element, x, y, r);
-          // },
-          throwOutDistance: (d) => {
-            return 300;
-          }
+            throwOutConfidence: (offset, element) => {
+                console.log("throwOutConfidence", offset, element, Math.abs(offset) / (element/2));
+                return Math.min(Math.abs(offset) / (element/2), 1);
+            },
+            // transform: (element, x, y, r) => {
+            //   this.onItemMove(element, x, y, r);
+            // },
+            throwOutDistance: (d) => {
+                return 300;
+            }
         };
 
         this.initialize();
@@ -211,61 +214,60 @@ export class MainPage {
         // }
     }
 
-  superLike(): void {
-    console.log( "MainPage::superLike()");
+    superLike(): void {
+        console.log( "MainPage::superLike()");
 
-    let uid = this.uid;
-    let interlocutor = this.currentInterlocutorKey;
-    this.likeProvider.addSuperLike(uid, interlocutor);
-    this.likeKeys.push(interlocutor);
-    var index = this.userkeys.indexOf(interlocutor);
-    if (index > -1) {
-      this.userkeys.splice(index, 1);
-    }  
-    this.checkLikes();
-  }
-
-  checkLikes(): void {
-    console.log( "MainPage::checkLikes()");
-    
-    if(this.likeKeys.indexOf(this.currentInterlocutorKey) == -1){
-      this.isLiked = false
-    }else{
-      this.isLiked = true;
+        let uid = this.uid;
+        let interlocutor = this.currentInterlocutorKey;
+        this.likeProvider.addSuperLike(uid, interlocutor);
+        this.likeKeys.push(interlocutor);
+        var index = this.userkeys.indexOf(interlocutor);
+        if (index > -1) {
+          this.userkeys.splice(index, 1);
+        }  
+        this.checkLikes();
     }
-    console.log(this.currentInterlocutorKey);
-    console.log(this.isLiked);
-    // this.mainSlider.update();
-  }
 
-  reject(interlocutor): void {
-    console.log( "MainPage::reject()");
+    checkLikes(): void {
+        console.log( "MainPage::checkLikes()");
+        
+        if(this.likeKeys.indexOf(this.currentInterlocutorKey) == -1){
+          this.isLiked = false
+        }else{
+          this.isLiked = true;
+        }
+        console.log(this.currentInterlocutorKey);
+        console.log(this.isLiked);
+        // this.mainSlider.update();
+    }
 
-    let uid = this.uid;
-    // let interlocutor = this.currentInterlocutorKey;
-    this.likeProvider.reject(uid, interlocutor);
-    this.likeKeys.push(interlocutor);
-    // var index = this.userkeys.indexOf(interlocutor);
-    // if (index > -1) {
-    //   this.userkeys.splice(index, 1);
-    // }
-    //this.checkLikes();
-    // this.mainSlider.update();
-    // this.mainSlider.slideNext();
+    reject(interlocutor): void {
+        console.log( "MainPage::reject()");
 
-    //reload users
-    this.everythingLoaded = false;
-    this.userProvider.getUid()
-      .then(uid => {
-          this.uid = uid;
-          this.users = this.userProvider.getAllUsers();
-          this.userLikes = this.likeProvider.getUserLikes(uid);
-          this.addToExistingLikedArray(interlocutor);
-          // this.buttonsVisible = true;
-      });
-    //console.log(this.userkeys);
-    
-  }
+        let uid = this.uid;
+        // let interlocutor = this.currentInterlocutorKey;
+        this.likeProvider.reject(uid, interlocutor);
+        this.likeKeys.push(interlocutor);
+        // var index = this.userkeys.indexOf(interlocutor);
+        // if (index > -1) {
+        //   this.userkeys.splice(index, 1);
+        // }
+        //this.checkLikes();
+        // this.mainSlider.update();
+        // this.mainSlider.slideNext();
+
+        //reload users
+        this.everythingLoaded = false;
+        this.userProvider.getUid()
+          .then(uid => {
+              this.uid = uid;
+              this.users = this.userProvider.getAllUsers();
+              this.userLikes = this.likeProvider.getUserLikes(uid);
+              this.addToExistingLikedArray(interlocutor);
+              // this.buttonsVisible = true;
+          });
+        //console.log(this.userkeys);
+    }
 
   addToLikedArray(): void {
     console.log( "MainPage::addToLikedArray()");
@@ -467,8 +469,36 @@ export class MainPage {
 
   addNewCardsFromFirebase(): void {
     console.log( "MainPage::addNewCardsFromFirebase()", this.userArrayIndex );
+    let gender:string = this.loggedUser.gender;
+    let preference:string = this.loggedUser.preference;
 
-    this.users.take(1).subscribe(user => {
+    this.users.take(1)
+    // filter user preference
+    .map(items => {
+        if (preference === 'Friends'){
+            return items.filter(item => ( item.preference === 'Friends' ) );
+        }else if (preference === 'Men') {
+            if (gender === 'Women') {
+                return items.filter(item => (item.gender === 'Men' && item.preference === 'Women') );
+            }else if (gender === 'Men') {
+                return items.filter(item => (item.gender === 'Men' && item.preference === 'Men') );
+            }
+
+            return items.filter(item => (item.preference === 'Men') );
+
+        }else if (preference === 'Women') {
+            
+            if (gender === 'Women') {
+                return items.filter(item => (item.gender === 'Women' && item.preference === 'Women') );
+            }else if (gender === 'Men') {
+                return items.filter(item => (item.gender === 'Men' && item.preference === 'Women') );
+            }
+
+            return items.filter(item => (item.preference === 'Men') );
+        }
+        return items;
+    })
+    .subscribe(user => {
       console.log( "MainPage::addNewCardsFromFirebase()", user );
 
         // items is an array

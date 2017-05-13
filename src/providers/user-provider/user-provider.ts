@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFire } from 'angularfire2';
+import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { Camera } from 'ionic-native';
 
