@@ -18,6 +18,20 @@ import { Keyboard } from 'ionic-native';
 declare var FCMPlugin;
 
 
+/*
+const options: PushOptions = {
+    android: {
+        senderID: '798902207354'
+   },
+   ios: {
+       alert: 'true',
+       badge: true,
+       sound: 'false'
+   },
+   windows: {}
+};
+*/
+
 @Component({
     templateUrl: 'app.html'
 })
@@ -43,12 +57,67 @@ export class MyApp {
         }
 
         this.intialize();
+        if ( this.platform.is('cordova') ) {
+            this.initPushNotification();
+            /*
+            const pushObject: PushObject = this.push.init(options);
+            this.push.hasPermission()
+            .then((res: any) => {
+                if (res.isEnabled) {
+                    console.log('MyApp:: We have permission to send push notifications');
+                    
+                } else {
+                    console.log('MyApp:: We do not have permission to send push notifications');
+                }
+            });
 
-      if ( this.platform.is('cordova') ) {
-        this.initPushNotification();
-      }else{
-        console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
-      }
+            pushObject.on('registration').subscribe( (data:any) => {
+                console.log("MyApp registrationId", data);
+                this.storage.set('notificationToken', data.registrationId );
+            });
+
+            pushObject.on('notification').subscribe( (data:any) => {
+                console.log( "MyApp notification", data );
+                // console.log("MyApp notification", data.message);
+                // console.log("MyApp notification", data.title);
+                // console.log("MyApp notification", data.count);
+                // console.log("MyApp notification", data.sound);
+                // console.log("MyApp notification", data.image);
+                // console.log("MyApp notification", data.additionalData);
+
+                if (data.additionalData.foreground) {
+                    // if application open, show popup
+                    let confirmAlert = this.alertCtrl.create({
+                        title: data.title,
+                        message: data.message,
+                        buttons: [{
+                            text: 'Ignore',
+                            role: 'cancel'
+                        }, {
+                            text: 'View',
+                            handler: () => {
+                                //TODO: Your logic here
+                                this.rootPage.push(ChatViewPage, {message: data});
+                            }
+                        }]
+                    });
+                    confirmAlert.present();
+                } else {
+                    //if user NOT using app and push notification comes
+                    //TODO: Your logic on click of push notification directly
+
+                    this.rootPage.push(ChatViewPage, {message: data});
+                    console.log("Push notification clicked");
+                }
+            });
+
+            pushObject.on('error').subscribe( (e:any) => {
+                console.log("MyApp error", e);
+            });
+            */
+        }else{
+            console.warn("Push notifications not initialized. Cordova is not available - Run in physical device");
+        }
     });
   }
 
@@ -131,3 +200,10 @@ export class MyApp {
     );
 }
 }
+/*
+
+
+
+
+
+*/

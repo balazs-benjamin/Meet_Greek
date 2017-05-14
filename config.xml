@@ -58,8 +58,10 @@
         <splash height="2208" src="resources/ios/splash/Default-736h.png" width="1242" />
         <splash height="1242" src="resources/ios/splash/Default-Landscape-736h.png" width="2208" />
         <splash height="1536" src="resources/ios/splash/Default-Landscape@2x~ipad.png" width="2048" />
+        <splash height="2048" src="resources/ios/splash/Default-Landscape@~ipadpro.png" width="2732" />
         <splash height="768" src="resources/ios/splash/Default-Landscape~ipad.png" width="1024" />
         <splash height="2048" src="resources/ios/splash/Default-Portrait@2x~ipad.png" width="1536" />
+        <splash height="2732" src="resources/ios/splash/Default-Portrait@~ipadpro.png" width="2048" />
         <splash height="1024" src="resources/ios/splash/Default-Portrait~ipad.png" width="768" />
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
@@ -81,6 +83,7 @@
     </feature>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
     <engine name="android" spec="^6.2.3" />
+    <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-browsertab" spec="~0.2.0" />
     <plugin name="cordova-plugin-buildinfo" spec="~1.1.0" />
     <plugin name="cordova-plugin-console" spec="~1.0.6" />
@@ -89,6 +92,7 @@
         <variable name="APP_ID" value="126447160753876" />
         <variable name="APP_NAME" value="meet_greek" />
     </plugin>
+    <plugin name="cordova-plugin-fcm" spec="^2.1.1" />
     <plugin name="cordova-plugin-inappbrowser" spec="~1.7.0" />
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.2" />
     <plugin name="cordova-plugin-statusbar" spec="~2.2.2" />
@@ -96,7 +100,4 @@
     <plugin name="cordova-sqlite-storage" spec="~2.0.3" />
     <plugin name="cordova-universal-links-plugin" spec="~1.2.1" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="phonegap-plugin-push" spec="^1.10.3">
-        <variable name="SENDER_ID" value="798902207354" />
-    </plugin>
 </widget>

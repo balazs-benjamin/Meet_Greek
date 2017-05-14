@@ -47,7 +47,7 @@ export class MainPage {
     likeKeys = [];
     currentInterlocutorKey: any;
     currentInterlocutorKey2: any;
-    isPublicEnabled = false;
+    isPublicEnabled = true;
     calculatedDistance = 0;
     buttonDisabled: any;
     greeksNotFound = false;
