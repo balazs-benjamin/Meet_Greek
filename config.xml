@@ -75,6 +75,7 @@
     <preference name="KeyboardShrinksView" value="true" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
+    <preference name="loadUrlTimeoutValue" value="700000" />
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
@@ -95,4 +96,7 @@
     <plugin name="cordova-sqlite-storage" spec="~2.0.3" />
     <plugin name="cordova-universal-links-plugin" spec="~1.2.1" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <plugin name="phonegap-plugin-push" spec="^1.10.3">
+        <variable name="SENDER_ID" value="798902207354" />
+    </plugin>
 </widget>

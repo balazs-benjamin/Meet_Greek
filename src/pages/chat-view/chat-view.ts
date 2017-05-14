@@ -6,51 +6,62 @@ import { UserProvider } from '../../providers/user-provider/user-provider';
 import { ExtendedProfilePage } from '../extended-profile/extended-profile';
 
 @Component({
-  selector: 'page-chat-view',
-  templateUrl: 'chat-view.html',
+    selector: 'page-chat-view',
+    templateUrl: 'chat-view.html',
 })
 export class ChatViewPage {
-  interlocutorProfile = <any>{};
-  message: string;
-  uid:string;
-  interlocutor:string;
-  chats:FirebaseListObservable<any>;  
-  chatMessages:any[];
-  @ViewChild(Content) content: Content;
+    @ViewChild(Content) content: Content;
+    interlocutorProfile = <any>{};
+    message: string;
+    uid:string;
+    interlocutor:string;
+    chats:FirebaseListObservable<any>;  
+    chatMessages:any[];
 
-  constructor(
-    public nav:NavController, 
-    public params:NavParams, 
-    public chatsProvider:ChatsProvider, 
-    public af:AngularFire, 
-    public userProvider:UserProvider,
-    public platform: Platform,
-    public modalCtrl: ModalController) {
+    constructor(
+        public nav:NavController, 
+        public params:NavParams, 
+        public chatsProvider:ChatsProvider, 
+        public af:AngularFire, 
+        public userProvider:UserProvider,
+        public platform: Platform,
+        public modalCtrl: ModalController) {
 
-    this.uid = params.data.uid;
-    this.interlocutor = params.data.interlocutor;
-    
-    console.log("ChatViewPage", this.uid, this.interlocutor);
-    // Get Chat Reference
-    chatsProvider.getChatRef(this.uid, this.interlocutor)
-    .then((chatRef:any) => {
-      console.log("ChatViewPage", chatRef );
+        this.uid = params.data.uid;
+        this.interlocutor = params.data.interlocutor;
+        
+        console.log("ChatViewPage", this.uid, this.interlocutor);
+        // Get Chat Reference
+        chatsProvider.getChatRef(this.uid, this.interlocutor)
+        .then((chatRef:any) => {
+            console.log("ChatViewPage", chatRef );
 
         this.chats = this.af.database.list(chatRef);
         this.chats.subscribe(messages=>{
-          console.log("new message", messages);
-          this.chatMessages = messages;
-          console.log("new message", this.uid, this.interlocutor, this.chatMessages[ this.chatMessages.length-1 ]);
-          if (this.chatMessages.length > 0) {
-            let last = this.chatMessages[ this.chatMessages.length-1 ];
+            console.log("new message", messages);
 
-            this.chatsProvider.lastChats( this.uid, this.interlocutor, {
-              createdAt: last.createdAt,
-              from: last.from,
-              message:last.message});
+            this.chatMessages = messages;
+
+            console.log("new message", this.uid, this.interlocutor, this.chatMessages[ this.chatMessages.length-1 ]);
+            if (this.chatMessages.length > 0) {
+                let last = this.chatMessages[ this.chatMessages.length-1 ];
+
+                // update last message 
+                this.chatsProvider.lastChats( this.uid, this.interlocutor, {
+                  createdAt: last.createdAt,
+                  from: last.from,
+                  message:last.message});
+
+                let notifications = this.af.database.list( '/notifications' );
+                notifications.push({
+                    title: `${this.interlocutorProfile.first_name}`,
+                    body: last.message,
+                    icon: this.interlocutorProfile.profile_picture,
+                    interlocutorId: this.interlocutor
+                });
+
           }
           
-
         });
     });
     this.userProvider.getUserInterlocutor(this.interlocutor)
@@ -82,48 +93,50 @@ export class ChatViewPage {
     extendedProfileModal.present();
   }
 
-  sendMessage() {
-    if(this.message) {
-      let sent = this.formatLocalDate();
-      let chat = {
-          from: this.uid,
-          message: this.message,
-          createdAt: sent,
-          type: 'message'
-      };
-      this.chats.push(chat);
-      this.message = "";
-    }
-  };
+    sendMessage() {
+        if(this.message) {
+            let sent = this.formatLocalDate();
+            let chat = {
+                from: this.uid,
+                message: this.message,
+                createdAt: sent,
+                type: 'message'
+            };
+            this.chats.push(chat);
+            this.message = "";
+        }
+    };
   
-  sendPicture() {
-      let sent = this.formatLocalDate();
-      let chat = {from: this.uid, createdAt: sent, type: 'picture', picture:null};
-      this.userProvider.getPicture()
-      .then((image) => {
-          chat.picture =  image;
-          this.chats.push(chat);
-      });
-  }
+    sendPicture() {
+        let sent = this.formatLocalDate();
+        let chat = {from: this.uid, createdAt: sent, type: 'picture', picture:null};
 
-  deleteMessage(chat:any){
-    console.log("deleteMessage", chat);
-    this.chats.remove(chat);
-  }
+        this.userProvider.getPicture()
+        .then((image) => {
+            chat.picture =  image;
+            this.chats.push(chat);
+        });
+    }
 
-  flagMessage(chat:any){
-    console.log("flagMessage", chat);
-  }
+    deleteMessage(chat:any){
+        console.log("deleteMessage", chat);
+        this.chats.remove(chat);
+    }
 
-  formatLocalDate() {
-    var now = new Date(),
+    flagMessage(chat:any){
+        console.log("flagMessage", chat);
+    }
+
+    formatLocalDate() {
+        var now = new Date(),
         tzo = -now.getTimezoneOffset(),
         dif = tzo >= 0 ? '+' : '-',
         pad = function(num) {
             var norm = Math.abs(Math.floor(num));
             return (norm < 10 ? '0' : '') + norm;
         };
-    return now.getFullYear() 
+
+        return now.getFullYear()
         + '-' + pad(now.getMonth()+1)
         + '-' + pad(now.getDate())
         + 'T' + pad(now.getHours())

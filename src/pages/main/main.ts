@@ -23,6 +23,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 
+
 @Component({
     selector: 'page-main',
     templateUrl: 'main.html'
@@ -35,7 +36,7 @@ export class MainPage {
     sortedUsers: Array<any>;
     cardUserArray: Array<any>;
     stackConfig: StackConfig;
-
+    
     previousIndex = 0;
     userArrayIndex = 0;
     isLastElement = false;
@@ -94,7 +95,7 @@ export class MainPage {
                 return 300;
             }
         };
-
+        
         this.initialize();
     }
 
@@ -132,8 +133,13 @@ export class MainPage {
             if (userObservable) {
               userObservable.subscribe(data => {
                 this.loggedUser = data;
-                console.log("MainPage likes", this.loggedUser);
+                this.isPublicEnabled = this.loggedUser.discoverable;
+                this.storage.set('discoverable', this.isPublicEnabled);
+
+                console.log("MainPage::initialize loggedUser", this.loggedUser);
+                console.log("MainPage::initialize discoverable", this.loggedUser.discoverable);
               });
+
             }
           });
 
@@ -149,10 +155,21 @@ export class MainPage {
         }
     }
 
+    makeDiscoverable(){
+        this.isPublicEnabled = true;
+        this.storage.set('discoverable', true);
+        this.userProvider.updateUserProfile(this.uid, 'discoverable', this.isPublicEnabled);
+
+        this.addToLikedArray();
+        this.addNewCardsFromFirebase();
+    }
+
     openChat(key) {
         console.log( "MainPage::openChat()", key );
         let param = {uid: this.uid, interlocutor: key};
         this.navCtrl.push(ChatViewPage,param);
+        this.loggedUser
+
     }
 
     ionSlideTap(key) {
@@ -619,13 +636,14 @@ export class MainPage {
   }
 
 
-  private calculateAge(b: any) {
-    console.log( "MainPage::calculateAge()", b );
 
-    let birthday = new Date(b.replace(' ', 'T'));
-    let ageDifMs = Date.now() - birthday.getTime();
-    let ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-  }
+    private calculateAge(b: any) {
+        console.log( "MainPage::calculateAge()", b );
+
+        let birthday = new Date(b.replace(' ', 'T'));
+        let ageDifMs = Date.now() - birthday.getTime();
+        let ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    }
 
 }

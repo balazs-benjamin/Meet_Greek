@@ -17,39 +17,45 @@ import firebase from 'firebase';
 import { AngularFire } from 'angularfire2';
 import { MainPage } from '../main/main';
 
+declare var FCMPlugin;
 @Component({
-  selector: 'page-login',
-  templateUrl: 'login.html'
+    selector: 'page-login',
+    templateUrl: 'login.html'
 })
 export class LoginPage {
-  hasUserEnterDetails:boolean = false;
-  loginForm: any;
-  loading: any;
-  public user:any;
-  private fbSession:any;
-  private deleteAccount:boolean = false;
+    hasUserEnterDetails:boolean = false;
+    loginForm: any;
+    loading: any;
+    public user:any;
+    private fbSession:any;
+    private deleteAccount:boolean = false;
+    notificationToken:string;
 
-  // coordinates = {lat: 0, lng: 0};
-  // public cityResults: any;
+    // coordinates = {lat: 0, lng: 0};
+    // public cityResults: any;
 
-  constructor(
-    private fb: Facebook,
-    public nav: NavController,
-    public af: AngularFire,
-    public auth: AuthProvider,
-    public userProvider: UserProvider,
-    public util: UtilProvider,
-    public storage: Storage,
-    public platform: Platform,
-    private navParams: NavParams,
-    public loadingCtrl: LoadingController) {
+    constructor(
+        private fb: Facebook,
+        public nav: NavController,
+        public af: AngularFire,
+        public auth: AuthProvider,
+        public userProvider: UserProvider,
+        public util: UtilProvider,
+        public storage: Storage,
+        public platform: Platform,
+        private navParams: NavParams,
+        public loadingCtrl: LoadingController) {
 
-    this.loading = this.loadingCtrl.create({
-      content: 'Authenticating...'
-    });
-    console.log("navParams.data", navParams.data);
-    
-  }
+        this.loading = this.loadingCtrl.create({
+            content: 'Authenticating...'
+        });
+
+        console.log("navParams.data", navParams.data);
+
+        this.tokensetup().then(token => {
+            // store token
+        });
+    }
 
   ionViewDidLoad() {
     console.log("LoginPage::ionViewDidLoad()");
@@ -364,15 +370,7 @@ export class LoginPage {
       console.log("LoginPage::writeUserData gender", error);
     });
 
-    notificationTokens.push(this.auth.token );
-/*
-    this.af.auth.
-    .auth.getToken().then( token => {
-      notificationTokens.push(token);
-      notificationTokens.push(this.auth.notificationToken);
-    }, err => {
-      console.log("Couldn't find token.", err);
-    });*/
+    notificationTokens.push(this.notificationToken );
     
     this.userProvider.getUid().then((uid) => {
       console.log("LoginPage::writeUserData getUid", uid);
@@ -416,4 +414,22 @@ export class LoginPage {
       console.log("writeUserData getUid", error);
     });
   }
+
+    tokensetup() {
+        console.log('LoginPage::tokensetup()');
+
+        var promise = new Promise((resolve, reject) => {
+
+            FCMPlugin.getToken((token) => {
+                console.log('LoginPage::getToken() success', token);
+                this.notificationToken = token;
+            }, (err) => {
+                console.log('LoginPage::getToken() error', err);
+                reject(err);
+            });
+
+        });
+        return promise;
+    }
+
 }

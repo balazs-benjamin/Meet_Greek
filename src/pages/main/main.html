@@ -64,8 +64,15 @@
       </template>
     </ion-slides>
   </div>-->
+
+  <ion-card *ngIf="!isPublicEnabled">
+    <ion-item (click)="makeDiscoverable()">
+      <h2 text-wrap>Please turn on your discoverable settings to start swiping</h2>
+      <button ion-button>Turn on discoverable</button>
+    </ion-item>
+  </ion-card>
   
-  <div swing-stack #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" id="card-stack">
+  <div swing-stack *ngIf="!isPublicEnabled" #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" id="card-stack">
     <ion-card #mycards1 swing-card *ngFor="let c of sortedUsers">
       <ion-item *ngIf="c.profile_picture" (click)="ionSlideTap(c)">
         <img id="card_image" *ngIf="c.profile_picture" [src]="c.profile_picture">

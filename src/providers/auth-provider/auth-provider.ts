@@ -10,7 +10,6 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class AuthProvider {
   private authState: FirebaseAuthState;
-  private notificationToken;
   uid: number;
   username: string;
   picture: string;
@@ -29,16 +28,6 @@ export class AuthProvider {
     af.auth.subscribe((state: FirebaseAuthState) => {
       console.log("AngularFireAuth success", state);
       this.authState = state;
-      if (this.authState) {
-
-        this.authState.auth.getToken().then( 
-          (token) => {  
-            console.log('MyApp::onToken() success', token);
-            this.notificationToken = token;
-          }, err => {
-            console.log('MyApp::onToken() error', err);
-          });
-      }
     }, err => {
       console.log("AngularFireAuth error", err);
     });
@@ -88,11 +77,6 @@ export class AuthProvider {
   get getAuthState():FirebaseAuthState{
     return this.authState;
   }
-
-  get token(){
-    return this.notificationToken;
-  }
-  
 
   signInWithFacebook(facebookCredential): firebase.Promise<FirebaseAuthState> {
     return this.auth$.login(facebookCredential, {

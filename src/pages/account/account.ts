@@ -3,7 +3,6 @@ import { NavController, ModalController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { AuthProvider } from '../../providers/auth-provider/auth-provider';
 import { UserProvider } from '../../providers/user-provider/user-provider';
-import { Facebook } from 'ionic-native';
 import { UtilProvider } from '../../providers/utils';
 import { EditProfilePage } from '../edit-profile/edit-profile';
 import { PremiumPage } from '../premium/premium';
