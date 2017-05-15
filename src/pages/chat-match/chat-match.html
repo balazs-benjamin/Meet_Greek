@@ -28,13 +28,30 @@
         </template>
     </ion-scroll> 
     
-
     <ion-list-header>
         <ion-label item-left>MESSAGES</ion-label>    
     </ion-list-header>
 
     <ion-list>
-        <ion-item *ngFor="let chat of chatUsersFiltered " (click)="openChat(chat['$key'])">
+        <ion-item-sliding *ngFor="let chat of chatUsersFiltered">
+            <ion-item (click)="openChat(chat['$key'])">
+                <ion-avatar item-left>
+                    <img class="list-img-big" *ngIf="!chat.userImage0" src="assets/images/default.png">
+                    <img class="list-img-big" *ngIf="chat.userImage0" src="{{chat.userImage0}}">
+                </ion-avatar>
+                <h2>{{chat.first_name}}</h2>
+                <p *ngIf="chat.lastChat">{{ chat.lastChat.message }}</p>
+                <p *ngIf="!chat.lastChat">No meassage yet</p>
+            </ion-item>
+
+      <ion-item-options side="right">
+        <button ion-button class="btn-delete" color="danger" (click)="deleteConversation(chat['$key'])">Delete</button>
+      </ion-item-options>
+      
+    </ion-item-sliding>
+
+
+        <!-- <ion-item *ngFor="let chat of chatUsersFiltered " (click)="openChat(chat['$key'])">
             <ion-avatar item-left>
                 <img class="list-img-big" *ngIf="!chat.userImage0" src="assets/images/default.png">
                 <img class="list-img-big" *ngIf="chat.userImage0" src="{{chat.userImage0}}">
@@ -42,7 +59,7 @@
             <h2>{{chat.first_name}}</h2>
             <p *ngIf="chat.lastChat">{{ chat.lastChat.message }}</p>
             <p *ngIf="!chat.lastChat">No meassage yet</p>
-        </ion-item>
+        </ion-item> -->
     </ion-list>
 
 

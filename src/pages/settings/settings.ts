@@ -88,7 +88,7 @@ export class SettingsPage {
           }
 
         }, err => {
-          console.log("SettingsPage::constructor age", err);
+            console.log("SettingsPage::constructor age", err);
         });
         this.storage.get('preference').then(pref => {
             this.searchPreference = pref;

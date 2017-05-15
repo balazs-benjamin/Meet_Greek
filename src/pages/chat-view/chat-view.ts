@@ -36,62 +36,61 @@ export class ChatViewPage {
         .then((chatRef:any) => {
             console.log("ChatViewPage", chatRef );
 
-        this.chats = this.af.database.list(chatRef);
-        this.chats.subscribe(messages=>{
-            console.log("new message", messages);
+            this.chats = this.af.database.list(chatRef);
+            this.chats.subscribe(messages=>{
+                console.log("new message", messages);
 
-            this.chatMessages = messages;
+                this.chatMessages = messages;
 
-            console.log("new message", this.uid, this.interlocutor, this.chatMessages[ this.chatMessages.length-1 ]);
-            if (this.chatMessages.length > 0) {
-                let last = this.chatMessages[ this.chatMessages.length-1 ];
+                console.log("new message", this.uid, this.interlocutor, this.chatMessages[ this.chatMessages.length-1 ]);
+                if (this.chatMessages.length > 0) {
+                    let last = this.chatMessages[ this.chatMessages.length-1 ];
 
-                // update last message 
-                this.chatsProvider.lastChats( this.uid, this.interlocutor, {
-                  createdAt: last.createdAt,
-                  from: last.from,
-                  message:last.message});
+                    // update last message 
+                    this.chatsProvider.lastChats( this.uid, this.interlocutor, {
+                      createdAt: last.createdAt,
+                      from: last.from,
+                      message:last.message});
 
-                let notifications = this.af.database.list( '/notifications' );
-                notifications.push({
-                    title: `${this.interlocutorProfile.first_name}`,
-                    body: last.message,
-                    icon: `http://graph.facebook.com/${this.interlocutor}/picture?type=square`,
-                    interlocutorId: this.interlocutor
-                });
+                    let notifications = this.af.database.list( '/notifications' );
+                    notifications.push({
+                        title: `${this.interlocutorProfile.first_name}`,
+                        body: last.message,
+                        icon: `http://graph.facebook.com/${this.interlocutor}/picture?type=square`,
+                        interlocutorId: this.interlocutor
+                    });
 
-          }
-          
+              }
+              
+            });
         });
-    });
-    this.userProvider.getUserInterlocutor(this.interlocutor)
-    .then(userObservable => {
-      userObservable.subscribe(user => {
-        this.interlocutorProfile = user;
-      });
-    });
 
-    
-  }
+        this.userProvider.getUserInterlocutor(this.interlocutor)
+        .then(userObservable => {
+            userObservable.subscribe(user => {
+                this.interlocutorProfile = user;
+            });
+        });
+    }
 
-  ionViewDidEnter() {
-    this.content.scrollToBottom();
-  }
+    ionViewDidEnter() {
+        this.content.scrollToBottom();
+    }
 
-  ionViewWillLeave() {  }
+    ionViewWillLeave() {  }
 
-  showProfile(): void {
-    let param = null;
-    param = {uid: this.uid, interlocutor: this.interlocutor};   
-    //let param = {uid: "this uid", interlocutor: "other user key"};
-    let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
-    extendedProfileModal.onDidDismiss(data => {
-        if(data.foo == 'bar1'){
-        
-        }
-    });
-    extendedProfileModal.present();
-  }
+    showProfile(): void {
+        let param = null;
+        param = {uid: this.uid, interlocutor: this.interlocutor};   
+        //let param = {uid: "this uid", interlocutor: "other user key"};
+        let extendedProfileModal = this.modalCtrl.create(ExtendedProfilePage, param);
+        extendedProfileModal.onDidDismiss(data => {
+            if(data.foo == 'bar1'){
+            
+            }
+        });
+        extendedProfileModal.present();
+    }
 
     sendMessage() {
         if(this.message) {

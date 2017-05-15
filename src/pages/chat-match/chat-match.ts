@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController } from 'ionic-angular';
+import { NavController, ModalController, AlertController, LoadingController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
 import { UserProvider } from '../../providers/user-provider/user-provider';
 import { ChatsProvider } from '../../providers/chats-provider/chats-provider';
@@ -29,11 +29,13 @@ export class ChatMatchPage {
 
 
     constructor(
-        public chatsProvider: ChatsProvider, 
-        public userProvider: UserProvider, 
         public af:AngularFire, 
         public nav: NavController,
-        public modalCtrl: ModalController) {
+        public userProvider: UserProvider, 
+        public chatsProvider: ChatsProvider, 
+        private alertCtrl: AlertController,
+        public modalCtrl: ModalController, 
+        public loadingCtrl: LoadingController) {
 
         console.log("ChatMatchPage");
 
@@ -62,7 +64,7 @@ export class ChatMatchPage {
 
             chats.forEach(chat => {
                 this.chatsKeys.push( chat.$key );
-                
+
                 // get users
                 this.af.database.object(`/users/${chat.$key}`).take(1)
                 .subscribe(user => {
@@ -129,6 +131,53 @@ export class ChatMatchPage {
           //   this.buttonDisabled = null;
           // });
         matchModal.present();
+    }
+
+
+    deleteConversation(key){
+        console.log("ChatMatchPage::deleteConversation", key);
+        let prompt = this.alertCtrl.create({
+            title:"Are you sure?",
+            message: "Please confirm delete conversation.",
+            buttons:[
+            {
+                text: 'Cancel'
+            },
+            {
+                text: 'Delete',
+                handler: data => {
+                    let loading = this.loadingCtrl.create({ 
+                        content: 'Deleting conversation...' 
+                    });
+                    loading.present();
+
+                    this.userProvider.getUid()
+                    .then(uid => {
+
+                        // remove last chats from user 
+                        this.chatsProvider.removeLastChats(uid, key);
+
+                        // remove all conversations
+                        this.chatsProvider.getChatRef(uid, key)
+                        .then((chatRef:any) => {
+                            
+                            let chats = this.af.database.list(chatRef);
+                            chats.remove().then(()=>{
+                                console.log("ChatMatchPage conversation removed" );
+                                loading.dismiss();
+                            }, (err) => {
+                                loading.dismiss();
+                            });
+                            
+                        }, (err)=> {
+                            loading.dismiss();
+                        });
+                        
+                    });
+                }
+            }]
+        });
+        prompt.present();
     }
 
     shouldShowCancel(): void {}
