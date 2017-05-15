@@ -180,10 +180,10 @@ export class LoginPage {
 
             if (response.gender && response.gender == 'female') {
                 this.storage.set('preference', "Men");
-                this.storage.set('gender', "Women");
+                this.storage.set('gender', "Woman");
             }else{
                 this.storage.set('preference', "Women");
-                this.storage.set('gender', "Men");
+                this.storage.set('gender', "Man");
             }
             
             // this.storage.set('birthday', response.birthday);
@@ -243,10 +243,10 @@ export class LoginPage {
 
                     if (response.gender && response.gender == 'female') {
                         this.storage.set('preference', "Men");
-                        this.storage.set('gender', "Women");
+                        this.storage.set('gender', "Woman");
                     }else{
                         this.storage.set('preference', "Women");
-                        this.storage.set('gender', "Men");
+                        this.storage.set('gender', "Man");
                     }
                     
                     this.nav.setRoot(WelcomePage);

@@ -503,19 +503,19 @@ export class MainPage {
             if (preference === 'Friends'){
                 return items.filter(item => ( item.preference === 'Friends' ) );
             }else if (preference === 'Men') {
-                if (gender === 'Women') {
-                    return items.filter(item => (item.gender === 'Men' && item.preference === 'Women') );
-                }else if (gender === 'Men') {
-                    return items.filter(item => (item.gender === 'Men' && item.preference === 'Men') );
+                if (gender === 'Woman') {
+                    return items.filter(item => (item.gender === 'Man' && item.preference === 'Women') );
+                }else if (gender === 'Man') {
+                    return items.filter(item => (item.gender === 'Man' && item.preference === 'Men') );
                 }else{
                     return items.filter(item => (item.preference === 'Men') );
                 }
             }else if (preference === 'Women') {
                 
-                if (gender === 'Women') {
-                    return items.filter(item => (item.gender === 'Women' && item.preference === 'Women') );
-                }else if (gender === 'Men') {
-                    return items.filter(item => (item.gender === 'Men' && item.preference === 'Women') );
+                if (gender === 'Woman') {
+                    return items.filter(item => (item.gender === 'Woman' && item.preference === 'Women') );
+                }else if (gender === 'Man') {
+                    return items.filter(item => (item.gender === 'Man' && item.preference === 'Women') );
                 }else{
                     return items.filter(item => (item.preference === 'Men') );
                 }

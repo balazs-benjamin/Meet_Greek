@@ -9,18 +9,14 @@
 <ion-content>
     <div padding>
         <ion-segment [(ngModel)]="profilePageChoice">
-            <ion-segment-button value="profile" (ionSelect)="profileClicked()">
-                Profile
-            </ion-segment-button>
-            <ion-segment-button value="settings" (ionSelect)="settingsClicked()">
-                Settings
-            </ion-segment-button>
+            <ion-segment-button value="profile" (ionSelect)="profileClicked()">Profile</ion-segment-button>
+            <ion-segment-button value="settings" (ionSelect)="settingsClicked()">Settings</ion-segment-button>
         </ion-segment>
     </div>
 
     <!--Profile Segment-->
-    <div [ngSwitch]="profilePageChoice">
-        <ion-list *ngSwitchCase="'profile'">
+    <div>
+        <ion-list *ngIf="profilePageChoice=='profile'">
 
             <ion-item>
             <img *ngIf="!user.profile_picture && hasLoaded" src="assets/images/default.png" />
@@ -38,8 +34,9 @@
             <div draggable="true">{{user.areas}}</div>
             <div draggable="true">{{user.church}}</div></ion-item>
         </ion-list>
+
         <!--Settings Segment-->
-        <ion-list *ngSwitchCase="'settings'">
+        <ion-list *ngIf="profilePageChoice=='settings'">
             <ion-grid>
                 <ion-row>
                     <ion-col offset-10 width-80><button ion-button (click)="showPremium()" full color="light">meetGreek Premium</button></ion-col>

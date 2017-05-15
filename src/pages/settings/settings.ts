@@ -165,12 +165,12 @@ export class SettingsPage {
     }
 
     profileClicked(): void {
-        // this.profilePageChoice = 'profile';
+        this.profilePageChoice = 'profile';
         this.isProfile = true;
     }
 
     settingsClicked(): void {
-        // this.profilePageChoice = 'settings';
+        this.profilePageChoice = 'settings';
         this.isProfile = false;
     }
 

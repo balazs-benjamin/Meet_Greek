@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Platform } from 'ionic-angular';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { Camera } from 'ionic-native';
@@ -12,8 +13,15 @@ export class UserProvider {
 
     public static notificationToken;
 
-    constructor(public af: AngularFire, public local: Storage) { 
-        setTimeout(this.getTheToken, 1000);
+    constructor(
+        public platform:Platform,
+        public af: AngularFire, 
+        public local: Storage) { 
+
+        if (platform.is('cordova')) {
+            setTimeout(this.getTheToken, 1000);
+        }
+
     }
 
     // Get Current User's UID
