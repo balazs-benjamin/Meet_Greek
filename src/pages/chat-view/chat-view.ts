@@ -56,7 +56,7 @@ export class ChatViewPage {
                 notifications.push({
                     title: `${this.interlocutorProfile.first_name}`,
                     body: last.message,
-                    icon: this.interlocutorProfile.profile_picture,
+                    icon: `http://graph.facebook.com/${this.interlocutor}/picture?type=square`,
                     interlocutorId: this.interlocutor
                 });
 

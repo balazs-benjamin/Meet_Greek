@@ -37,101 +37,100 @@ export class ChatMatchPage {
 
         console.log("ChatMatchPage");
 
-    this.userProvider.getUid()
-    .then(uid => {
-        this.uid = uid;
-        this.userProvider.getAllUsers().subscribe(users => {
-          console.log("ChatMatchPage users: ", users);
-          this.users = users;
+        this.userProvider.getUid()
+        .then(uid => {
+            this.uid = uid;
+            this.userProvider.getAllUsers().subscribe(users => {
+              console.log("ChatMatchPage users: ", users);
+              this.users = users;
+            });
+            this.userChats = this.chatsProvider.getUserChats(uid);
+            this.addToChatsArray();
         });
-        this.userChats = this.chatsProvider.getUserChats(uid);
-        this.addToChatsArray();
-    });
-  }
-
-  ionViewDidLoad() {}
-
-  addToChatsArray(): void {
-    console.log("ChatMatchPage::addToChatsArray()");
-
-    this.userChats.subscribe(chats => {
-        this.chatsKeys = [];
-        console.log("ChatMatchPage::addToChatsArray()", chats);
-
-        chats.forEach(chat => {
-
-          this.chatsKeys.push( chat.$key );
-          // get users
-          this.af.database.object(`/users/${chat.$key}`).take(1)
-          .subscribe(user => {
-            
-            user['lastChat'] = chat;
-            
-            console.log("got chat user ", user);
-            this.chatUsers.push( user );
-            this.chatUsersFiltered.push( user );
-          })
-        });
-        
-        this.everythingLoaded = true;
-    });
-  }
-
-  openChat(key) {
-    console.log("ChatMatchPage::openChat()", key);
-
-      this.userProvider.getUid()
-      .then(uid => {
-          let param = {uid: uid, interlocutor: key};
-          this.nav.push(ChatViewPage, param);
-      });   
-  }
-
-  initializeItems(){
-    this.chatUsersFiltered = this.chatUsers;
-  }
-
-  getItems(ev: any) {
-    this.initializeItems();
-    
-    // let val = ev.target.value;
-    let val = this.searchInput.toLowerCase();
-
-    // if the value is an empty string don't filter the items
-    if (val && val.trim() != '') {
-      this.chatUsersFiltered = this.chatUsers.filter((user:any) => {
-        if (user.first_name) {
-          return (user.first_name.toLowerCase().indexOf(val.toLowerCase()) > -1);
-        }
-        return false;
-      });
-      
-      // this.users = this.users.filter((user:any) => {
-      //   return (user.first_name.indexOf(val.toLowerCase()) > -1);
-      // });
-      // this.chats = this.chats.filter((item:any) => {
-      //   console.log("ChatMatchPage::getItems", val, item);
-      //   return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      // });
     }
-  }
 
-  match(other_key): void {
-    let param = null;
-    param = {interlocutor: other_key};
-    //let param = {uid: "this uid", interlocutor: "other user key"};
-    let matchModal = this.modalCtrl.create(MatchPage, param);
-      // matchModal.onDidDismiss(data => {
-      //   if(data.foo == 'bar1'){
-      //     this.goToNextUser();
-      //   }
-      //   this.buttonDisabled = null;
-      // });
-    matchModal.present();
-  }
+    ionViewDidLoad() {}
 
-  shouldShowCancel(): void {
+    addToChatsArray(): void {
+        console.log("ChatMatchPage::addToChatsArray()");
 
-  }
+        this.userChats.subscribe(chats => {
+            this.chatsKeys = [];
+            console.log("ChatMatchPage::addToChatsArray()", chats);
+            this.chatUsers = []
+            this.chatUsersFiltered = [];
+
+            chats.forEach(chat => {
+                this.chatsKeys.push( chat.$key );
+                
+                // get users
+                this.af.database.object(`/users/${chat.$key}`).take(1)
+                .subscribe(user => {
+                    user['lastChat'] = chat;
+                    
+                    console.log("got chat user ", user);
+                    this.chatUsers.push( user );
+                    this.chatUsersFiltered.push( user );
+                })
+            });
+            
+            this.everythingLoaded = true;
+        });
+    }
+
+    openChat(key) {
+        console.log("ChatMatchPage::openChat()", key);
+
+        this.userProvider.getUid()
+        .then(uid => {
+            let param = {uid: uid, interlocutor: key};
+            this.nav.push(ChatViewPage, param);
+        });
+    }
+
+    initializeItems(){
+        this.chatUsersFiltered = this.chatUsers;
+    }
+
+    getItems(ev: any) {
+        this.initializeItems();
+        
+        // let val = ev.target.value;
+        let val = this.searchInput.toLowerCase();
+
+        // if the value is an empty string don't filter the items
+        if (val && val.trim() != '') {
+            this.chatUsersFiltered = this.chatUsers.filter((user:any) => {
+                if (user.first_name) {
+                  return (user.first_name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+                }
+                return false;
+            });
+          
+            // this.users = this.users.filter((user:any) => {
+            //   return (user.first_name.indexOf(val.toLowerCase()) > -1);
+            // });
+            // this.chats = this.chats.filter((item:any) => {
+            //   console.log("ChatMatchPage::getItems", val, item);
+            //   return (item.toLowerCase().indexOf(val.toLowerCase()) > -1);
+            // });
+        }
+    }
+
+    match(other_key): void {
+        let param = null;
+        param = {interlocutor: other_key};
+        //let param = {uid: "this uid", interlocutor: "other user key"};
+        let matchModal = this.modalCtrl.create(MatchPage, param);
+          // matchModal.onDidDismiss(data => {
+          //   if(data.foo == 'bar1'){
+          //     this.goToNextUser();
+          //   }
+          //   this.buttonDisabled = null;
+          // });
+        matchModal.present();
+    }
+
+    shouldShowCancel(): void {}
 
 }

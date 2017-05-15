@@ -82,6 +82,9 @@ export class SettingsPage {
           }else{
               this.ageValue.lower = 18;
               this.ageValue.upper = 36;
+
+              this.age.lower = 18;
+              this.age.upper = 36;
           }
 
         }, err => {
@@ -230,10 +233,9 @@ export class SettingsPage {
   ageChoice(): void {
     console.log(this.ageValue, this.age);
 
-    if ((this.ageValue.upper-this.ageValue.lower) > 4) {
+    if ((this.ageValue.upper - this.ageValue.lower) > 4) {
       this.age.upper = this.ageValue.upper;
       this.age.lower = this.ageValue.lower;
-
         
       this.storage.set('age', this.ageValue);
       this.userProvider.updateUserProfile(this.userId, 'age', this.age);
