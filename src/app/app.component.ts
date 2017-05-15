@@ -3,14 +3,14 @@ import { Platform, AlertController } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { AngularFire } from 'angularfire2';
 import { LoginPage } from '../pages/login/login';
-import { WelcomePage } from '../pages/welcome/welcome';
-import { AreasPage } from '../pages/areas/areas'; // question 1
-import { ChurchPage } from '../pages/church/church'; // question 2
-import { AboutMePage } from '../pages/about-me/about-me'; // question 2
+// import { WelcomePage } from '../pages/welcome/welcome';
+// import { AreasPage } from '../pages/areas/areas'; // question 1
+// import { ChurchPage } from '../pages/church/church'; // question 2
+// import { AboutMePage } from '../pages/about-me/about-me'; // question 2
 import { MainPage } from '../pages/main/main';
-import { SettingsPage } from '../pages/settings/settings';
+// import { SettingsPage } from '../pages/settings/settings';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
-import { ChatViewPage } from '../pages/chat-view/chat-view';
+// import { ChatViewPage } from '../pages/chat-view/chat-view';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
 import { Storage } from '@ionic/storage';
 import { Keyboard } from 'ionic-native';
@@ -152,12 +152,12 @@ export class MyApp {
             console.log('MyApp::initPushNotification()', token );
         }); 
 /*
-        this.tokensetup().then((token) => {
+        this.tokenSetup().then((token) => {
             // store token
             console.log('MyApp::initPushNotification()', token);
         });
 */
-        setTimeout(this.getTheToken, 1000);
+        
         
         FCMPlugin.onNotification(
             (data) => {
@@ -168,7 +168,7 @@ export class MyApp {
             });
     }
 
-    tokensetup() {
+    tokenSetup() {
         var promise = new Promise((resolve, reject) => {
 
             FCMPlugin.getToken((token)=>{
@@ -183,22 +183,6 @@ export class MyApp {
         return promise;
     }
 
-    getTheToken() {
-        console.log('MyApp::getTheToken()', (typeof FCMPlugin !== "undefined") );
-        
-        FCMPlugin.getToken((token) => {
-            if (token == null || token == "") {
-                console.log("null token:" + token + ":");
-                setTimeout(this.getTheToken, 1000);
-            } else {
-                console.log("I got the token: " + token + ":");
-            }
-        },
-        (err) => {
-            console.log('error retrieving token: ' + err);
-        }
-    );
-}
 }
 /*
 

@@ -65,14 +65,14 @@
     </ion-slides>
   </div>-->
 
-  <ion-card *ngIf="!isPublicEnabled">
+  <!-- <ion-card *ngIf="!isPublicEnabled">
     <ion-item (click)="makeDiscoverable()">
       <h2 text-wrap>Please turn on your discoverable settings to start swiping</h2>
       <button ion-button>Turn on discoverable</button>
     </ion-item>
-  </ion-card>
+  </ion-card> -->
   
-  <div swing-stack *ngIf="!isPublicEnabled" #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" id="card-stack">
+  <div swing-stack *ngIf="!greeksNotFound && isPublicEnabled" #myswing1 [stackConfig]="stackConfig" (throwoutleft)="voteUp(false)" (throwoutright)="voteUp(true)" id="card-stack">
     <ion-card #mycards1 swing-card *ngFor="let c of sortedUsers">
       <ion-item *ngIf="c.profile_picture" (click)="ionSlideTap(c)">
         <img id="card_image" *ngIf="c.profile_picture" [src]="c.profile_picture">
@@ -96,14 +96,14 @@
     </ion-card>
   </div>
 
-  <!--<ion-card *ngIf="greeksNotFound && isPublicEnabled" class="greeks-not-found">
+  <ion-card *ngIf="greeksNotFound && isPublicEnabled" class="greeks-not-found">
     <ion-card-title class="center card-title">
       Hmmm...
     </ion-card-title>
     <ion-card-content>
       <ion-grid>
         <ion-row>
-          <ion-col width-100 class="center card-subtitle">
+          <ion-col width-100 text-center class="center card-subtitle">
             There are no Greeks left in your area.
           </ion-col>
         </ion-row>
@@ -113,7 +113,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-100 class="center card-subtitle far">
+          <ion-col width-100 text-center class="center card-subtitle far">
             Call yiayia back in the meantime :-)
           </ion-col>
         </ion-row>
@@ -127,7 +127,7 @@
     <ion-card-content>
       <ion-grid>
         <ion-row>
-          <ion-col width-100 class="center card-subtitle">
+          <ion-col width-100 text-center class="center card-subtitle">
             You have be discoverable to see some results
           </ion-col>
         </ion-row>
@@ -137,13 +137,13 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col width-100 class="center card-subtitle far">
+          <ion-col width-100 text-center class="center card-subtitle far">
             Call yiayia back in the meantime :-)
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
-  </ion-card>-->
+  </ion-card>
 
 
 

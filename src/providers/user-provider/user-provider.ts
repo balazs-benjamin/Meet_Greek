@@ -3,11 +3,18 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import { Storage } from '@ionic/storage';
 import { Camera } from 'ionic-native';
 
+
+declare var FCMPlugin;
+
 @Injectable()
 export class UserProvider {
     private uid:string;
 
-    constructor(public af: AngularFire, public local: Storage) { }
+    public static notificationToken;
+
+    constructor(public af: AngularFire, public local: Storage) { 
+        setTimeout(this.getTheToken, 1000);
+    }
 
     // Get Current User's UID
     getUid() {
@@ -130,6 +137,23 @@ export class UserProvider {
                 });
                 return promise;
             });
+    }
+
+    getTheToken() {
+        console.log('LoginPage::getTheToken()', (typeof FCMPlugin !== "undefined") );
+        
+        FCMPlugin.getToken((token) => {
+            if (token == null || token == "") {
+                console.log("LoginPage::null token:" + token + ":");
+                setTimeout(this.getTheToken, 1000);
+            } else {
+                console.log("LoginPage::I got the token:" + token + ":");
+                UserProvider.notificationToken = token;
+            }
+        },
+        (err) => {
+            console.log('error retrieving token: ' + err);
+        });
     }
 }
 

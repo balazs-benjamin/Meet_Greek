@@ -21,25 +21,7 @@
     <!--Profile Segment-->
     <div [ngSwitch]="profilePageChoice">
         <ion-list *ngSwitchCase="'profile'">
-            <!--<ion-item>
-                <ion-card>
-                    <img *ngIf="!user.profile_picture" src="assets/images/default.jpg" />
-                    <img *ngIf="user.profile_picture" src="{{user.profile_picture}}" height="300" width="300"/>
-                </ion-card> 
-            </ion-item>-->
-            
-                
-                <!--<ion-row wrap>
-                    <ion-col width-33 *ngFor="let file_uri of user.images">
-                        <ion-card>
-                            <img [src]="file_uri">
-                        </ion-card>
-                    </ion-col>
-                </ion-row>-->
-             <!--<ion-item>
-                <button ion-button full (click)="updatePicture()">Change Picture</button>
-            </ion-item>-->
-            
+
             <ion-item>
             <img *ngIf="!user.profile_picture && hasLoaded" src="assets/images/default.png" />
             <img *ngIf="user.profile_picture && hasLoaded" src="{{user.profile_picture}}" />
@@ -64,7 +46,7 @@
                 </ion-row>
             </ion-grid>
             <ion-item>
-                <ion-label>Public/Discoverable {{publicDiscoverable}}</ion-label>
+                <ion-label>Public/Discoverable</ion-label>
                 <ion-toggle [(ngModel)]="publicDiscoverable" (ionChange)="publicDisc()"></ion-toggle>
             </ion-item>
             <ion-item>
