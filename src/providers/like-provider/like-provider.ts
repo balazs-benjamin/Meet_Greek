@@ -19,14 +19,23 @@ export class LikeProvider {
       return this.af.database.list(`/users/${uid}/likes`);
   }
 
-  addLike(uid,interlocutor) {
-      let endpoint = this.af.database.object(`/users/${uid}/likes/${interlocutor}`);
-      endpoint.set(true);
+  getUserMatches(uid) {
+      return this.af.database.list(`/users/${uid}/matched`);
   }
 
-  reject(uid,interlocutor) {
-      let endpoint = this.af.database.object(`/users/${uid}/likes/${interlocutor}`);
-      endpoint.set(false);
+  addLike(uid,interlocutor) {
+      let user = this.af.database.object(`/users/${uid}/likes/${interlocutor}`);
+      user.set(true);
+  }
+
+  addMatch(uid, interlocutor) {
+      let user = this.af.database.object(`/users/${uid}/matched/${interlocutor}`);
+      user.set(true);
+  }
+
+  reject(uid, interlocutor) {
+      let user = this.af.database.object(`/users/${uid}/likes/${interlocutor}`);
+      user.set(false);
   }
 
   getSuperLikes() {

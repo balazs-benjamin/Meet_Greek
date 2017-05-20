@@ -50,6 +50,17 @@ import { CityService } from '../providers/city-service';
 import { UtilProvider } from '../providers/utils';
 import { Data } from '../providers/data';
 
+
+
+export const firebaseConfig = {
+    apiKey: "AIzaSyCPws3I2YmCW-kGvadQYlgm9JypziF6Z14",
+    authDomain: "meetgreek-1783b.firebaseapp.com",
+    databaseURL: "https://meetgreek-1783b.firebaseio.com",
+    storageBucket: "meetgreek-1783b.appspot.com",
+    messagingSenderId: "762176154683"
+};
+
+/*
 export const firebaseConfig = {
   apiKey: "AIzaSyC5hC8PRTe2oVjR34bg9BQ9nvFItPzXA0I",
   authDomain: "meetgreek-7f8f8.firebaseapp.com",
@@ -57,7 +68,8 @@ export const firebaseConfig = {
   databaseURL: "https://meetgreek-7f8f8.firebaseio.com",
   storageBucket: "meetgreek-7f8f8.appspot.com",
   messagingSenderId: "798902207354"
-};
+};*/
+
 
 // const myFirebaseAuthConfig = {
 //   provider: AuthProviders.Facebook,

@@ -68,13 +68,13 @@ export class MainPage {
 
     constructor(
         private http: Http,
+        public storage: Storage,
         public auth: AuthProvider,
         private platform: Platform,
-        private toastCtrl: ToastController,
         public navCtrl: NavController,
         public userProvider: UserProvider,
         public modalCtrl: ModalController,
-        public storage: Storage,
+        private toastCtrl: ToastController,
         public likeProvider: LikeProvider) {
 
         console.log("MainPage");
@@ -444,6 +444,7 @@ export class MainPage {
                 likes.forEach(chat => {
                     console.log("MainPage::voteUp(), likes", chat);
                     if(chat.$key == this.uid){
+                        this.likeProvider.addMatch(uid, interlocutor);
                         this.match(interlocutor);
                     }
                 });

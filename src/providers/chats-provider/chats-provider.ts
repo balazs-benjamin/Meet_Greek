@@ -16,7 +16,6 @@ export class ChatsProvider {
     }
 
     getUserChats(uid) {
-
         console.log("::getUserChats", uid);
         return this.af.database.list('/users/' + uid + '/chats', {query: {
           orderByChild:'createdAt'  

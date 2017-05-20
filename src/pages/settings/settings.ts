@@ -92,7 +92,6 @@ export class SettingsPage {
         this.local.get('age').then(ag => {
             console.log("SettingsPage::constructor age", ag);
             
-            
             if (ag != null) {
                 this.age = ag;
                 // this.ageValue.lower = this.age.lower;

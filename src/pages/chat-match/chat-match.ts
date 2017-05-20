@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
 import { NavController, ModalController, AlertController, LoadingController } from 'ionic-angular';
 import { Observable } from 'rxjs/Rx';
-import { UserProvider } from '../../providers/user-provider/user-provider';
-import { ChatsProvider } from '../../providers/chats-provider/chats-provider';
 import { AngularFire } from 'angularfire2';
 import 'rxjs/add/operator/map';
+
+import { UserProvider } from '../../providers/user-provider/user-provider';
+import { ChatsProvider } from '../../providers/chats-provider/chats-provider';
+import { LikeProvider } from '../../providers/like-provider/like-provider';
+
 import { ChatViewPage }  from '../chat-view/chat-view';
 import { MatchPage } from '../match/match';
 
 
 @Component({
-  selector: 'page-chat-match',
-  templateUrl: 'chat-match.html'
+    selector: 'page-chat-match',
+    templateUrl: 'chat-match.html'
 })
 export class ChatMatchPage {
     everythingLoaded = false;
@@ -19,11 +22,13 @@ export class ChatMatchPage {
     users:any[];
     chatUsersFiltered:any[] = [];
     chatUsers:any[] = [];
+    matchedUsers:any[] = [];
     chatMessages:any[] = [];
     uid:string;
     searchQuery: string = '';
     searchInput: string = '';
     userChats:Observable<any[]>;
+    userMatches:Observable<any[]>;
     chatsKeys = [];
     chatsCat = {};
 
@@ -31,10 +36,11 @@ export class ChatMatchPage {
     constructor(
         public af:AngularFire, 
         public nav: NavController,
+        public likeProvider: LikeProvider,
+        public modalCtrl: ModalController, 
         public userProvider: UserProvider, 
         public chatsProvider: ChatsProvider, 
         private alertCtrl: AlertController,
-        public modalCtrl: ModalController, 
         public loadingCtrl: LoadingController) {
 
         console.log("ChatMatchPage");
@@ -46,6 +52,8 @@ export class ChatMatchPage {
               console.log("ChatMatchPage users: ", users);
               this.users = users;
             });
+
+            this.getUserMatches();
             this.userChats = this.chatsProvider.getUserChats(uid);
             this.addToChatsArray();
         });
@@ -78,6 +86,30 @@ export class ChatMatchPage {
             
             this.everythingLoaded = true;
         });
+    }
+
+    getUserMatches(): void {
+        console.log("ChatMatchPage::getUserMatches()");
+        this.likeProvider.getUserMatches(this.uid).subscribe( matches => {
+            console.log("ChatMatchPage::getUserMatches()");
+
+            this.matchedUsers = [];
+
+            matches.forEach(match => {
+                
+                // get users
+                this.af.database.object(`/users/${match.$key}`).take(1)
+                .subscribe(user => {
+                      
+                    console.log("got matched user ", user);
+                    this.matchedUsers.push( user );
+                    // this.chatUsersFiltered.push( user );
+                })
+            });
+
+            // this.everythingLoaded = true;
+        });
+        
     }
 
     openChat(key) {
