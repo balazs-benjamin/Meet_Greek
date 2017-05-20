@@ -85,14 +85,16 @@ export class MainPage {
         //Swipe
         this.stackConfig = {
             throwOutConfidence: (offset, element) => {
-                // console.log("throwOutConfidence", offset, element, Math.abs(offset) / (element/2));
-                return Math.min(Math.abs(offset) / (element/2), 1);
+                // console.log("throwOutConfidence", offset, element);
+                let deviation = Math.abs(offset) / Math.abs(element/5);
+                // console.log("throwOutConfidence", deviation);
+                return Math.min(deviation, 1);
             },
             // transform: (element, x, y, r) => {
             //   this.onItemMove(element, x, y, r);
             // },
             throwOutDistance: (d) => {
-                return 300;
+                return 400;
             }
         };
         
@@ -437,10 +439,10 @@ export class MainPage {
             // let interlocutor = this.currentInterlocutorKey;
             this.likeProvider.addLike(uid, interlocutor);
             this.interlocutorLikes = this.likeProvider.getUserLikes(interlocutor);
-            this.interlocutorLikes.subscribe(likes => {
+            this.interlocutorLikes.take(1).subscribe(likes => {
                 // items is an array
                 likes.forEach(chat => {
-                    //console.log(item.$key);
+                    console.log("MainPage::voteUp(), likes", chat);
                     if(chat.$key == this.uid){
                         this.match(interlocutor);
                     }
@@ -503,6 +505,7 @@ export class MainPage {
             if (preference === 'Friends'){
                 return items.filter(item => ( item.preference === 'Friends' ) );
             }else if (preference === 'Men') {
+
                 if (gender === 'Woman') {
                     return items.filter(item => (item.gender === 'Man' && item.preference === 'Women') );
                 }else if (gender === 'Man') {
@@ -510,6 +513,7 @@ export class MainPage {
                 }else{
                     return items.filter(item => (item.preference === 'Men') );
                 }
+                
             }else if (preference === 'Women') {
                 
                 if (gender === 'Woman') {
@@ -554,9 +558,9 @@ export class MainPage {
                 this.greeksNotFound = false;
             }
             
-            console.log(this.previousIndex);
+            console.log( "MainPage::addNewCardsFromFirebase() previousIndex ", this.previousIndex);
             console.log("*****************************************1");
-            console.log(this.sortedUsers);
+            console.log( "MainPage::addNewCardsFromFirebase() sortedUsers ", this.sortedUsers);
             if( this.sortedUsers.length > 0 ){
             }else {
                 this.greeksFound = false;
@@ -567,9 +571,9 @@ export class MainPage {
             // this.mainSlider.update();
             // this.cardUserArray.push(this.sortedUsers[0]);
             this.cardUsersLoaded = true;
-            this.ionViewDidLoad();
-            this.checkLikes();
-            console.log(this.currentInterlocutorKey);
+            // this.ionViewDidLoad();
+            // this.checkLikes();
+            console.log( "MainPage::addNewCardsFromFirebase() currentInterlocutorKey ", this.currentInterlocutorKey);
 
 
         });

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Component, NgZone } from '@angular/core';
+import { Platform, NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 import { Storage } from '@ionic/storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
@@ -24,82 +24,93 @@ import { LoginPage } from '../login/login';
 })
 export class SettingsPage {
     private userId;
-    loading : any ;
-    hasLoaded = false;
-    isProfile;
-    profilePageChoice: any;
-    rootNav;
-    slideOptions: any;
-    distance: any;
-    age:any;
-    ageValue:any = { lower:18, upper:36 };
+    public loading : any ;
+    public hasLoaded = false;
+    public isProfile = true;
+    private profilePageChoice: string = 'profile';
+    private rootNav;
+    // slideOptions: any;
+    private distance: number = 50;
+    private age:any = { lower:18, upper:36 };
+    // public ageValue:any = { lower:18, upper:36 };
     searchPreference;
-    newMatches;
-    messages;
-    superLikes;
-    publicDiscoverable;
+    newMatches:true = true;
+    messages:boolean = true;
+    superLikes:boolean = true;
+    publicDiscoverable:boolean = true;
     user = <any>{};
+    userLocal = {
+        discoverable: true,
+        distance: 50,
+        age: { lower:18, upper:36 }
+    };
 
     // user = { username: "", profile_picture: "", aboutMe: "", 
     // descent: "", areas: [], church: "", location: "", images: [] };
 
     constructor(
+        public zone:NgZone,
         private fb: Facebook,
-        public nav: NavController,
+        public local: Storage,
         public af: AngularFire,
+        private iab: InAppBrowser,
+        public util: UtilProvider,
+        public nav: NavController,
         public auth: AuthProvider,
+        private platform: Platform,
         public userProvider: UserProvider,
         public chatsProvider: ChatsProvider, 
-        public local: Storage,
-        public util: UtilProvider,
-        public storage: Storage,
-        private alertCtrl: AlertController,
         public modalCtrl: ModalController,
-        private iab: InAppBrowser,
+        private alertCtrl: AlertController,
         public loadingCtrl: LoadingController) {
 
         console.log("SettingsPage");
-
-        this.profilePageChoice = 'profile';
-        // this.profilePage = 'profile';
-        this.isProfile = true;
-        this.storage.get('discoverable').then(discoverable => {
-            console.log("SettingsPage::constructor discoverable", discoverable);
+        this.loading = this.loadingCtrl.create({ 
+            content: 'Getting user information...' 
+        });
+        if (platform.is('cordova')) {
+            this.loading.present();
+        }
+        
+        this.local.get('localUser').then(user => {
+            console.log("SettingsPage::constructor localUser", user);
+            if (user) {
+                this.userLocal = user;
+            }
+        });
+        
+        this.local.get('discoverable').then(discoverable => {
+            // console.log("SettingsPage::constructor discoverable", discoverable);
             this.publicDiscoverable = discoverable;
+            this.userLocal.discoverable = discoverable;
         });
 
-        this.storage.get('distance').then(dist => {
+        this.local.get('distance').then(dist => {
             this.distance = dist;
         });
 
-        this.storage.get('age').then(ag => {
+        this.local.get('age').then(ag => {
             console.log("SettingsPage::constructor age", ag);
-
-          this.age = ag;
-          if (ag) {
-              this.ageValue.lower = this.age.lower;
-              this.ageValue.upper = this.age.upper;
-          }else{
-              this.ageValue.lower = 18;
-              this.ageValue.upper = 36;
-
-              this.age.lower = 18;
-              this.age.upper = 36;
-          }
-
+            
+            
+            if (ag != null) {
+                this.age = ag;
+                // this.ageValue.lower = this.age.lower;
+                // this.ageValue.upper = this.age.upper;
+            }
         }, err => {
             console.log("SettingsPage::constructor age", err);
         });
-        this.storage.get('preference').then(pref => {
+        this.local.get('preference').then(pref => {
             this.searchPreference = pref;
         });
-        this.storage.get('new_match_notif').then(nm => {
+        this.local.get('new_match_notif').then(nm => {
             this.newMatches = nm;
         });
-        this.storage.get('messages_notif').then(msg => {
+        this.local.get('messages_notif').then(msg => {
             this.messages = msg;
         });
-        this.storage.get('superlikes_notif').then(sl => {
+        this.local.get('superlikes_notif').then(sl => {
             this.superLikes = sl;
         });
 
@@ -112,16 +123,10 @@ export class SettingsPage {
                 return;
             }
           
-            this.loading = this.loadingCtrl.create({ 
-                content: 'Getting user information...' 
-            });
-            this.loading.present();
-
             userObservable.take(1).subscribe(data => {
                 console.log("SettingsPage::constructor user", data);
 
                 this.user = data;
-                this.hasLoaded = true;
                 this.loading.dismiss();
                 
                 // set data 
@@ -129,20 +134,26 @@ export class SettingsPage {
                 this.distance = (this.user.distance)?this.user.distance:50;
                 this.age = this.user.age;
                 if (this.age) {
-                    this.ageValue.lower = this.user.age.lower;
-                    this.ageValue.upper = this.user.age.upper;
+                    // this.ageValue.lower = this.age.lower;
+                    // this.ageValue.upper = this.age.upper;
                 }else{
-                    this.ageValue.lower = 18;
-                    this.ageValue.upper = 36;
+                    // this.ageValue.lower = 18;
+                    // this.ageValue.upper = 36;
                 }
                 if (this.user.preference != '...') {
-                  this.searchPreference = this.user.preference;
+                    this.searchPreference = this.user.preference;
                 }
                 this.newMatches = this.user.new_matches;
                 this.messages = this.user.messages;
                 this.superLikes = this.user.superLikes;
+
+                this.hasLoaded = true;
             });
         });
+    }
+
+    ionViewDidLoad() {
+        console.log('ionViewDidLoad SettingsPage', this.loading);
     }
 
     ionViewWillEnter() {}
@@ -167,20 +178,24 @@ export class SettingsPage {
         this.nav.setRoot(MainPage);
     }
 
-    profileClicked(): void {
-        this.profilePageChoice = 'profile';
+    profileClicked(ev:Event): void {
+        console.log("SettingsPage::profileClicked()", this.isProfile);
+        // this.profilePageChoice = 'profile';
+        ev.preventDefault();
         this.isProfile = true;
     }
 
-    settingsClicked(): void {
-        this.profilePageChoice = 'settings';
+    settingsClicked(ev:Event): void {
+        console.log("SettingsPage::settingsClicked()", this.isProfile);
+        ev.preventDefault();
+        // this.profilePageChoice = 'settings';
         this.isProfile = false;
     }
 
     logout(): void {
         console.log("SettingsPage::logout()");
         this.loading = this.loadingCtrl.create({ 
-          content: 'Please wait...' 
+            content: 'Please wait...' 
         });
         this.loading.present();
 
@@ -190,13 +205,12 @@ export class SettingsPage {
         this.local.remove('email');
         
         this.auth.signOut().then(()=>{
-          this.fb.logout().then(()=> {
-            this.nav.setRoot(LoginPage);
-            this.loading.dismiss();
-          })
+            this.fb.logout().then(()=> {
+                this.nav.setRoot(LoginPage);
+                this.loading.dismiss();
+            })
         });
 
-        // this.local.remove('userInfo');
         // Facebook.logout();
     }
 
@@ -206,67 +220,68 @@ export class SettingsPage {
         premiumModal.present();
     }
 
-  test(): void {
-    let startAge = {
-      lower: 18,
-      upper: 36
+    test(): void {
+          console.log("SettingsPage::settingsClicked()");
+        let startAge = {
+          lower: 18,
+          upper: 36
+        }
+        this.local.set('discoverable', true);
+        this.local.set('distance', 50);
+        this.local.set('age', startAge);
+        this.local.set('preference', "...");
+        this.local.set('new_match_notif', true);
+        this.local.set('messages_notif', true);
+        this.local.set('superlikes_notif', true);
     }
-    this.storage.set('discoverable', true);
-    this.storage.set('distance', 50);
-    this.storage.set('age', startAge);
-    this.storage.set('preference', "...");
-    this.storage.set('new_match_notif', true);
-    this.storage.set('messages_notif', true);
-    this.storage.set('superlikes_notif', true);
-  }
 
-  publicDisc(): void {
-    this.userProvider.updateUserProfile(this.userId, 'discoverable', this.publicDiscoverable);
-    this.storage.set('discoverable', this.publicDiscoverable);
-  }
-
-  distanceChoice(): void {
-    this.userProvider.updateUserProfile(this.userId, 'distance', this.distance);
-    this.storage.set('distance', this.distance);
-  }
-
-  ageChoice(): void {
-    console.log(this.ageValue, this.age);
-
-    if ((this.ageValue.upper - this.ageValue.lower) > 4) {
-      this.age.upper = this.ageValue.upper;
-      this.age.lower = this.ageValue.lower;
-        
-      this.storage.set('age', this.ageValue);
-      this.userProvider.updateUserProfile(this.userId, 'age', this.age);
-    }else{
-
+    publicDisc(ev:Event): void {
+        console.log("SettingsPage::publicDisc()", ev);
+        this.userProvider.updateUserProfile(this.userId, 'discoverable', this.publicDiscoverable);
+        this.local.set('discoverable', this.publicDiscoverable);
     }
-    
-  }
 
-  searchPref(): void {
-    this.userProvider.updateUserProfile(this.userId, 'preference', this.searchPreference);
-    this.storage.set('preference', this.searchPreference);
-  }
+    distanceChoice(): void {
+        console.log("SettingsPage::distanceChoice()");
+        this.userProvider.updateUserProfile(this.userId, 'distance', this.distance);
+        this.local.set('distance', this.distance);
+    }
 
-  newMatch(): void {
-    this.userProvider.updateUserProfile(this.userId, 'new_matches', this.newMatches);
-    console.log("SettingsPage::newMatch()", this.newMatches);
-    this.storage.set('new_match_notif', this.newMatches);
-  }
+    ageChoice(): void {
+        console.log("SettingsPage::ageChoice()", this.age);
+        /*
+        if ((this.ageValue.upper - this.ageValue.lower) > 4) {
+          this.age.upper = this.ageValue.upper;
+          this.age.lower = this.ageValue.lower;
+            
+          this.local.set('age', this.ageValue);
+          this.userProvider.updateUserProfile(this.userId, 'age', this.age);
+        }*/
+    }
 
-  msg(): void {
-    console.log("SettingsPage::msg()", this.messages);
-    this.userProvider.updateUserProfile(this.userId, 'messages', this.messages);
-    this.storage.set('messages_notif', this.messages);
-  }
+    searchPref(ev): void {
+        console.log("SettingsPage::searchPref()", ev.checked);
+        this.userProvider.updateUserProfile(this.userId, 'preference', this.searchPreference);
+        this.local.set('preference', this.searchPreference);
+    }
 
-  like(): void {
-    console.log("SettingsPage::like()", this.superLikes );
-    this.userProvider.updateUserProfile(this.userId, 'superLikes', this.superLikes);
-    this.storage.set('superlikes_notif', this.superLikes);
-  }
+    newMatch(ev): void {
+        console.log("SettingsPage::newMatch()", ev.val());
+        this.userProvider.updateUserProfile(this.userId, 'new_matches', this.newMatches);
+        this.local.set('new_match_notif', this.newMatches);
+    }
+
+    msg(): void {
+        console.log("SettingsPage::msg()", this.messages);
+        this.userProvider.updateUserProfile(this.userId, 'messages', this.messages);
+        this.local.set('messages_notif', this.messages);
+    }
+
+    like(): void {
+        console.log("SettingsPage::like()", this.superLikes );
+        this.userProvider.updateUserProfile(this.userId, 'superLikes', this.superLikes);
+        this.local.set('superlikes_notif', this.superLikes);
+    }
 
     deleteAccount(){
         console.log('SettingsPage::deleteAccount');
@@ -313,93 +328,97 @@ export class SettingsPage {
         prompt.present();
     }
 
-  showLegal(): void {
-    console.log("SettingsPage::showLegal()" );
-    let legalModal = this.modalCtrl.create(LegalPage);
-    this.writeUserData();
-    legalModal.present();
-  }
+    showLegal(): void {
+        console.log("SettingsPage::showLegal()" );
+        let legalModal = this.modalCtrl.create(LegalPage);
+        this.writeUserData();
+        legalModal.present();
+    }
 
-  showFeedback(): void {
-    console.log("SettingsPage::showFeedback");
-    /*let feedbackModal = this.modalCtrl.create(FeedbackPage);
-    this.writeUserData();
-    feedbackModal.present();*/
-/*
-    let email = {
-      to: 'max@mustermann.de',
-      cc: '',
-      bcc: [],
-      attachments: [],
-      subject: 'Feedback',
-      body: 'My feedback',
-      isHtml: true
-    };
-    
-    this.emailComposer.isAvailable().then((available: boolean) =>{
-      console.log("SettingsPage::showFeedback", available);
-      if(available) {
-        //Now we know we can send
-        this.emailComposer.open(email);
-      }
-    });*/
+    showFeedback(): void {
+        console.log("SettingsPage::showFeedback");
+        let browser = this.iab.create('mailto:info@meetgreekapp.com', '_blank');
+        browser.show();
 
-    let browser = this.iab.create('mailto:info@meetgreekapp.com', '_blank');
-    browser.show();
-  }
+        /*let feedbackModal = this.modalCtrl.create(FeedbackPage);
+        this.writeUserData();
+        feedbackModal.present();*/
+    /*
+        let email = {
+          to: 'max@mustermann.de',
+          cc: '',
+          bcc: [],
+          attachments: [],
+          subject: 'Feedback',
+          body: 'My feedback',
+          isHtml: true
+        };
+        
+        this.emailComposer.isAvailable().then((available: boolean) =>{
+          console.log("SettingsPage::showFeedback", available);
+          if(available) {
+            //Now we know we can send
+            this.emailComposer.open(email);
+          }
+        });*/
 
-  writeUserData(): void {
-    console.log("SettingsPage::writeUserData()" );
+    }
 
-    let userPublic;
-    this.storage.get('discoverable').then(publicPreference => {
-      userPublic = publicPreference;
-    });
+    writeUserData(): void {
+        console.log("SettingsPage::writeUserData()", this.auth.authenticated );
+        if ( !this.auth.authenticated ) {
+            return;
+        }
 
-    let distancePreference;
-    this.storage.get('distance').then(distance => {
-      distancePreference = distance;
-    });
-
-    let userAge;
-    this.storage.get('age').then(age => {
-      userAge = age;
-    });
-
-    let userPreference;
-    this.storage.get('preference').then(preference => {
-      userPreference = preference;
-    });
-
-    let userNewMatches;
-    this.storage.get('new_match_notif').then(new_matches_notif => {
-      userNewMatches = new_matches_notif;
-    });
-
-    let userMessagesNotif;
-    this.storage.get('messages_notif').then(messages_notif => {
-      userMessagesNotif = messages_notif;
-    });
-
-    let userSuperLikes;
-    this.storage.get('superlikes_notif').then(superlikes_notif => {
-      userSuperLikes = superlikes_notif;
-    });
-
-    this.userProvider.getUid().then(uid => {
-      let currentUserRef = this.af.database.object('/users/' + uid);
-      if (currentUserRef) {
-          currentUserRef.update({
-              discoverable: userPublic,
-              distance: distancePreference,
-              age: userAge,
-              preference: userPreference,
-              new_matches: userNewMatches,
-              messages: userMessagesNotif,
-              superLikes: userSuperLikes
+        let userPublic;
+        this.local.get('discoverable').then(publicPreference => {
+            userPublic = publicPreference;
         });
-      }
-    });
-  }
+
+        let distancePreference;
+        this.local.get('distance').then(distance => {
+            distancePreference = distance;
+        });
+
+        let userAge;
+        this.local.get('age').then(age => {
+            userAge = age;
+        });
+
+        let userPreference;
+        this.local.get('preference').then(preference => {
+            userPreference = preference;
+        });
+
+        let userNewMatches;
+        this.local.get('new_match_notif').then(new_matches_notif => {
+            userNewMatches = new_matches_notif;
+        });
+
+        let userMessagesNotif;
+        this.local.get('messages_notif').then(messages_notif => {
+            userMessagesNotif = messages_notif;
+        });
+
+        let userSuperLikes;
+        this.local.get('superlikes_notif').then(superlikes_notif => {
+          userSuperLikes = superlikes_notif;
+        });
+
+        this.userProvider.getUid().then(uid => {
+            let currentUserRef = this.af.database.object('/users/' + uid);
+            if (currentUserRef) {
+                currentUserRef.update({
+                    discoverable: userPublic,
+                    distance: distancePreference,
+                    age: userAge,
+                    preference: userPreference,
+                    new_matches: userNewMatches,
+                    messages: userMessagesNotif,
+                    superLikes: userSuperLikes
+                });
+            }
+        });
+    }
 
 }

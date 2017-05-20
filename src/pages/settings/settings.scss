@@ -2,6 +2,45 @@ page-settings {
     .mini-fab{
         top:-30px;
     }
+    .button-group {
+        .button {
+            color: black;
+            background-color: white;
+        }
+        .col:first-child:not(:last-child) {
+            padding-right: 0;
+            .button {
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
+                border-top-left-radius: 16px;
+                border-bottom-left-radius: 16px;
+            }
+        }
+        .col {
+            &:not(:first-child):not(:last-child) {
+                padding-right: 0;
+                padding-left: 0;
+                .button {
+                    border-radius: 0;
+                }
+            }
+
+            &:last-child:not(:first-child) {
+                padding-left: 0;
+                .button {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                    border-top-right-radius: 16px;
+                    border-bottom-right-radius: 16px;
+                }
+            }
+        }
+
+        .button.selected{
+            color: white;
+            background-color: #387ef5
+        }
+    }
 
     ion-slide img { 
         height: auto !important; 

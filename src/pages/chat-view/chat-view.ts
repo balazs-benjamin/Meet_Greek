@@ -19,13 +19,14 @@ export class ChatViewPage {
     chatMessages:any[];
 
     constructor(
-        public nav:NavController, 
-        public params:NavParams, 
-        public chatsProvider:ChatsProvider, 
         public af:AngularFire, 
-        public userProvider:UserProvider,
+        public params:NavParams, 
+        public nav:NavController, 
         public platform: Platform,
+        public userProvider:UserProvider,
+        public chatsProvider:ChatsProvider, 
         public modalCtrl: ModalController) {
+        
 
         this.uid = params.data.uid;
         this.interlocutor = params.data.interlocutor;

@@ -8,7 +8,7 @@ import { LoginPage } from '../pages/login/login';
 // import { ChurchPage } from '../pages/church/church'; // question 2
 // import { AboutMePage } from '../pages/about-me/about-me'; // question 2
 import { MainPage } from '../pages/main/main';
-// import { SettingsPage } from '../pages/settings/settings';
+import { SettingsPage } from '../pages/settings/settings';
 import { EditProfilePage } from '../pages/edit-profile/edit-profile';
 import { ChatViewPage } from '../pages/chat-view/chat-view';
 import { AuthProvider } from '../providers/auth-provider/auth-provider';
@@ -149,7 +149,7 @@ export class MyApp {
             });
 
         }else{
-            this.rootPage = EditProfilePage;
+            this.rootPage = SettingsPage;
         }
     }
 
